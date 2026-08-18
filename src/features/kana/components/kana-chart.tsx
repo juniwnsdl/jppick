@@ -18,6 +18,10 @@ const GROUP_OPTIONS: ReadonlyArray<{ value: KanaGroup; label: string }> = [
   { value: "extended", label: "확장음" },
 ];
 
+function selectedIndicator(selected: boolean) {
+  return selected ? <span aria-hidden="true" data-selected-indicator>✓</span> : null;
+}
+
 export function KanaChart() {
   const [script, setScript] = useState<KanaScript>("hiragana");
   const [group, setGroup] = useState<KanaGroup>("basic");
@@ -43,7 +47,7 @@ export function KanaChart() {
             onClick={() => chooseScript(option.value)}
             type="button"
           >
-            {option.label}
+            {option.label} {selectedIndicator(script === option.value)}
           </button>
         ))}
       </div>
@@ -59,7 +63,7 @@ export function KanaChart() {
             }}
             type="button"
           >
-            {option.label}
+            {option.label} {selectedIndicator(group === option.value)}
           </button>
         ))}
       </div>

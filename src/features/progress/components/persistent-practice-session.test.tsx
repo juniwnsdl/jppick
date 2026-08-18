@@ -15,18 +15,12 @@ const catalog: KanaUnit[] = [
 ];
 
 beforeEach(() => {
-  vi.stubGlobal("ResizeObserver", class {
-    observe() {}
-    unobserve() {}
-    disconnect() {}
-  });
   vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue({
     clearRect: vi.fn(), setTransform: vi.fn(), beginPath: vi.fn(), moveTo: vi.fn(), lineTo: vi.fn(), stroke: vi.fn(),
   } as unknown as CanvasRenderingContext2D);
 });
 
 afterEach(() => {
-  vi.unstubAllGlobals();
   vi.restoreAllMocks();
 });
 

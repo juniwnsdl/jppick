@@ -116,7 +116,7 @@ export function ProgressDashboard({
 
       <section aria-labelledby="per-kana-heading" className="dashboard-section">
         <h2 id="per-kana-heading">문자별 기록</h2>
-        <table>
+        <table className="progress-table">
           <thead><tr><th scope="col">문자</th><th scope="col">전체</th><th scope="col">잘 씀</th><th scope="col">다시</th></tr></thead>
           <tbody>
             {value.kana.map((item) => (
@@ -129,12 +129,12 @@ export function ProgressDashboard({
         </table>
       </section>
 
-      <section aria-labelledby="delete-heading" className="dashboard-section">
+      <section aria-labelledby="delete-heading" className="dashboard-section records-delete">
         <h2 id="delete-heading">기록 관리</h2>
         {!deleteStep ? (
           <button onClick={() => setDeleteStep(true)} type="button">기록 삭제</button>
         ) : (
-          <div>
+          <div className="records-delete-controls">
             <p role="alert">삭제한 기록은 복구할 수 없어요.</p>
             <label>
               삭제 확인
@@ -143,14 +143,16 @@ export function ProgressDashboard({
                 value={confirmation}
               />
             </label>
-            <button
-              disabled={confirmation !== "삭제"}
-              onClick={() => void clearRecords()}
-              type="button"
-            >
-              모든 기록 영구 삭제
-            </button>
-            <button onClick={() => { setDeleteStep(false); setConfirmation(""); }} type="button">취소</button>
+            <div className="records-delete-actions">
+              <button
+                disabled={confirmation !== "삭제"}
+                onClick={() => void clearRecords()}
+                type="button"
+              >
+                모든 기록 영구 삭제
+              </button>
+              <button onClick={() => { setDeleteStep(false); setConfirmation(""); }} type="button">취소</button>
+            </div>
           </div>
         )}
       </section>

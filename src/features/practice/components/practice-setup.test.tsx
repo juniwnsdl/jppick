@@ -2,7 +2,8 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { KANA_CATALOG } from "../../kana/catalog";
-import { PracticeSetup, practiceConfigFromSearchParams } from "./practice-setup";
+import { practiceConfigFromSearchParams } from "../practice-config";
+import { PracticeSetup } from "./practice-setup";
 
 it("offers every practice setting choice", () => {
   render(<PracticeSetup catalog={KANA_CATALOG} />);

@@ -721,7 +721,7 @@ function ActivePracticeSession({
         ) : null}
 
         {state.phase === "reviewing" ? (
-          <section aria-label="정답 비교">
+          <section aria-label="정답 비교" className="practice-review">
             <label>
               정답 투명도
               <input

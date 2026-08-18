@@ -1,6 +1,5 @@
 interface StrokeGuideProps {
   assetKeys: readonly string[];
-  animated?: boolean;
 }
 
 function assetUrl(assetKey: string): string {

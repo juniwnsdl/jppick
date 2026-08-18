@@ -214,6 +214,49 @@ it("ignores a secondary pointer gesture", () => {
   expect(setPointerCapture).not.toHaveBeenCalled();
 });
 
+it("keeps the active primary stroke when another primary pointer starts", () => {
+  render(<CanvasHarness />);
+  const { canvas, setPointerCapture } = prepareCanvas();
+
+  firePointer(canvas, "pointerdown", { pointerId: 1, clientX: 20, clientY: 30, pressure: 0.4 });
+  firePointer(canvas, "pointerdown", { pointerId: 2, clientX: 150, clientY: 90, pressure: 0.7 });
+  firePointer(canvas, "pointerup", { pointerId: 2, clientX: 180, clientY: 100, pressure: 0 });
+  firePointer(canvas, "pointerup", { pointerId: 1, clientX: 110, clientY: 70, pressure: 0 });
+
+  expect(strokeState()).toEqual([[
+    { x: 0.05, y: 0.1, pressure: 0.4 },
+    { x: 0.5, y: 0.5, pressure: 0 },
+  ]]);
+  expect(setPointerCapture).toHaveBeenCalledTimes(1);
+  expect(setPointerCapture).toHaveBeenCalledWith(1);
+});
+
+it("cancels an interrupted pointer without committing ink and accepts the next pointer", () => {
+  render(<CanvasHarness />);
+  const { canvas, releasePointerCapture } = prepareCanvas();
+
+  firePointer(canvas, "pointerdown", { pointerId: 3, clientX: 20, clientY: 30, pressure: 0.4 });
+  firePointer(canvas, "pointermove", { pointerId: 3, clientX: 110, clientY: 70, pressure: 0.5 });
+  firePointer(canvas, "pointercancel", { pointerId: 3, clientX: 110, clientY: 70, pressure: 0 });
+  firePointer(canvas, "pointerdown", { pointerId: 4, clientX: 210, clientY: 120, pressure: 0.6 });
+  firePointer(canvas, "pointerup", { pointerId: 4, clientX: 210, clientY: 120, pressure: 0 });
+
+  expect(strokeState()).toEqual([[{ x: 1, y: 1, pressure: 0.6 }]]);
+  expect(releasePointerCapture).toHaveBeenCalledWith(3);
+});
+
+it("drops an active stroke after lost capture and accepts the next pointer", () => {
+  render(<CanvasHarness />);
+  const { canvas } = prepareCanvas();
+
+  firePointer(canvas, "pointerdown", { pointerId: 5, clientX: 20, clientY: 30, pressure: 0.4 });
+  firePointer(canvas, "lostpointercapture", { pointerId: 5, clientX: 20, clientY: 30, pressure: 0 });
+  firePointer(canvas, "pointerdown", { pointerId: 6, clientX: 110, clientY: 70, pressure: 0.7 });
+  firePointer(canvas, "pointerup", { pointerId: 6, clientX: 110, clientY: 70, pressure: 0 });
+
+  expect(strokeState()).toEqual([[{ x: 0.5, y: 0.5, pressure: 0.7 }]]);
+});
+
 it("undoes the final stroke and clears all strokes through its controls", () => {
   const initialStrokes: Stroke[] = [
     [{ x: 0.1, y: 0.2, pressure: 0.3 }],
@@ -255,6 +298,20 @@ it("rescales backing pixels and redraws normalized ink after size or DPR changes
   expect(context.lineTo).toHaveBeenLastCalledWith(100, 50);
 });
 
+it("rounds fractional backing-pixel dimensions at the active DPR", () => {
+  Object.defineProperty(window, "devicePixelRatio", { configurable: true, value: 1.5 });
+  render(<CanvasHarness />);
+  const canvas = screen.getByRole("img", { name: "쓰기 영역" }) as HTMLCanvasElement;
+
+  notifyResize(canvas.parentElement as Element, { width: 100.25, height: 50.25 });
+
+  expect(canvas.width).toBe(150);
+  expect(canvas.height).toBe(75);
+  expect(context.setTransform).toHaveBeenLastCalledWith(1.5, 0, 0, 1.5, 0, 0);
+  expect(context.lineCap).toBe("round");
+  expect(context.lineJoin).toBe("round");
+});
+
 it("uses the observed content size when a window resize sees wrapper borders", () => {
   render(<CanvasHarness />);
   const canvas = screen.getByRole("img", { name: "쓰기 영역" }) as HTMLCanvasElement;
@@ -283,4 +340,15 @@ it("uses the observed content size when a window resize sees wrapper borders", (
 
   expect(canvas.width).toBe(200);
   expect(canvas.height).toBe(100);
+});
+
+it("does not redraw from window resize events after unmount", () => {
+  const { unmount } = render(<CanvasHarness />);
+  prepareCanvas();
+  context.setTransform.mockClear();
+
+  unmount();
+  fireEvent(window, new Event("resize"));
+
+  expect(context.setTransform).not.toHaveBeenCalled();
 });
