@@ -20,6 +20,7 @@ export function StrokeGuide({ assetKeys }: StrokeGuideProps) {
             data={assetUrl(assetKey)}
             key={assetKey}
             role="img"
+            tabIndex={-1}
             type="image/svg+xml"
           />
         );

@@ -25,23 +25,29 @@ async function drawStroke(page: Page) {
 async function answerCurrentQuestion(
   page: Page,
   evaluation: "잘 썼어요" | "다시 연습" = "잘 썼어요",
-) {
+): Promise<string> {
   await drawStroke(page);
   await page.getByRole("button", { name: "정답 확인" }).click();
-  await expect(page.getByLabel("정답 모델")).toBeVisible();
+  const answer = page.getByLabel("정답 모델");
+  await expect(answer).toBeVisible();
+  const glyph = (await answer.textContent())?.trim() ?? "";
   await page.getByRole("button", { name: evaluation }).click();
+  return glyph;
 }
 
 async function finishFiveQuestions(
   page: Page,
   evaluations: ReadonlyArray<"잘 썼어요" | "다시 연습"> = [],
-) {
+): Promise<string[]> {
+  const answers: string[] = [];
+
   for (let index = 0; index < 5; index += 1) {
-    await answerCurrentQuestion(page, evaluations[index] ?? "잘 썼어요");
+    answers.push(await answerCurrentQuestion(page, evaluations[index] ?? "잘 썼어요"));
     await page.getByRole("button", { name: index === 4 ? "결과 보기" : "다음 문제" }).click();
   }
 
   await expect(page.getByRole("heading", { name: "연습 결과" })).toBeVisible();
+  return answers;
 }
 
 test("mobile user completes five copy questions", async ({ page }) => {
@@ -55,15 +61,22 @@ test("mobile user completes five copy questions", async ({ page }) => {
   await expect(page.getByText("5문제 중 0문자를 다시 연습해 보세요.")).toBeVisible();
 });
 
-test("mixed recall gives hints and completes a five-question session", async ({ page }) => {
+test("mixed recall setup selects both scripts", async ({ page }) => {
   await page.goto("/practice");
   await page.getByRole("button", { name: "암기 테스트" }).click();
   await page.getByRole("button", { name: "혼합" }).click();
   await page.getByRole("button", { name: "5문제" }).click();
-  await page.getByRole("link", { name: "연습 시작" }).click();
+  const start = page.getByRole("link", { name: "연습 시작" });
+  await expect(start).toHaveAttribute("href", /scripts=hiragana,katakana/);
+});
+
+test("mixed recall exercises both selected scripts in one session", async ({ page }) => {
+  await page.goto("/practice/run?mode=recall&scripts=hiragana,katakana&groups=basic&count=5&strategy=uniform&kanaIds=hiragana-a,katakana-a");
 
   await expect(page.getByLabel("문자 힌트")).toContainText("한국어 읽기");
-  await finishFiveQuestions(page);
+  const answers = await finishFiveQuestions(page);
+  expect(answers.some((glyph) => /^[\u3040-\u309f]+$/u.test(glyph)), "session should exercise hiragana").toBe(true);
+  expect(answers.some((glyph) => /^[\u30a0-\u30ff]+$/u.test(glyph)), "session should exercise katakana").toBe(true);
 });
 
 test("chart practice keeps the selected kana as the only practice target", async ({ page }) => {
@@ -78,12 +91,19 @@ test("chart practice keeps the selected kana as the only practice target", async
 });
 
 test("retry result starts a difficult-only session", async ({ page }) => {
-  await page.goto("/practice/run?mode=copy&scripts=hiragana&groups=basic&count=5&strategy=uniform&kanaIds=hiragana-a");
-  await finishFiveQuestions(page, ["다시 연습"]);
+  await page.addInitScript(() => {
+    Math.random = () => 0;
+  });
+  await page.goto("/practice/run?mode=copy&scripts=hiragana,katakana&groups=basic&count=5&strategy=uniform&kanaIds=hiragana-a,katakana-a");
+  const answers = await finishFiveQuestions(page, ["다시 연습"]);
+  expect(new Set(answers)).toEqual(new Set(["あ", "ア"]));
 
-  await page.getByRole("link", { name: "어려웠던 문자만 다시 하기" }).click();
-  await expect(page).toHaveURL(/kanaIds=hiragana-a/);
-  await expect(page.getByLabel("따라 쓸 문자")).toHaveText("あ");
+  const retry = page.getByRole("link", { name: "어려웠던 문자만 다시 하기" });
+  await expect(retry).toHaveAttribute("href", /kanaIds=katakana-a(?:&|$)/);
+  await expect(retry).not.toHaveAttribute("href", /hiragana-a/);
+  await retry.click();
+  await expect(page).toHaveURL(/kanaIds=katakana-a(?:&|$)/);
+  await expect(page.getByLabel("따라 쓸 문자")).toHaveText("ア");
 });
 
 test("completed progress remains after a page reload", async ({ page }) => {
@@ -156,7 +176,7 @@ test("320px pages do not overflow horizontally and expose 44px targets", async (
   }
 });
 
-test("iPhone drawing keeps the page position fixed over the canvas", async ({ page }) => {
+test("touch drawing reaches the app while keeping the page position fixed", async ({ page }, testInfo) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/practice/run?mode=copy&scripts=hiragana&groups=basic&count=5&strategy=uniform&kanaIds=hiragana-a");
 
@@ -164,6 +184,19 @@ test("iPhone drawing keeps the page position fixed over the canvas", async ({ pa
   await canvas.scrollIntoViewIfNeeded();
   const initialScrollY = await page.evaluate(() => window.scrollY);
   await expect(canvas).toHaveCSS("touch-action", "none");
-  await drawStroke(page);
+  if (testInfo.project.name === "desktop-chromium") {
+    await drawStroke(page);
+  } else {
+    await canvas.evaluate((element) => {
+      element.addEventListener("pointerdown", (event) => {
+        element.setAttribute("data-received-pointer-type", (event as PointerEvent).pointerType);
+      }, { once: true });
+    });
+    const box = await canvas.boundingBox();
+    expect(box, "writing canvas should be visible for touch input").not.toBeNull();
+    await page.touchscreen.tap(box!.x + box!.width / 2, box!.y + box!.height / 2);
+    await expect(canvas).toHaveAttribute("data-received-pointer-type", "touch");
+  }
+  await expect(page.getByRole("button", { name: "마지막 획 실행 취소" })).toBeEnabled();
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(initialScrollY);
 });

@@ -49,7 +49,7 @@ pnpm build
 pnpm test:e2e
 ```
 
-`pnpm test:e2e`는 프로덕션 빌드를 실행한 뒤 데스크톱 Chromium, 320×568 Chromium, iPhone WebKit 프로젝트를 검사합니다. 처음 실행할 때 브라우저가 없다면 `pnpm exec playwright install chromium webkit`을 실행합니다.
+`pnpm test:e2e`는 기존 localhost 서버를 재사용하지 않고 새 프로덕션 빌드와 서버를 실행한 뒤 데스크톱 Chromium, 320×568 Chromium, iPhone WebKit 프로젝트를 검사합니다. 따라서 3000번 포트는 비어 있어야 합니다. 처음 실행할 때 브라우저가 없다면 `pnpm exec playwright install chromium webkit`을 실행합니다.
 
 ## 획순 데이터 출처
 

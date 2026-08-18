@@ -1,7 +1,6 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
 async function expectFocusIndicator(locator: Locator) {
-  await locator.focus();
   await expect(locator).toBeFocused();
   const focusStyle = await locator.evaluate((element) => {
     const style = getComputedStyle(element);
@@ -11,38 +10,98 @@ async function expectFocusIndicator(locator: Locator) {
   expect(Number.parseFloat(focusStyle.outlineWidth)).toBeGreaterThanOrEqual(2);
 }
 
+async function tabThrough(page: Page, locators: Locator[], key: "Tab" | "Shift+Tab" = "Tab") {
+  for (const locator of locators) {
+    await page.keyboard.press(key);
+    await expect(locator).toBeFocused();
+  }
+}
+
+async function settleClientNavigation(page: Page) {
+  await page.evaluate(() => new Promise<void>((resolve) => {
+    requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+  }));
+}
+
 async function revealWithoutInk(page: Page) {
   page.once("dialog", (dialog) => dialog.accept());
   const reveal = page.getByRole("button", { name: "정답 확인" });
-  await reveal.focus();
+  await expect(reveal).toBeFocused();
   await page.keyboard.press("Enter");
   await expect(page.getByLabel("정답 모델")).toBeVisible();
 }
 
-test("keyboard user completes the core flow from home through results", async ({ page }) => {
+test("keyboard user completes the core flow from home through results", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name === "iphone-webkit", "Mobile WebKit does not expose desktop Tab focus navigation");
   await page.goto("/");
+  const brand = page.getByRole("link", { name: "가나 학습", exact: true });
+  const home = page.getByRole("link", { name: "홈", exact: true });
+  const chart = page.getByRole("link", { name: "글자표", exact: true });
+  const practice = page.getByRole("link", { name: "연습", exact: true });
+  const records = page.getByRole("link", { name: "기록", exact: true });
+  const chartStart = page.getByRole("link", { name: "글자표 보기" });
   const startPractice = page.getByRole("link", { name: "쓰기 연습 시작" });
+  await tabThrough(page, [brand, home, chart, practice, records, chartStart, startPractice]);
   await expectFocusIndicator(startPractice);
+  await tabThrough(page, [chartStart], "Shift+Tab");
+  await tabThrough(page, [startPractice]);
   await page.keyboard.press("Enter");
   await page.waitForLoadState("networkidle");
 
   const fiveQuestions = page.getByRole("button", { name: "5문제" });
-  await fiveQuestions.focus();
+  await tabThrough(page, [
+    brand,
+    home,
+    chart,
+    practice,
+    records,
+    page.getByRole("button", { name: "따라 쓰기" }),
+    page.getByRole("button", { name: "암기 테스트" }),
+    page.getByRole("button", { name: "히라가나" }),
+    page.getByRole("button", { name: "가타카나", exact: true }),
+    page.getByRole("button", { name: "혼합" }),
+    page.getByRole("button", { name: "기본" }),
+    page.getByRole("button", { name: "탁음·반탁음" }),
+    page.getByRole("button", { name: "요음" }),
+    page.getByRole("button", { name: "작은 문자·기호" }),
+    page.getByRole("button", { name: "확장 가타카나" }),
+    fiveQuestions,
+  ]);
   await page.keyboard.press("Space");
   await expect(fiveQuestions).toHaveAttribute("aria-pressed", "true");
 
   const start = page.getByRole("link", { name: "연습 시작" });
-  await start.focus();
+  await tabThrough(page, [
+    page.getByRole("button", { name: "10문제" }),
+    page.getByRole("button", { name: "20문제" }),
+    page.getByRole("button", { name: "무제한" }),
+    page.getByRole("button", { name: "균등 랜덤" }),
+    page.getByRole("button", { name: "덜 연습한 문자 우선" }),
+    page.getByRole("button", { name: "어려운 문자 우선" }),
+    start,
+  ]);
   await page.keyboard.press("Enter");
+  await page.waitForURL(/\/practice\/run\?/);
+  await page.waitForLoadState("networkidle");
 
   for (let index = 0; index < 5; index += 1) {
+    const reveal = page.getByRole("button", { name: "정답 확인" });
+    await expect(reveal).toBeVisible();
+    if (index === 0) {
+      await settleClientNavigation(page);
+    }
+    await tabThrough(page, [reveal]);
+    await expectFocusIndicator(reveal);
     await revealWithoutInk(page);
     const good = page.getByRole("button", { name: "잘 썼어요" });
-    await good.focus();
+    await tabThrough(page, [
+      page.getByRole("slider", { name: "정답 투명도" }),
+      good,
+    ]);
     await page.keyboard.press("Enter");
 
     const advance = page.getByRole("button", { name: index === 4 ? "결과 보기" : "다음 문제" });
-    await advance.focus();
+    await tabThrough(page, [advance]);
     await page.keyboard.press("Enter");
   }
 
