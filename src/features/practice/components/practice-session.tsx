@@ -9,6 +9,7 @@ import type { KanaUnit } from "../../kana/types";
 import {
   appendUnlimitedCycle,
   createPracticeSessionState,
+  isPracticeConfig,
   PRACTICE_RESULT_STORAGE_KEY,
   practiceSessionReducer,
   toSessionSummary,
@@ -18,7 +19,7 @@ import {
 } from "../session-reducer";
 import { createQuestionQueue } from "../question-generator";
 import type { Stroke } from "../strokes";
-import type { PracticeConfig, Question, Random } from "../types";
+import type { KanaProgressById, PracticeConfig, Question, Random } from "../types";
 import { WritingCanvas } from "./writing-canvas";
 
 interface PersistedSessionSummary {
@@ -42,9 +43,9 @@ interface InterruptedPracticeSession {
 }
 
 interface PracticePersistence {
-  recordEvaluation(kanaId: string, value: Evaluation, at: string): Promise<void>;
   saveSession(summary: PersistedSessionSummary): Promise<void>;
   saveInterrupted(session: InterruptedPracticeSession): Promise<void>;
+  saveAnswerCheckpoint(session: InterruptedPracticeSession): Promise<void>;
   loadInterrupted(): Promise<InterruptedPracticeSession | null>;
   clearInterrupted(): Promise<void>;
 }
@@ -56,6 +57,7 @@ interface PracticeSessionProps {
   initialSettings?: AppSettings;
   now?: () => string;
   onComplete?: (summary: PracticeSessionSummary) => void;
+  progress?: KanaProgressById;
   random?: Random;
   repository?: PracticePersistence;
 }
@@ -74,6 +76,10 @@ function subscribeToStaticSettings() {
   return () => {};
 }
 
+function defaultRandom(maxExclusive: number): number {
+  return Math.random() * maxExclusive;
+}
+
 function storedSettingsSnapshot(): AppSettings {
   cachedSettings ??= loadSettings();
   return cachedSettings;
@@ -89,19 +95,103 @@ function configsMatch(left: PracticeConfig, right: PracticeConfig): boolean {
     && left.groups.every((value, index) => value === right.groups[index]);
 }
 
-function isCompatibleInterrupted(
-  session: InterruptedPracticeSession,
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === "object";
+}
+
+function isValidDate(value: unknown): value is string {
+  if (typeof value !== "string") {
+    return false;
+  }
+  const date = new Date(value);
+  return Number.isFinite(date.getTime()) && date.toISOString() === value;
+}
+
+export function isCompatibleInterrupted(
+  value: unknown,
   config: PracticeConfig,
   catalog: KanaUnit[],
-): boolean {
-  const catalogIds = new Set(catalog.map((unit) => unit.id));
+): value is InterruptedPracticeSession {
+  if (!isRecord(value) || typeof value.id !== "string" || value.id.length === 0
+    || !isValidDate(value.startedAt) || !isPracticeConfig(value.config)
+    || !Array.isArray(value.queue) || !Array.isArray(value.answers)
+    || !Number.isInteger(value.currentIndex)) {
+    return false;
+  }
+  const session = value as unknown as InterruptedPracticeSession;
+  const selectedCatalog = catalog.filter((unit) => (
+    config.scripts.includes(unit.script) && config.groups.includes(unit.group)
+  ));
+  const catalogIds = new Set(selectedCatalog.map((unit) => unit.id));
+  const questionIds = new Set<string>();
+  const selectedCount = selectedCatalog.length;
+  const queueHasValidShape = session.queue.every((question) => {
+    if (!isRecord(question) || typeof question.id !== "string" || question.id.length === 0
+      || typeof question.kanaId !== "string" || question.kanaId.length === 0
+      || questionIds.has(question.id)) {
+      return false;
+    }
+    questionIds.add(question.id);
+    return catalogIds.has(question.kanaId);
+  });
+  const answersHaveValidShape = session.answers.every((answer) => (
+    isRecord(answer)
+    && typeof answer.kanaId === "string"
+    && (answer.evaluation === "good" || answer.evaluation === "retry")
+    && isValidDate(answer.answeredAt)
+  ));
+  const queueLengthMatches = session.config.count === "unlimited"
+    ? selectedCount > 0 && session.queue.length >= selectedCount && session.queue.length % selectedCount === 0
+    : session.queue.length === session.config.count;
+
   return configsMatch(session.config, config)
-    && session.queue.length > 0
+    && queueHasValidShape
+    && answersHaveValidShape
+    && queueLengthMatches
     && session.currentIndex >= 0
     && session.currentIndex <= session.queue.length
     && session.answers.length === session.currentIndex
     && session.queue.every((question) => catalogIds.has(question.kanaId))
     && session.answers.every((answer, index) => session.queue[index]?.kanaId === answer.kanaId);
+}
+
+function appendCycleAtUnlimitedBoundary(
+  session: InterruptedPracticeSession,
+  catalog: KanaUnit[],
+  progress: KanaProgressById | undefined,
+  random: Random,
+): InterruptedPracticeSession {
+  if (session.config.count !== "unlimited" || session.currentIndex < session.queue.length) {
+    return session;
+  }
+  const previousKanaId = session.queue[session.queue.length - 1]?.kanaId;
+  const nextQuestions = appendUnlimitedCycle({
+    config: session.config,
+    catalog,
+    progress,
+    previousKanaId,
+    questionOffset: session.queue.length,
+    random,
+  });
+  return { ...session, queue: [...session.queue, ...nextQuestions] };
+}
+
+function progressWithSessionAnswers(
+  progress: KanaProgressById | undefined,
+  answers: PracticeResultEntry[],
+): KanaProgressById | undefined {
+  if (!progress && answers.length === 0) {
+    return undefined;
+  }
+  const next: KanaProgressById = structuredClone(progress ?? {});
+  for (const answer of answers) {
+    const previous = next[answer.kanaId] ?? { presented: 0, retry: 0 };
+    next[answer.kanaId] = {
+      presented: previous.presented + 1,
+      retry: previous.retry + (answer.evaluation === "retry" ? 1 : 0),
+    };
+  }
+  return next;
 }
 
 function persistentSummary(summary: PracticeSessionSummary): PersistedSessionSummary {
@@ -122,7 +212,8 @@ export function PracticeSession({
   catalog,
   config,
   initialQuestions,
-  random = (maxExclusive) => Math.random() * maxExclusive,
+  progress,
+  random = defaultRandom,
   repository,
   ...activeProps
 }: PracticeSessionProps) {
@@ -130,18 +221,20 @@ export function PracticeSession({
     initialQuestions || !repository ? null : undefined,
   );
   const [resumedSession, setResumedSession] = useState<InterruptedPracticeSession | undefined>();
+  const [clearError, setClearError] = useState(false);
+  const [clearing, setClearing] = useState(false);
   const generatedQuestionsRef = useRef<Question[] | undefined>(initialQuestions);
   const questions = useSyncExternalStore(
     subscribeToStaticSettings,
     () => {
-      generatedQuestionsRef.current ??= createQuestionQueue(config, catalog, undefined, random);
+      generatedQuestionsRef.current ??= createQuestionQueue(config, catalog, progress, random);
       return generatedQuestionsRef.current;
     },
     () => initialQuestions ?? EMPTY_QUESTIONS,
   );
 
   useEffect(() => {
-    if (interrupted !== undefined || !repository) {
+    if (interrupted !== undefined || !repository || clearError) {
       return;
     }
 
@@ -151,18 +244,49 @@ export function PracticeSession({
         return;
       }
       if (saved && isCompatibleInterrupted(saved, config, catalog)) {
-        setInterrupted(saved);
+        setInterrupted(appendCycleAtUnlimitedBoundary(saved, catalog, progress, random));
         return;
       }
       if (saved) {
-        void repository.clearInterrupted();
+        void repository.clearInterrupted().then(
+          () => setInterrupted(null),
+          () => setClearError(true),
+        );
+        return;
       }
       setInterrupted(null);
     });
     return () => {
       current = false;
     };
-  }, [catalog, config, interrupted, repository]);
+  }, [catalog, clearError, config, interrupted, progress, random, repository]);
+
+  async function clearInterruptedAndStart() {
+    if (!repository || clearing) {
+      return;
+    }
+    setClearing(true);
+    setClearError(false);
+    try {
+      await repository.clearInterrupted();
+      setInterrupted(null);
+    } catch {
+      setClearError(true);
+    } finally {
+      setClearing(false);
+    }
+  }
+
+  if (clearError && interrupted === undefined) {
+    return (
+      <main className="page-container">
+        <p role="alert">중단 기록을 삭제하지 못했어요. 잠시 후 다시 시도해 주세요.</p>
+        <button disabled={clearing} onClick={() => void clearInterruptedAndStart()} type="button">
+          삭제 다시 시도
+        </button>
+      </main>
+    );
+  }
 
   if (questions.length === 0 || interrupted === undefined) {
     return (
@@ -178,6 +302,7 @@ export function PracticeSession({
         <section aria-labelledby="resume-heading" className="progress-card">
           <h1 id="resume-heading">중단한 연습이 있어요</h1>
           <p>{interrupted.answers.length}문제를 마친 지점부터 이어갈 수 있어요.</p>
+          {clearError ? <p role="alert">중단 기록을 삭제하지 못했어요. 다시 시도해 주세요.</p> : null}
           <div className="primary-actions">
             <button
               className="primary-action"
@@ -190,12 +315,11 @@ export function PracticeSession({
               이어하기
             </button>
             <button
-              onClick={() => {
-                void repository?.clearInterrupted().finally(() => setInterrupted(null));
-              }}
+              disabled={clearing}
+              onClick={() => void clearInterruptedAndStart()}
               type="button"
             >
-              새로 시작
+              {clearError ? "삭제 다시 시도" : "새로 시작"}
             </button>
           </div>
         </section>
@@ -210,6 +334,7 @@ export function PracticeSession({
       config={config}
       initialQuestions={resumedSession?.queue ?? questions}
       interrupted={resumedSession}
+      progress={progress}
       random={random}
       repository={repository}
     />
@@ -224,6 +349,7 @@ function ActivePracticeSession({
   interrupted,
   now = () => new Date().toISOString(),
   onComplete,
+  progress,
   random,
   repository,
 }: ActivePracticeSessionProps) {
@@ -256,6 +382,7 @@ function ActivePracticeSession({
   );
   const completedRef = useRef(false);
   const persistedAnswerCountRef = useRef(interrupted?.answers.length ?? 0);
+  const resumedAnswerCountRef = useRef(interrupted?.answers.length ?? 0);
   const persistenceChainRef = useRef(Promise.resolve());
 
   useEffect(() => {
@@ -272,17 +399,16 @@ function ActivePracticeSession({
     }
 
     persistenceChainRef.current = persistenceChainRef.current.then(async () => {
-      for (const answer of answers.slice(firstNewAnswer)) {
-        await repository.recordEvaluation(answer.kanaId, answer.evaluation, answer.answeredAt);
+      for (let answerIndex = firstNewAnswer; answerIndex < answers.length; answerIndex += 1) {
+        await repository.saveAnswerCheckpoint({
+          id: `session:${state.startedAt}`,
+          startedAt: state.startedAt,
+          config: state.config,
+          queue: questions,
+          currentIndex: answerIndex + 1,
+          answers: answers.slice(0, answerIndex + 1),
+        });
       }
-      await repository.saveInterrupted({
-        id: `session:${state.startedAt}`,
-        startedAt: state.startedAt,
-        config: state.config,
-        queue: questions,
-        currentIndex: answers.length,
-        answers,
-      });
     }).catch(() => {
       // Practice remains usable even if a browser revokes storage mid-session.
     });
@@ -506,6 +632,10 @@ function ActivePracticeSession({
       ? appendUnlimitedCycle({
         config,
         catalog,
+        progress: progressWithSessionAnswers(
+          progress,
+          state.results.slice(resumedAnswerCountRef.current),
+        ),
         previousKanaId: question.kanaId,
         questionOffset: state.questions.length,
         random,

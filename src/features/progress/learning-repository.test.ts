@@ -97,6 +97,17 @@ it("round-trips only the latest interrupted session", async () => {
   await expect(repository.getPresentedOn("2026-08-18")).resolves.toBe(0);
 });
 
+it("atomically replaces a replayed answer checkpoint without incrementing twice", async () => {
+  const repository = createLearningRepository({ indexedDB });
+
+  await repository.saveAnswerCheckpoint(interrupted);
+  await repository.clearInterrupted();
+  await repository.saveAnswerCheckpoint(interrupted);
+
+  await expect(repository.getDashboard()).resolves.toMatchObject({ totalPresented: 1 });
+  await expect(repository.loadInterrupted()).resolves.toEqual(interrupted);
+});
+
 it("opens schema version 1 with the three required stores", async () => {
   const repository = createLearningRepository({ indexedDB });
   await repository.getDashboard();

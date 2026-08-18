@@ -21,6 +21,39 @@ function evaluationKey(kanaId: string, value: "good" | "retry", at: string): str
   return `${kanaId}\u0000${value}\u0000${at}`;
 }
 
+function checkpointEvaluation(session: InterruptedSession) {
+  const answerIndex = session.currentIndex - 1;
+  const answer = session.answers[answerIndex];
+  const question = session.queue[answerIndex];
+  if (!answer || !question || answer.kanaId !== question.kanaId) {
+    throw new Error("Answer checkpoint does not identify a completed question.");
+  }
+  return {
+    answer,
+    key: `checkpoint\u0000${session.id}\u0000${question.id}`,
+  };
+}
+
+function nextProgress(
+  previous: StoredKanaProgress | undefined,
+  kanaId: string,
+  value: "good" | "retry",
+  at: string,
+  key: string,
+): StoredKanaProgress | null {
+  if (previous?.evaluationKeys.includes(key)) {
+    return null;
+  }
+  return {
+    kanaId,
+    presented: (previous?.presented ?? 0) + 1,
+    good: (previous?.good ?? 0) + (value === "good" ? 1 : 0),
+    retry: (previous?.retry ?? 0) + (value === "retry" ? 1 : 0),
+    lastPracticedAt: previous && previous.lastPracticedAt > at ? previous.lastPracticedAt : at,
+    evaluationKeys: [...(previous?.evaluationKeys ?? []), key],
+  };
+}
+
 function localDateKey(value: string): string | null {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) {
@@ -77,18 +110,10 @@ class MemoryLearningRepository implements LearningRepository {
     const key = evaluationKey(kanaId, value, at);
     const previous = this.progress.get(kanaId);
 
-    if (previous?.evaluationKeys.includes(key)) {
-      return;
+    const next = nextProgress(previous, kanaId, value, at, key);
+    if (next) {
+      this.progress.set(kanaId, next);
     }
-
-    this.progress.set(kanaId, {
-      kanaId,
-      presented: (previous?.presented ?? 0) + 1,
-      good: (previous?.good ?? 0) + (value === "good" ? 1 : 0),
-      retry: (previous?.retry ?? 0) + (value === "retry" ? 1 : 0),
-      lastPracticedAt: previous && previous.lastPracticedAt > at ? previous.lastPracticedAt : at,
-      evaluationKeys: [...(previous?.evaluationKeys ?? []), key],
-    });
   }
 
   async saveSession(summary: SessionSummary): Promise<void> {
@@ -96,6 +121,21 @@ class MemoryLearningRepository implements LearningRepository {
   }
 
   async saveInterrupted(session: InterruptedSession): Promise<void> {
+    this.interrupted = structuredClone(session);
+  }
+
+  async saveAnswerCheckpoint(session: InterruptedSession): Promise<void> {
+    const { answer, key } = checkpointEvaluation(session);
+    const next = nextProgress(
+      this.progress.get(answer.kanaId),
+      answer.kanaId,
+      answer.evaluation,
+      answer.answeredAt,
+      key,
+    );
+    if (next) {
+      this.progress.set(answer.kanaId, next);
+    }
     this.interrupted = structuredClone(session);
   }
 
@@ -160,15 +200,9 @@ class IndexedDbLearningRepository implements LearningRepository {
     const previous = await transaction.store.get(kanaId);
     const key = evaluationKey(kanaId, value, at);
 
-    if (!previous?.evaluationKeys.includes(key)) {
-      await transaction.store.put({
-        kanaId,
-        presented: (previous?.presented ?? 0) + 1,
-        good: (previous?.good ?? 0) + (value === "good" ? 1 : 0),
-        retry: (previous?.retry ?? 0) + (value === "retry" ? 1 : 0),
-        lastPracticedAt: previous && previous.lastPracticedAt > at ? previous.lastPracticedAt : at,
-        evaluationKeys: [...(previous?.evaluationKeys ?? []), key],
-      });
+    const next = nextProgress(previous, kanaId, value, at, key);
+    if (next) {
+      await transaction.store.put(next);
     }
     await transaction.done;
   }
@@ -189,6 +223,25 @@ class IndexedDbLearningRepository implements LearningRepository {
     const transaction = database.transaction("interrupted", "readwrite");
     await transaction.store.clear();
     await transaction.store.put(session);
+    await transaction.done;
+  }
+
+  async saveAnswerCheckpoint(session: InterruptedSession): Promise<void> {
+    const database = await this.database();
+    if (!database) {
+      return this.fallback.saveAnswerCheckpoint(session);
+    }
+    const { answer, key } = checkpointEvaluation(session);
+    const transaction = database.transaction(["kanaProgress", "interrupted"], "readwrite");
+    const progressStore = transaction.objectStore("kanaProgress");
+    const interruptedStore = transaction.objectStore("interrupted");
+    const previous = await progressStore.get(answer.kanaId);
+    const next = nextProgress(previous, answer.kanaId, answer.evaluation, answer.answeredAt, key);
+    if (next) {
+      await progressStore.put(next);
+    }
+    await interruptedStore.clear();
+    await interruptedStore.put(session);
     await transaction.done;
   }
 

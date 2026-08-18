@@ -47,6 +47,7 @@ export interface LearningRepository {
   recordEvaluation(kanaId: string, value: "good" | "retry", at: string): Promise<void>;
   saveSession(summary: SessionSummary): Promise<void>;
   saveInterrupted(session: InterruptedSession): Promise<void>;
+  saveAnswerCheckpoint(session: InterruptedSession): Promise<void>;
   loadInterrupted(): Promise<InterruptedSession | null>;
   clearInterrupted(): Promise<void>;
   getDashboard(): Promise<ProgressDashboard>;
