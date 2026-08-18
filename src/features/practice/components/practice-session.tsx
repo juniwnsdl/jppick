@@ -69,6 +69,7 @@ interface ActivePracticeSessionProps extends Omit<PracticeSessionProps, "initial
   interrupted?: InterruptedPracticeSession;
   random: Random;
   repository?: PracticePersistence;
+  storageWarning?: string;
 }
 
 let cachedSettings: AppSettings | undefined;
@@ -234,6 +235,7 @@ export function PracticeSession({
   const [resumedSession, setResumedSession] = useState<InterruptedPracticeSession | undefined>();
   const [clearError, setClearError] = useState(false);
   const [clearing, setClearing] = useState(false);
+  const [storageWarning, setStorageWarning] = useState<string>();
   const generatedQuestionsRef = useRef<Question[] | undefined>(initialQuestions);
   const questions = useSyncExternalStore(
     subscribeToStaticSettings,
@@ -250,23 +252,31 @@ export function PracticeSession({
     }
 
     let current = true;
-    void repository.loadInterrupted().then((saved) => {
-      if (!current) {
-        return;
-      }
-      if (saved && isCompatibleInterrupted(saved, config, catalog)) {
-        setInterrupted(appendCycleAtUnlimitedBoundary(saved, catalog, progress, random));
-        return;
-      }
-      if (saved) {
-        void repository.clearInterrupted().then(
-          () => setInterrupted(null),
-          () => setClearError(true),
-        );
-        return;
-      }
-      setInterrupted(null);
-    });
+    void repository.loadInterrupted().then(
+      (saved) => {
+        if (!current) {
+          return;
+        }
+        if (saved && isCompatibleInterrupted(saved, config, catalog)) {
+          setInterrupted(appendCycleAtUnlimitedBoundary(saved, catalog, progress, random));
+          return;
+        }
+        if (saved) {
+          void repository.clearInterrupted().then(
+            () => setInterrupted(null),
+            () => setClearError(true),
+          );
+          return;
+        }
+        setInterrupted(null);
+      },
+      () => {
+        if (current) {
+          setStorageWarning("저장된 중단 기록을 불러오지 못했어요. 이번 연습은 계속할 수 있어요.");
+          setInterrupted(null);
+        }
+      },
+    );
     return () => {
       current = false;
     };
@@ -348,6 +358,7 @@ export function PracticeSession({
       progress={progress}
       random={random}
       repository={repository}
+      storageWarning={storageWarning}
     />
   );
 }
@@ -363,6 +374,7 @@ function ActivePracticeSession({
   progress,
   random,
   repository,
+  storageWarning,
 }: ActivePracticeSessionProps) {
   const router = useRouter();
   const [settings, setSettings] = useState<AppSettings>(
@@ -692,6 +704,7 @@ function ActivePracticeSession({
 
   return (
     <main className="page-container">
+      {storageWarning ? <p role="alert">{storageWarning}</p> : null}
       <section aria-label="쓰기 연습" className="practice-session">
         <p aria-live="polite">
           {config.count === "unlimited"

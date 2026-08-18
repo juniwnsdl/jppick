@@ -62,6 +62,7 @@ class CapturingPracticePersistence {
     answers: Array<{ kanaId: string; evaluation: "good" | "retry"; answeredAt: string }>;
   } | null = null;
   failClear = false;
+  failLoad = false;
   private readonly checkpointKeys = new Set<string>();
 
   async recordEvaluation(kanaId: string, value: "good" | "retry", at: string) {
@@ -89,6 +90,9 @@ class CapturingPracticePersistence {
   }
 
   async loadInterrupted() {
+    if (this.failLoad) {
+      throw new DOMException("read failed", "UnknownError");
+    }
     return this.interrupted ? structuredClone(this.interrupted) : null;
   }
 
@@ -638,6 +642,25 @@ it("keeps the resume choice visible and offers retry when clearing fails", async
   await user.click(screen.getByRole("button", { name: "삭제 다시 시도" }));
   expect(await screen.findByRole("button", { name: "정답 확인" })).toBeVisible();
   expect(repository.interrupted).toBeNull();
+});
+
+it("starts a fresh practice with a warning when interrupted-session loading fails", async () => {
+  const repository = new CapturingPracticePersistence();
+  repository.failLoad = true;
+
+  render(
+    <PracticeSession
+      catalog={[kana]}
+      config={config("copy")}
+      initialSettings={settings}
+      repository={repository}
+    />,
+  );
+
+  expect(await screen.findByRole("button", { name: "정답 확인" })).toBeVisible();
+  expect(screen.getByRole("alert")).toHaveTextContent(
+    "저장된 중단 기록을 불러오지 못했어요. 이번 연습은 계속할 수 있어요.",
+  );
 });
 
 it("invalidates a stale result when writing the new handoff fails", async () => {

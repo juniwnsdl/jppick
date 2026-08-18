@@ -42,8 +42,14 @@ async function drawTrustedWebKitTouchStroke(
   start: { x: number; y: number },
   end: { x: number; y: number },
 ) {
-  const implementation = (page as WebKitProtocolPage)._connection.toImpl(page);
-  const session = implementation.delegate.rawTouchscreen._pageProxySession;
+  const connection = (page as Partial<WebKitProtocolPage>)._connection;
+  const implementation = connection?.toImpl(page);
+  const session = implementation?.delegate.rawTouchscreen._pageProxySession;
+  if (!session) {
+    throw new Error(
+      "Playwright 1.62.1 WebKit touch internals changed; update drawTrustedWebKitTouchStroke before running release E2E.",
+    );
+  }
   await session.send("Input.dispatchTouchEvent", {
     type: "touchStart",
     touchPoints: [start],
@@ -57,7 +63,8 @@ async function drawTrustedWebKitTouchStroke(
       }],
     });
   }
-  // WebKit's inspector gesture stream is terminated by its trusted tap command.
+  // Playwright 1.62.1's WebKit backend ends trusted touches through
+  // Input.dispatchTapEvent; a raw touchEnd does not emit pointerup.
   await page.touchscreen.tap(end.x, end.y);
 }
 
