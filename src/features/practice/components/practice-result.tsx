@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useSyncExternalStore } from "react";
 
 import {
+  isPracticeConfig,
   PRACTICE_RESULT_STORAGE_KEY,
   type PracticeSessionSummary,
 } from "../session-reducer";
@@ -29,26 +30,8 @@ function practiceRunHref(config: PracticeConfig, kanaIds?: string[]): string {
   return `/practice/run?${query.join("&")}`;
 }
 
-function isPracticeConfig(value: unknown): value is PracticeConfig {
-  if (!value || typeof value !== "object") {
-    return false;
-  }
-
-  const config = value as Partial<PracticeConfig>;
-  const scripts = new Set(["hiragana", "katakana"]);
-  const groups = new Set(["basic", "voiced", "yoon", "small", "extended"]);
-
-  return (
-    (config.mode === "copy" || config.mode === "recall")
-    && Array.isArray(config.scripts)
-    && config.scripts.length > 0
-    && config.scripts.every((script) => scripts.has(script))
-    && Array.isArray(config.groups)
-    && config.groups.length > 0
-    && config.groups.every((group) => groups.has(group))
-    && (config.count === 5 || config.count === 10 || config.count === 20 || config.count === "unlimited")
-    && (config.strategy === "uniform" || config.strategy === "least-practiced" || config.strategy === "difficult")
-  );
+function isValidTimestamp(value: unknown): value is string {
+  return typeof value === "string" && Number.isFinite(Date.parse(value));
 }
 
 function isSessionSummary(value: unknown): value is PracticeSessionSummary {
@@ -59,13 +42,15 @@ function isSessionSummary(value: unknown): value is PracticeSessionSummary {
   const candidate = value as Partial<PracticeSessionSummary>;
   return Boolean(
     isPracticeConfig(candidate.config)
-    && typeof candidate.startedAt === "string"
+    && isValidTimestamp(candidate.startedAt)
+    && isValidTimestamp(candidate.endedAt)
     && Array.isArray(candidate.results)
     && candidate.results.every((result) => (
       result
       && typeof result.kanaId === "string"
+      && result.kanaId.length > 0
       && (result.evaluation === "good" || result.evaluation === "retry")
-      && typeof result.answeredAt === "string"
+      && isValidTimestamp(result.answeredAt)
     )),
   );
 }

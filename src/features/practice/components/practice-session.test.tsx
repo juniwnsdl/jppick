@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { renderToString } from "react-dom/server";
 import { vi } from "vitest";
@@ -76,6 +76,7 @@ beforeAll(() => {
 });
 
 beforeEach(() => {
+  routerPush.mockClear();
   vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue({
     beginPath: vi.fn(),
     clearRect: vi.fn(),
@@ -92,8 +93,10 @@ afterAll(() => {
 });
 
 afterEach(() => {
+  cleanup();
   vi.restoreAllMocks();
   window.sessionStorage.clear();
+  window.history.replaceState({}, "", "/");
 });
 
 it("shows the kana and enabled trace guide before reveal in copy mode", () => {
@@ -197,6 +200,52 @@ it("warns and can cancel an internal link while the session is active", () => {
   expect(navigationContinues).toBe(false);
 });
 
+it("guards programmatic history navigation and restores history methods on cleanup", () => {
+  window.history.replaceState({}, "", "/practice/run");
+  vi.mocked(window.confirm).mockReturnValue(false);
+  const { unmount } = render(
+    <PracticeSession
+      catalog={[kana]}
+      config={config("copy")}
+      initialQuestions={[question]}
+      initialSettings={settings}
+    />,
+  );
+
+  window.history.pushState({ source: "programmatic" }, "", "/chart");
+
+  expect(window.confirm).toHaveBeenCalledWith("연습을 끝내고 이동할까요?");
+  expect(window.location.pathname).toBe("/practice/run");
+
+  unmount();
+  vi.mocked(window.confirm).mockClear();
+  window.history.pushState({ source: "after-cleanup" }, "", "/chart");
+
+  expect(window.location.pathname).toBe("/chart");
+  expect(window.confirm).not.toHaveBeenCalled();
+});
+
+it("keeps the active route when browser back navigation is cancelled", async () => {
+  window.history.replaceState({ source: "previous" }, "", "/chart");
+  window.history.pushState({ source: "session" }, "", "/practice/run");
+  vi.mocked(window.confirm).mockReturnValue(false);
+  render(
+    <PracticeSession
+      catalog={[kana]}
+      config={config("copy")}
+      initialQuestions={[question]}
+      initialSettings={settings}
+    />,
+  );
+
+  window.history.back();
+
+  await waitFor(() => {
+    expect(window.confirm).toHaveBeenCalledWith("연습을 끝내고 이동할까요?");
+  });
+  expect(window.location.pathname).toBe("/practice/run");
+});
+
 it("hands off only the evaluated result summary when a finite session completes", async () => {
   const user = userEvent.setup();
   const onComplete = vi.fn();
@@ -234,6 +283,44 @@ it("hands off only the evaluated result summary when a finite session completes"
   expect(JSON.stringify(onComplete.mock.calls[0][0])).not.toContain("pressure");
 });
 
+it("invalidates a stale result when writing the new handoff fails", async () => {
+  const user = userEvent.setup();
+  window.sessionStorage.setItem(PRACTICE_RESULT_STORAGE_KEY, JSON.stringify({
+    config: config("copy"),
+    startedAt: "2026-08-17T00:00:00.000Z",
+    endedAt: "2026-08-17T00:02:00.000Z",
+    results: [{
+      kanaId: "hiragana-i",
+      evaluation: "retry",
+      answeredAt: "2026-08-17T00:01:00.000Z",
+    }],
+  }));
+  vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+    throw new DOMException("quota exceeded", "QuotaExceededError");
+  });
+  const timestamps = [
+    "2026-08-18T00:00:00.000Z",
+    "2026-08-18T00:01:00.000Z",
+    "2026-08-18T00:02:00.000Z",
+  ];
+  render(
+    <PracticeSession
+      catalog={[kana]}
+      config={config("copy")}
+      initialQuestions={[question]}
+      initialSettings={settings}
+      now={() => timestamps.shift() ?? "2026-08-18T00:02:00.000Z"}
+    />,
+  );
+
+  await user.click(screen.getByRole("button", { name: "정답 확인" }));
+  await user.click(screen.getByRole("button", { name: "잘 썼어요" }));
+  await user.click(screen.getByRole("button", { name: "결과 보기" }));
+
+  await waitFor(() => expect(routerPush).toHaveBeenCalledWith("/practice/result"));
+  expect(window.sessionStorage.getItem(PRACTICE_RESULT_STORAGE_KEY)).toBeNull();
+});
+
 it("offers difficult-only, same-settings, and home actions from results", () => {
   render(
     <PracticeResult
@@ -267,6 +354,50 @@ it("falls back safely when the result handoff contains a malformed config", () =
     startedAt: "2026-08-18T00:00:00.000Z",
     results: [],
   }));
+
+  render(<PracticeResult />);
+
+  expect(screen.getByText("표시할 연습 결과가 없어요. 새 연습을 시작해 주세요.")).toBeVisible();
+});
+
+it.each([
+  ["duplicate scripts", {
+    config: { ...config("copy"), scripts: ["hiragana", "hiragana"] },
+    startedAt: "2026-08-18T00:00:00.000Z",
+    endedAt: "2026-08-18T00:02:00.000Z",
+    results: [],
+  }],
+  ["duplicate groups", {
+    config: { ...config("copy"), groups: ["basic", "basic"] },
+    startedAt: "2026-08-18T00:00:00.000Z",
+    endedAt: "2026-08-18T00:02:00.000Z",
+    results: [],
+  }],
+  ["missing endedAt", {
+    config: config("copy"),
+    startedAt: "2026-08-18T00:00:00.000Z",
+    results: [],
+  }],
+  ["invalid endedAt", {
+    config: config("copy"),
+    startedAt: "2026-08-18T00:00:00.000Z",
+    endedAt: "not-a-date",
+    results: [],
+  }],
+  ["invalid startedAt", {
+    config: config("copy"),
+    startedAt: "not-a-date",
+    endedAt: "2026-08-18T00:02:00.000Z",
+    results: [],
+  }],
+  ["invalid answeredAt", {
+    config: config("copy"),
+    startedAt: "2026-08-18T00:00:00.000Z",
+    endedAt: "2026-08-18T00:02:00.000Z",
+    results: [{ kanaId: "hiragana-a", evaluation: "good", answeredAt: "not-a-date" }],
+  }],
+])("rejects a result handoff with %s", (_name, summary) => {
+  window.sessionStorage.setItem(PRACTICE_RESULT_STORAGE_KEY, JSON.stringify(summary));
 
   render(<PracticeResult />);
 

@@ -115,6 +115,88 @@ function ActivePracticeSession({
       return;
     }
 
+    const history = window.history;
+    const sessionUrl = window.location.href;
+    const originalState = history.state;
+    const originalPushState = history.pushState;
+    const originalReplaceState = history.replaceState;
+    const originalBack = history.back;
+    const guardId = `kana-practice-${Date.now()}-${Math.random()}`;
+    const sentinelState = {
+      ...(originalState && typeof originalState === "object" ? originalState : {}),
+      __kanaPracticeGuard: guardId,
+    };
+    let allowNextHistoryNavigation = false;
+    let installed = true;
+
+    function isGuardSentinel(value: unknown): boolean {
+      return Boolean(
+        value
+        && typeof value === "object"
+        && (value as { __kanaPracticeGuard?: string }).__kanaPracticeGuard === guardId,
+      );
+    }
+
+    function confirmDeparture(): boolean {
+      return window.confirm("연습을 끝내고 이동할까요?");
+    }
+
+    function shouldGuardUrl(url: string | URL | null | undefined): boolean {
+      return url !== undefined
+        && url !== null
+        && new URL(String(url), window.location.href).href !== window.location.href;
+    }
+
+    function restoreHistoryGuard() {
+      if (!installed) {
+        return;
+      }
+
+      installed = false;
+      window.removeEventListener("popstate", handleHistoryTraversal);
+      history.pushState = originalPushState;
+      history.replaceState = originalReplaceState;
+
+      if (isGuardSentinel(history.state)) {
+        originalReplaceState.call(history, originalState, "", sessionUrl);
+      }
+    }
+
+    function handleHistoryTraversal() {
+      if (!installed) {
+        return;
+      }
+
+      if (!confirmDeparture()) {
+        originalPushState.call(history, sentinelState, "", sessionUrl);
+        return;
+      }
+
+      restoreHistoryGuard();
+      originalBack.call(history);
+    }
+
+    originalPushState.call(history, sentinelState, "", sessionUrl);
+    history.pushState = function guardedPushState(data, unused, url) {
+      if (allowNextHistoryNavigation) {
+        allowNextHistoryNavigation = false;
+      } else if (shouldGuardUrl(url) && !confirmDeparture()) {
+        return;
+      }
+
+      originalPushState.call(history, data, unused, url);
+    };
+    history.replaceState = function guardedReplaceState(data, unused, url) {
+      if (allowNextHistoryNavigation) {
+        allowNextHistoryNavigation = false;
+      } else if (shouldGuardUrl(url) && !confirmDeparture()) {
+        return;
+      }
+
+      originalReplaceState.call(history, data, unused, url);
+    };
+    window.addEventListener("popstate", handleHistoryTraversal);
+
     function warnBeforeLeaving(event: BeforeUnloadEvent) {
       event.preventDefault();
       event.returnValue = "";
@@ -143,10 +225,13 @@ function ActivePracticeSession({
         return;
       }
 
-      if (!window.confirm("연습을 끝내고 이동할까요?")) {
+      if (!confirmDeparture()) {
         event.preventDefault();
         event.stopPropagation();
+        return;
       }
+
+      allowNextHistoryNavigation = true;
     }
 
     window.addEventListener("beforeunload", warnBeforeLeaving);
@@ -154,6 +239,7 @@ function ActivePracticeSession({
     return () => {
       window.removeEventListener("beforeunload", warnBeforeLeaving);
       document.removeEventListener("click", warnBeforeInternalNavigation, true);
+      restoreHistoryGuard();
     };
   }, [state.phase]);
 
@@ -171,9 +257,14 @@ function ActivePracticeSession({
     }
 
     try {
+      window.sessionStorage.removeItem(PRACTICE_RESULT_STORAGE_KEY);
       window.sessionStorage.setItem(PRACTICE_RESULT_STORAGE_KEY, JSON.stringify(summary));
     } catch {
-      // The result route still provides a safe empty-state if storage is unavailable.
+      try {
+        window.sessionStorage.removeItem(PRACTICE_RESULT_STORAGE_KEY);
+      } catch {
+        // The result route still provides a safe empty-state if storage is unavailable.
+      }
     }
     router.push("/practice/result");
   }, [onComplete, router, state]);

@@ -55,7 +55,13 @@ describe("practiceSessionReducer", () => {
   });
 
   it("reveals the model and clamps overlay opacity to the valid range", () => {
-    let state = practiceSessionReducer(startedState(), { type: "REVEAL" });
+    const writing = startedState();
+    expect(practiceSessionReducer(writing, {
+      type: "SET_OVERLAY_OPACITY",
+      opacity: 0.8,
+    })).toBe(writing);
+
+    let state = practiceSessionReducer(writing, { type: "REVEAL" });
 
     expect(state.phase).toBe("reviewing");
 
@@ -64,6 +70,21 @@ describe("practiceSessionReducer", () => {
 
     state = practiceSessionReducer(state, { type: "SET_OVERLAY_OPACITY", opacity: -1 });
     expect(state.overlayOpacity).toBe(0);
+
+    const complete = { ...state, phase: "complete" as const };
+    expect(practiceSessionReducer(complete, {
+      type: "SET_OVERLAY_OPACITY",
+      opacity: 0.8,
+    })).toBe(complete);
+  });
+
+  it("rejects manual END for a finite session", () => {
+    const state = startedState();
+
+    expect(practiceSessionReducer(state, {
+      type: "END",
+      endedAt: "2026-08-18T00:00:30.000Z",
+    })).toBe(state);
   });
 
   it("rejects evaluation before reveal and records one result after reveal", () => {

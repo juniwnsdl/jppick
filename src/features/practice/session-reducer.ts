@@ -100,7 +100,9 @@ export function practiceSessionReducer(
     case "REVEAL":
       return state.phase === "writing" ? { ...state, phase: "reviewing" } : state;
     case "SET_OVERLAY_OPACITY":
-      return { ...state, overlayOpacity: clampOpacity(action.opacity) };
+      return state.phase === "reviewing"
+        ? { ...state, overlayOpacity: clampOpacity(action.opacity) }
+        : state;
     case "EVALUATE": {
       const question = state.questions[state.currentIndex];
 
@@ -151,9 +153,9 @@ export function practiceSessionReducer(
       };
     }
     case "END":
-      return state.phase === "complete"
-        ? state
-        : { ...state, currentStrokes: [], phase: "complete", endedAt: action.endedAt };
+      return state.phase !== "complete" && state.config.count === "unlimited"
+        ? { ...state, currentStrokes: [], phase: "complete", endedAt: action.endedAt }
+        : state;
   }
 }
 
@@ -211,6 +213,26 @@ const SCRIPTS: readonly KanaScript[] = ["hiragana", "katakana"];
 const GROUPS: readonly KanaGroup[] = ["basic", "voiced", "yoon", "small", "extended"];
 const COUNTS: ReadonlyArray<PracticeCount | "5" | "10" | "20"> = ["5", "10", "20", "unlimited"];
 const STRATEGIES: readonly PracticeStrategy[] = ["uniform", "least-practiced", "difficult"];
+
+function isUniqueAllowedList(value: unknown, allowed: readonly string[]): value is string[] {
+  return Array.isArray(value)
+    && value.length > 0
+    && value.every((item) => typeof item === "string" && allowed.includes(item))
+    && new Set(value).size === value.length;
+}
+
+export function isPracticeConfig(value: unknown): value is PracticeConfig {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const config = value as Partial<PracticeConfig>;
+  return MODES.includes(config.mode as PracticeMode)
+    && isUniqueAllowedList(config.scripts, SCRIPTS)
+    && isUniqueAllowedList(config.groups, GROUPS)
+    && (config.count === 5 || config.count === 10 || config.count === 20 || config.count === "unlimited")
+    && STRATEGIES.includes(config.strategy as PracticeStrategy);
+}
 
 function isSingleValue(value: string | string[] | undefined): value is string {
   return typeof value === "string";
