@@ -56,4 +56,24 @@ describe("KANA_CATALOG", () => {
     expect(KANA_CATALOG.find((unit) => unit.display === "づ")?.romaji).toBe("zu");
     expect(KANA_CATALOG.find((unit) => unit.display === "ウォ")?.romaji).toBe("wo");
   });
+
+  it("uses a functional Korean prompt for the standalone sokuon", () => {
+    expect(KANA_CATALOG.find((unit) => unit.display === "っ")?.readingKo).toBe("작은 つ");
+    expect(KANA_CATALOG.find((unit) => unit.display === "ッ")?.readingKo).toBe("작은 つ");
+  });
+
+  it("matches the PRD's exact small-kana scope for each script", () => {
+    expect(filterKana({ script: "hiragana", group: "small" }).map((unit) => unit.display).sort()).toEqual([
+      "ぁ", "ぃ", "ぅ", "ぇ", "ぉ", "ゕ", "ゖ", "っ", "ゃ", "ゅ", "ょ", "ゎ",
+    ].sort());
+    expect(filterKana({ script: "katakana", group: "small" }).map((unit) => unit.display).sort()).toEqual([
+      "ァ", "ィ", "ゥ", "ェ", "ォ", "ヵ", "ヶ", "ッ", "ャ", "ュ", "ョ", "ヮ", "ー",
+    ].sort());
+  });
+
+  it("matches the PRD's exact foreign-loan combination scope", () => {
+    expect(filterKana({ script: "katakana", group: "extended" }).map((unit) => unit.display).sort()).toEqual([
+      "イェ", "ウィ", "ウェ", "ウォ", "ヴァ", "ヴィ", "ヴェ", "ヴォ", "ヴュ", "キェ", "ギェ", "クァ", "クィ", "クェ", "クォ", "グァ", "シェ", "ジェ", "スィ", "ズィ", "チェ", "ツァ", "ツィ", "ツェ", "ツォ", "ティ", "テュ", "ディ", "デュ", "トゥ", "ドゥ", "ニェ", "ヒェ", "ビェ", "ピェ", "ファ", "フィ", "フェ", "フォ", "フュ", "ミェ", "リェ",
+    ].sort());
+  });
 });

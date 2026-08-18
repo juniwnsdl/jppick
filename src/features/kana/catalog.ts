@@ -115,7 +115,7 @@ export const ROMAJI_TO_KOREAN: Record<string, string> = {
   ga: "가", gi: "기", gu: "구", ge: "게", go: "고", za: "자", ji: "지", zu: "즈", ze: "제", zo: "조",
   da: "다", de: "데", do: "도", ba: "바", bi: "비", bu: "부", be: "베", bo: "보", pa: "파", pi: "피", pu: "푸", pe: "페", po: "포", vu: "부",
   kya: "캬", kyu: "큐", kyo: "쿄", gya: "갸", gyu: "규", gyo: "교", sha: "샤", shu: "슈", sho: "쇼", ja: "자", ju: "주", jo: "조", cha: "차", chu: "추", cho: "초", nya: "냐", nyu: "뉴", nyo: "뇨", hya: "햐", hyu: "휴", hyo: "효", bya: "뱌", byu: "뷰", byo: "뵤", pya: "퍄", pyu: "퓨", pyo: "표", mya: "먀", myu: "뮤", myo: "묘", rya: "랴", ryu: "류", ryo: "료",
-  xa: "작은 아", xi: "작은 이", xu: "작은 우", xe: "작은 에", xo: "작은 오", xka: "작은 카", xke: "작은 케", xtsu: "작은 쓰", xya: "작은 야", xyu: "작은 유", xyo: "작은 요", xwa: "작은 와", "long-vowel-mark": "장음 기호",
+  xa: "작은 아", xi: "작은 이", xu: "작은 우", xe: "작은 에", xo: "작은 오", xka: "작은 카", xke: "작은 케", xtsu: "작은 つ", xya: "작은 야", xyu: "작은 유", xyo: "작은 요", xwa: "작은 와", "long-vowel-mark": "장음 기호",
   ye: "예", wi: "위", we: "웨", va: "바", vi: "비", ve: "베", vo: "보", vyu: "뷰", kye: "케", gye: "계", kwa: "콰", kwi: "퀴", kwe: "퀘", kwo: "쿼", gwa: "과", she: "셰", je: "제", si: "스이", zi: "즈이", che: "체", tsa: "차", tsi: "치", tse: "체", tso: "초", ti: "티", tyu: "튜", di: "디", dyu: "듀", tu: "투", du: "두", nye: "녜", hye: "헤", bye: "베", pye: "페", fa: "파", fi: "피", fe: "페", fo: "포", fyu: "퓨", mye: "미에", rye: "리에",
 };
 
