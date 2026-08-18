@@ -137,8 +137,7 @@ export function WritingCanvas({ strokes, onChange, guide }: WritingCanvasProps) 
       }
     });
     const handleWindowResize = () => {
-      const bounds = wrapper.getBoundingClientRect();
-      resizeCanvas(bounds.width, bounds.height);
+      resizeCanvas(wrapper.clientWidth, wrapper.clientHeight);
     };
 
     observer.observe(wrapper);
@@ -222,7 +221,6 @@ export function WritingCanvas({ strokes, onChange, guide }: WritingCanvasProps) 
 
     activePointerRef.current = null;
     activeStrokeRef.current = [];
-    strokesRef.current = nextStrokes;
     releasePointer(event.currentTarget, event.pointerId);
     onChange(nextStrokes);
     redraw();
@@ -230,14 +228,12 @@ export function WritingCanvas({ strokes, onChange, guide }: WritingCanvasProps) 
 
   function handleUndo() {
     const nextStrokes = undoStroke(strokesRef.current);
-    strokesRef.current = nextStrokes;
     onChange(nextStrokes);
     redraw();
   }
 
   function handleClear() {
     const nextStrokes = clearStrokes(strokesRef.current);
-    strokesRef.current = nextStrokes;
     onChange(nextStrokes);
     redraw();
   }

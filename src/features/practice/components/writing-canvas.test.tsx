@@ -156,6 +156,23 @@ it("completes one normalized stroke from a primary pointer gesture", () => {
   ]]);
 });
 
+it("keeps the controlled strokes when the parent rejects emitted gestures", () => {
+  const onChange = vi.fn();
+  render(<WritingCanvas strokes={[]} onChange={onChange} />);
+  const { canvas } = prepareCanvas();
+
+  firePointer(canvas, "pointerdown", { pointerId: 7, clientX: 10, clientY: 20, pressure: 0.2 });
+  context.stroke.mockClear();
+  firePointer(canvas, "pointerup", { pointerId: 7, clientX: 110, clientY: 70, pressure: 0 });
+
+  expect(context.stroke).not.toHaveBeenCalled();
+
+  firePointer(canvas, "pointerdown", { pointerId: 8, clientX: 210, clientY: 120, pressure: 0.4 });
+  firePointer(canvas, "pointerup", { pointerId: 8, clientX: 210, clientY: 120, pressure: 0 });
+
+  expect(onChange).toHaveBeenNthCalledWith(2, [[{ x: 1, y: 1, pressure: 0.4 }]]);
+});
+
 it("captures the active pointer until its stroke ends", () => {
   render(<CanvasHarness />);
   const { canvas, setPointerCapture, releasePointerCapture } = prepareCanvas();
@@ -236,4 +253,34 @@ it("rescales backing pixels and redraws normalized ink after size or DPR changes
   expect(canvas.width).toBe(300);
   expect(canvas.height).toBe(150);
   expect(context.lineTo).toHaveBeenLastCalledWith(100, 50);
+});
+
+it("uses the observed content size when a window resize sees wrapper borders", () => {
+  render(<CanvasHarness />);
+  const canvas = screen.getByRole("img", { name: "쓰기 영역" }) as HTMLCanvasElement;
+  const wrapper = canvas.parentElement as HTMLDivElement;
+
+  Object.defineProperties(wrapper, {
+    clientWidth: { configurable: true, value: 200 },
+    clientHeight: { configurable: true, value: 100 },
+    getBoundingClientRect: {
+      configurable: true,
+      value: () => ({
+        width: 202,
+        height: 102,
+        left: 0,
+        top: 0,
+        right: 202,
+        bottom: 102,
+        x: 0,
+        y: 0,
+        toJSON: () => ({}),
+      }),
+    },
+  });
+
+  fireEvent(window, new Event("resize"));
+
+  expect(canvas.width).toBe(200);
+  expect(canvas.height).toBe(100);
 });
