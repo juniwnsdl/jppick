@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Fragment, useEffect, useReducer, useRef, useSyncExternalStore } from "react";
+import { Fragment, useEffect, useReducer, useRef, useState, useSyncExternalStore } from "react";
 
 import { DEFAULT_SETTINGS, loadSettings, type AppSettings } from "../../../lib/settings";
 import { StrokeGuide } from "../../kana/components/stroke-guide";
@@ -13,12 +13,41 @@ import {
   practiceSessionReducer,
   toSessionSummary,
   type Evaluation,
+  type PracticeResultEntry,
   type PracticeSessionSummary,
 } from "../session-reducer";
 import { createQuestionQueue } from "../question-generator";
 import type { Stroke } from "../strokes";
 import type { PracticeConfig, Question, Random } from "../types";
 import { WritingCanvas } from "./writing-canvas";
+
+interface PersistedSessionSummary {
+  id: string;
+  startedAt: string;
+  endedAt: string;
+  config: PracticeConfig;
+  completed: number;
+  good: number;
+  retry: number;
+  answers: PracticeResultEntry[];
+}
+
+interface InterruptedPracticeSession {
+  id: string;
+  startedAt: string;
+  config: PracticeConfig;
+  queue: Question[];
+  currentIndex: number;
+  answers: PracticeResultEntry[];
+}
+
+interface PracticePersistence {
+  recordEvaluation(kanaId: string, value: Evaluation, at: string): Promise<void>;
+  saveSession(summary: PersistedSessionSummary): Promise<void>;
+  saveInterrupted(session: InterruptedPracticeSession): Promise<void>;
+  loadInterrupted(): Promise<InterruptedPracticeSession | null>;
+  clearInterrupted(): Promise<void>;
+}
 
 interface PracticeSessionProps {
   catalog: KanaUnit[];
@@ -28,11 +57,14 @@ interface PracticeSessionProps {
   now?: () => string;
   onComplete?: (summary: PracticeSessionSummary) => void;
   random?: Random;
+  repository?: PracticePersistence;
 }
 
 interface ActivePracticeSessionProps extends Omit<PracticeSessionProps, "initialQuestions" | "random"> {
   initialQuestions: Question[];
+  interrupted?: InterruptedPracticeSession;
   random: Random;
+  repository?: PracticePersistence;
 }
 
 let cachedSettings: AppSettings | undefined;
@@ -47,13 +79,57 @@ function storedSettingsSnapshot(): AppSettings {
   return cachedSettings;
 }
 
+function configsMatch(left: PracticeConfig, right: PracticeConfig): boolean {
+  return left.mode === right.mode
+    && left.count === right.count
+    && left.strategy === right.strategy
+    && left.scripts.length === right.scripts.length
+    && left.scripts.every((value, index) => value === right.scripts[index])
+    && left.groups.length === right.groups.length
+    && left.groups.every((value, index) => value === right.groups[index]);
+}
+
+function isCompatibleInterrupted(
+  session: InterruptedPracticeSession,
+  config: PracticeConfig,
+  catalog: KanaUnit[],
+): boolean {
+  const catalogIds = new Set(catalog.map((unit) => unit.id));
+  return configsMatch(session.config, config)
+    && session.queue.length > 0
+    && session.currentIndex >= 0
+    && session.currentIndex <= session.queue.length
+    && session.answers.length === session.currentIndex
+    && session.queue.every((question) => catalogIds.has(question.kanaId))
+    && session.answers.every((answer, index) => session.queue[index]?.kanaId === answer.kanaId);
+}
+
+function persistentSummary(summary: PracticeSessionSummary): PersistedSessionSummary {
+  const answers = summary.results;
+  return {
+    id: `session:${summary.startedAt}`,
+    startedAt: summary.startedAt,
+    endedAt: summary.endedAt ?? summary.startedAt,
+    config: summary.config,
+    completed: answers.length,
+    good: answers.filter((answer) => answer.evaluation === "good").length,
+    retry: answers.filter((answer) => answer.evaluation === "retry").length,
+    answers,
+  };
+}
+
 export function PracticeSession({
   catalog,
   config,
   initialQuestions,
   random = (maxExclusive) => Math.random() * maxExclusive,
+  repository,
   ...activeProps
 }: PracticeSessionProps) {
+  const [interrupted, setInterrupted] = useState<InterruptedPracticeSession | null | undefined>(
+    initialQuestions || !repository ? null : undefined,
+  );
+  const [resumedSession, setResumedSession] = useState<InterruptedPracticeSession | undefined>();
   const generatedQuestionsRef = useRef<Question[] | undefined>(initialQuestions);
   const questions = useSyncExternalStore(
     subscribeToStaticSettings,
@@ -64,10 +140,65 @@ export function PracticeSession({
     () => initialQuestions ?? EMPTY_QUESTIONS,
   );
 
-  if (questions.length === 0) {
+  useEffect(() => {
+    if (interrupted !== undefined || !repository) {
+      return;
+    }
+
+    let current = true;
+    void repository.loadInterrupted().then((saved) => {
+      if (!current) {
+        return;
+      }
+      if (saved && isCompatibleInterrupted(saved, config, catalog)) {
+        setInterrupted(saved);
+        return;
+      }
+      if (saved) {
+        void repository.clearInterrupted();
+      }
+      setInterrupted(null);
+    });
+    return () => {
+      current = false;
+    };
+  }, [catalog, config, interrupted, repository]);
+
+  if (questions.length === 0 || interrupted === undefined) {
     return (
       <main className="page-container">
         <p aria-live="polite">연습 문제를 준비하고 있어요.</p>
+      </main>
+    );
+  }
+
+  if (interrupted) {
+    return (
+      <main className="page-container">
+        <section aria-labelledby="resume-heading" className="progress-card">
+          <h1 id="resume-heading">중단한 연습이 있어요</h1>
+          <p>{interrupted.answers.length}문제를 마친 지점부터 이어갈 수 있어요.</p>
+          <div className="primary-actions">
+            <button
+              className="primary-action"
+              onClick={() => {
+                setResumedSession(interrupted);
+                setInterrupted(null);
+              }}
+              type="button"
+            >
+              이어하기
+            </button>
+            <button
+              onClick={() => {
+                void repository?.clearInterrupted().finally(() => setInterrupted(null));
+              }}
+              type="button"
+            >
+              새로 시작
+            </button>
+          </div>
+        </section>
       </main>
     );
   }
@@ -77,8 +208,10 @@ export function PracticeSession({
       {...activeProps}
       catalog={catalog}
       config={config}
-      initialQuestions={questions}
+      initialQuestions={resumedSession?.queue ?? questions}
+      interrupted={resumedSession}
       random={random}
+      repository={repository}
     />
   );
 }
@@ -88,9 +221,11 @@ function ActivePracticeSession({
   config,
   initialQuestions,
   initialSettings,
+  interrupted,
   now = () => new Date().toISOString(),
   onComplete,
   random,
+  repository,
 }: ActivePracticeSessionProps) {
   const router = useRouter();
   const settings = useSyncExternalStore(
@@ -101,14 +236,57 @@ function ActivePracticeSession({
   const [state, dispatch] = useReducer(
     practiceSessionReducer,
     undefined,
-    () => createPracticeSessionState({
-      config,
-      questions: initialQuestions,
-      overlayOpacity: (initialSettings ?? storedSettingsSnapshot()).overlayOpacity,
-      startedAt: now(),
-    }),
+    () => {
+      const fresh = createPracticeSessionState({
+        config,
+        questions: initialQuestions,
+        overlayOpacity: (initialSettings ?? storedSettingsSnapshot()).overlayOpacity,
+        startedAt: interrupted?.startedAt ?? now(),
+      });
+      if (!interrupted) {
+        return fresh;
+      }
+      return {
+        ...fresh,
+        currentIndex: interrupted.currentIndex,
+        phase: interrupted.currentIndex >= interrupted.queue.length ? "complete" as const : "writing" as const,
+        results: interrupted.answers,
+      };
+    },
   );
   const completedRef = useRef(false);
+  const persistedAnswerCountRef = useRef(interrupted?.answers.length ?? 0);
+  const persistenceChainRef = useRef(Promise.resolve());
+
+  useEffect(() => {
+    if (state.results.length <= persistedAnswerCountRef.current) {
+      return;
+    }
+
+    const firstNewAnswer = persistedAnswerCountRef.current;
+    const answers = state.results.slice();
+    const questions = state.questions.slice();
+    persistedAnswerCountRef.current = answers.length;
+    if (!repository) {
+      return;
+    }
+
+    persistenceChainRef.current = persistenceChainRef.current.then(async () => {
+      for (const answer of answers.slice(firstNewAnswer)) {
+        await repository.recordEvaluation(answer.kanaId, answer.evaluation, answer.answeredAt);
+      }
+      await repository.saveInterrupted({
+        id: `session:${state.startedAt}`,
+        startedAt: state.startedAt,
+        config: state.config,
+        queue: questions,
+        currentIndex: answers.length,
+        answers,
+      });
+    }).catch(() => {
+      // Practice remains usable even if a browser revokes storage mid-session.
+    });
+  }, [repository, state.config, state.questions, state.results, state.startedAt]);
 
   useEffect(() => {
     if (state.phase === "complete") {
@@ -250,24 +428,34 @@ function ActivePracticeSession({
 
     completedRef.current = true;
     const summary = toSessionSummary(state);
-
-    if (onComplete) {
-      onComplete(summary);
-      return;
+    if (repository) {
+      persistenceChainRef.current = persistenceChainRef.current.then(async () => {
+        await repository.saveSession(persistentSummary(summary));
+        await repository.clearInterrupted();
+      }).catch(() => {
+        // Result handoff must remain available even when durable storage fails.
+      });
     }
 
-    try {
-      window.sessionStorage.removeItem(PRACTICE_RESULT_STORAGE_KEY);
-      window.sessionStorage.setItem(PRACTICE_RESULT_STORAGE_KEY, JSON.stringify(summary));
-    } catch {
+    void persistenceChainRef.current.then(() => {
+      if (onComplete) {
+        onComplete(summary);
+        return;
+      }
+
       try {
         window.sessionStorage.removeItem(PRACTICE_RESULT_STORAGE_KEY);
+        window.sessionStorage.setItem(PRACTICE_RESULT_STORAGE_KEY, JSON.stringify(summary));
       } catch {
-        // The result route still provides a safe empty-state if storage is unavailable.
+        try {
+          window.sessionStorage.removeItem(PRACTICE_RESULT_STORAGE_KEY);
+        } catch {
+          // The result route still provides a safe empty-state if storage is unavailable.
+        }
       }
-    }
-    router.push("/practice/result");
-  }, [onComplete, router, state]);
+      router.push("/practice/result");
+    });
+  }, [onComplete, repository, router, state]);
 
   const question = state.questions[state.currentIndex];
   const kana = catalog.find((unit) => unit.id === question?.kanaId);

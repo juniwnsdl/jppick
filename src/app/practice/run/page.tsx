@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
 
 import { KANA_CATALOG } from "../../../features/kana/catalog";
-import { PracticeSession } from "../../../features/practice/components/practice-session";
 import { parsePracticeRunSearchParams } from "../../../features/practice/session-reducer";
+import { PersistentPracticeSession } from "../../../features/progress/components/persistent-practice-session";
 
 interface PracticeRunPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -30,7 +30,7 @@ export default async function PracticeRunPage({ searchParams }: PracticeRunPageP
   }
 
   return (
-    <PracticeSession
+    <PersistentPracticeSession
       catalog={matchingCatalog}
       config={parsed.config}
     />

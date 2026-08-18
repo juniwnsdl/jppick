@@ -49,6 +49,39 @@ function config(mode: PracticeConfig["mode"]): PracticeConfig {
   };
 }
 
+class CapturingPracticePersistence {
+  evaluations: Array<{ kanaId: string; value: "good" | "retry"; at: string }> = [];
+  sessions: unknown[] = [];
+  interrupted: {
+    id: string;
+    startedAt: string;
+    config: PracticeConfig;
+    queue: Question[];
+    currentIndex: number;
+    answers: Array<{ kanaId: string; evaluation: "good" | "retry"; answeredAt: string }>;
+  } | null = null;
+
+  async recordEvaluation(kanaId: string, value: "good" | "retry", at: string) {
+    this.evaluations.push({ kanaId, value, at });
+  }
+
+  async saveSession(summary: unknown) {
+    this.sessions = [summary];
+  }
+
+  async saveInterrupted(session: NonNullable<CapturingPracticePersistence["interrupted"]>) {
+    this.interrupted = structuredClone(session);
+  }
+
+  async loadInterrupted() {
+    return this.interrupted ? structuredClone(this.interrupted) : null;
+  }
+
+  async clearInterrupted() {
+    this.interrupted = null;
+  }
+}
+
 class TestResizeObserver implements ResizeObserver {
   constructor(private readonly callback: ResizeObserverCallback) {}
   disconnect() {}
@@ -281,6 +314,83 @@ it("hands off only the evaluated result summary when a finite session completes"
     }],
   });
   expect(JSON.stringify(onComplete.mock.calls[0][0])).not.toContain("pressure");
+});
+
+it("persists each answer once, autosaves stroke-free progress, and finalizes the session", async () => {
+  const user = userEvent.setup();
+  const repository = new CapturingPracticePersistence();
+  const onComplete = vi.fn();
+  const timestamps = [
+    "2026-08-18T00:00:00.000Z",
+    "2026-08-18T00:01:00.000Z",
+    "2026-08-18T00:02:00.000Z",
+  ];
+  render(
+    <PracticeSession
+      catalog={[kana]}
+      config={config("copy")}
+      initialQuestions={[question]}
+      initialSettings={settings}
+      now={() => timestamps.shift() ?? "2026-08-18T00:02:00.000Z"}
+      onComplete={onComplete}
+      repository={repository}
+    />,
+  );
+
+  await user.click(screen.getByRole("button", { name: "정답 확인" }));
+  await user.click(screen.getByRole("button", { name: "잘 썼어요" }));
+
+  await waitFor(() => expect(repository.evaluations).toHaveLength(1));
+  const saved = repository.interrupted;
+  expect(saved).toMatchObject({ currentIndex: 1, answers: [{ evaluation: "good" }] });
+  expect(JSON.stringify(saved)).not.toContain("stroke");
+
+  await user.click(screen.getByRole("button", { name: "결과 보기" }));
+
+  await waitFor(() => expect(repository.sessions).toHaveLength(1));
+  expect(repository.interrupted).toBeNull();
+  expect(onComplete).toHaveBeenCalledOnce();
+});
+
+it("offers to resume a compatible interrupted queue at the next unanswered question", async () => {
+  const user = userEvent.setup();
+  const repository = new CapturingPracticePersistence();
+  const secondKana: KanaUnit = {
+    ...kana,
+    id: "hiragana-i",
+    display: "い",
+    romaji: "i",
+    readingKo: "이",
+    glyphs: ["い"],
+    strokeAssetKeys: ["hiragana/basic/い"],
+  };
+  await repository.saveInterrupted({
+    id: "session-resume",
+    startedAt: "2026-08-18T00:00:00.000Z",
+    config: config("copy"),
+    queue: [question, { id: "question-2-hiragana-i", kanaId: "hiragana-i" }],
+    currentIndex: 1,
+    answers: [{
+      kanaId: "hiragana-a",
+      evaluation: "good",
+      answeredAt: "2026-08-18T00:01:00.000Z",
+    }],
+  });
+
+  render(
+    <PracticeSession
+      catalog={[kana, secondKana]}
+      config={config("copy")}
+      initialSettings={settings}
+      random={() => 0}
+      repository={repository}
+    />,
+  );
+
+  await user.click(await screen.findByRole("button", { name: "이어하기" }));
+
+  expect(screen.getByText("2 / 2")).toBeVisible();
+  expect(screen.getByLabelText("따라 쓸 문자")).toHaveTextContent("い");
 });
 
 it("invalidates a stale result when writing the new handoff fails", async () => {
