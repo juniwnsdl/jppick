@@ -1,5 +1,7 @@
 import type { IDBPDatabase } from "idb";
 
+import { isPracticeConfig } from "../practice/session-reducer";
+import type { PracticeConfig } from "../practice/types";
 import {
   openLearningDatabase,
   type KanaLearningDatabase,
@@ -17,6 +19,137 @@ interface LearningRepositoryOptions {
   indexedDB?: IDBFactory | null;
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === "object";
+}
+
+function isIsoTimestamp(value: unknown): value is string {
+  if (typeof value !== "string") {
+    return false;
+  }
+  const date = new Date(value);
+  return Number.isFinite(date.getTime()) && date.toISOString() === value;
+}
+
+function isNonNegativeInteger(value: unknown): value is number {
+  return Number.isInteger(value) && Number(value) >= 0;
+}
+
+function isSessionAnswer(value: unknown): boolean {
+  return isRecord(value)
+    && typeof value.kanaId === "string"
+    && value.kanaId.length > 0
+    && (value.evaluation === "good" || value.evaluation === "retry")
+    && isIsoTimestamp(value.answeredAt);
+}
+
+function sanitizeStoredProgress(value: unknown): StoredKanaProgress | null {
+  if (!isRecord(value)
+    || typeof value.kanaId !== "string" || value.kanaId.length === 0
+    || !isNonNegativeInteger(value.presented)
+    || !isNonNegativeInteger(value.good)
+    || !isNonNegativeInteger(value.retry)
+    || value.good + value.retry !== value.presented
+    || !isIsoTimestamp(value.lastPracticedAt)) {
+    return null;
+  }
+
+  const evaluationKeys = Array.isArray(value.evaluationKeys)
+    ? value.evaluationKeys.filter((key): key is string => (
+      typeof key === "string" && (() => {
+        const segments = key.split("\u0000");
+        return isIsoTimestamp(segments[segments.length - 1]);
+      })()
+    ))
+    : [];
+
+  return {
+    kanaId: value.kanaId,
+    presented: value.presented,
+    good: value.good,
+    retry: value.retry,
+    lastPracticedAt: value.lastPracticedAt,
+    evaluationKeys,
+  };
+}
+
+function sanitizeSessionSummary(value: unknown): SessionSummary | null {
+  if (!isRecord(value)
+    || typeof value.id !== "string" || value.id.length === 0
+    || !isIsoTimestamp(value.startedAt)
+    || !isIsoTimestamp(value.endedAt)
+    || !isPracticeConfig(value.config)
+    || !isNonNegativeInteger(value.completed)
+    || !isNonNegativeInteger(value.good)
+    || !isNonNegativeInteger(value.retry)
+    || !Array.isArray(value.answers)
+    || !value.answers.every(isSessionAnswer)
+    || value.good + value.retry !== value.completed
+    || value.answers.length !== value.completed) {
+    return null;
+  }
+  return value as unknown as SessionSummary;
+}
+
+function sanitizeInterruptedSession(value: unknown): InterruptedSession | null {
+  if (!isRecord(value)
+    || typeof value.id !== "string" || value.id.length === 0
+    || !isIsoTimestamp(value.startedAt)
+    || !isPracticeConfig(value.config)
+    || !Array.isArray(value.selectedKanaIds)
+    || !Array.isArray(value.queue)
+    || !Array.isArray(value.answers)
+    || !isNonNegativeInteger(value.currentIndex)) {
+    return null;
+  }
+
+  const selectedKanaIds = value.selectedKanaIds;
+  const queue = value.queue as unknown[];
+  const answers = value.answers as unknown[];
+  const config = value.config as PracticeConfig;
+  const selectedSet = new Set(selectedKanaIds);
+  const selectedKanaIdsAreStrings = selectedKanaIds.every((kanaId) => (
+    typeof kanaId === "string" && kanaId.length > 0
+  ));
+  const sortedSelectedKanaIds = selectedKanaIdsAreStrings ? [...selectedKanaIds].sort() : [];
+  const selectedShapeIsValid = selectedKanaIdsAreStrings
+    && selectedKanaIds.length > 0
+    && selectedSet.size === selectedKanaIds.length
+    && selectedKanaIds.every((kanaId, index) => (
+      kanaId === sortedSelectedKanaIds[index]
+    ));
+  const questionIds = new Set<string>();
+  const queueShapeIsValid = queue.every((question) => {
+    if (!isRecord(question)
+      || typeof question.id !== "string" || question.id.length === 0
+      || typeof question.kanaId !== "string" || !selectedSet.has(question.kanaId)
+      || questionIds.has(question.id)) {
+      return false;
+    }
+    questionIds.add(question.id);
+    return true;
+  });
+  const queueLengthIsValid = config.count === "unlimited"
+    ? queue.length >= selectedKanaIds.length
+      && queue.length % selectedKanaIds.length === 0
+    : queue.length === config.count;
+
+  if (!selectedShapeIsValid
+    || !queueShapeIsValid
+    || !queueLengthIsValid
+    || !answers.every(isSessionAnswer)
+    || value.currentIndex > queue.length
+    || answers.length !== value.currentIndex
+    || !answers.every((answer, index) => (
+      isRecord(answer) && isRecord(queue[index])
+      && answer.kanaId === queue[index].kanaId
+    ))) {
+    return null;
+  }
+
+  return value as unknown as InterruptedSession;
+}
+
 function evaluationKey(kanaId: string, value: "good" | "retry", at: string): string {
   return `${kanaId}\u0000${value}\u0000${at}`;
 }
@@ -30,7 +163,7 @@ function checkpointEvaluation(session: InterruptedSession) {
   }
   return {
     answer,
-    key: `checkpoint\u0000${session.id}\u0000${question.id}`,
+    key: `checkpoint\u0000${session.id}\u0000${question.id}\u0000${answer.answeredAt}`,
   };
 }
 
@@ -67,7 +200,8 @@ function localDateKey(value: string): string | null {
 
 function countPresentedOn(progress: StoredKanaProgress[], date: string): number {
   return progress.reduce((total, item) => total + item.evaluationKeys.filter((key) => {
-    const answeredAt = key.split("\u0000")[2];
+    const segments = key.split("\u0000");
+    const answeredAt = segments[segments.length - 1];
     return answeredAt !== undefined && localDateKey(answeredAt) === date;
   }).length, 0);
 }
@@ -197,7 +331,7 @@ class IndexedDbLearningRepository implements LearningRepository {
     }
 
     const transaction = database.transaction("kanaProgress", "readwrite");
-    const previous = await transaction.store.get(kanaId);
+    const previous = sanitizeStoredProgress(await transaction.store.get(kanaId)) ?? undefined;
     const key = evaluationKey(kanaId, value, at);
 
     const next = nextProgress(previous, kanaId, value, at, key);
@@ -235,7 +369,7 @@ class IndexedDbLearningRepository implements LearningRepository {
     const transaction = database.transaction(["kanaProgress", "interrupted"], "readwrite");
     const progressStore = transaction.objectStore("kanaProgress");
     const interruptedStore = transaction.objectStore("interrupted");
-    const previous = await progressStore.get(answer.kanaId);
+    const previous = sanitizeStoredProgress(await progressStore.get(answer.kanaId)) ?? undefined;
     const next = nextProgress(previous, answer.kanaId, answer.evaluation, answer.answeredAt, key);
     if (next) {
       await progressStore.put(next);
@@ -250,7 +384,16 @@ class IndexedDbLearningRepository implements LearningRepository {
     if (!database) {
       return this.fallback.loadInterrupted();
     }
-    return (await database.getAll("interrupted"))[0] ?? null;
+    const stored = (await database.getAll("interrupted"))[0];
+    if (stored === undefined) {
+      return null;
+    }
+    const session = sanitizeInterruptedSession(stored);
+    if (!session) {
+      await database.clear("interrupted");
+      return null;
+    }
+    return session;
   }
 
   async clearInterrupted(): Promise<void> {
@@ -270,7 +413,15 @@ class IndexedDbLearningRepository implements LearningRepository {
       database.getAll("kanaProgress"),
       database.getAll("sessions"),
     ]);
-    return buildDashboard(progress.map(publicProgress), sessions);
+    return buildDashboard(
+      progress
+        .map(sanitizeStoredProgress)
+        .filter((item): item is StoredKanaProgress => item !== null)
+        .map(publicProgress),
+      sessions
+        .map(sanitizeSessionSummary)
+        .filter((item): item is SessionSummary => item !== null),
+    );
   }
 
   async getPresentedOn(date: string): Promise<number> {
@@ -278,7 +429,10 @@ class IndexedDbLearningRepository implements LearningRepository {
     if (!database) {
       return this.fallback.getPresentedOn(date);
     }
-    return countPresentedOn(await database.getAll("kanaProgress"), date);
+    const progress = (await database.getAll("kanaProgress"))
+      .map(sanitizeStoredProgress)
+      .filter((item): item is StoredKanaProgress => item !== null);
+    return countPresentedOn(progress, date);
   }
 
   async clearAll(): Promise<void> {

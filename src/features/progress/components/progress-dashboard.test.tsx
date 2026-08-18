@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
 
 import { createLearningRepository } from "../learning-repository";
 import { ProgressDashboard } from "./progress-dashboard";
@@ -58,4 +59,24 @@ it("requires the deletion word after entering the destructive confirmation step"
 
   await waitFor(() => expect(screen.getByText("총 0회")).toBeVisible());
   await expect(repository.getDashboard()).resolves.toMatchObject({ totalPresented: 0 });
+});
+
+it("reports read and delete failures without crashing or erasing the visible dashboard", async () => {
+  const readFailure = createLearningRepository({ indexedDB: null });
+  vi.spyOn(readFailure, "getDashboard").mockRejectedValue(new DOMException("read failed"));
+  const first = render(<ProgressDashboard repository={readFailure} />);
+  expect(await screen.findByRole("alert")).toHaveTextContent("학습 기록을 불러오지 못했어요");
+  first.unmount();
+
+  const repository = await populatedRepository();
+  vi.spyOn(repository, "clearAll").mockRejectedValue(new DOMException("write failed"));
+  const user = userEvent.setup();
+  render(<ProgressDashboard repository={repository} />);
+  await screen.findByText("총 3회");
+  await user.click(screen.getByRole("button", { name: "기록 삭제" }));
+  await user.type(screen.getByRole("textbox", { name: "삭제 확인" }), "삭제");
+  await user.click(screen.getByRole("button", { name: "모든 기록 영구 삭제" }));
+
+  expect(await screen.findByRole("alert")).toHaveTextContent("기록을 삭제하지 못했어요");
+  expect(screen.getByText("총 3회")).toBeVisible();
 });

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useSyncExternalStore } from "react";
 
+import { getKanaById } from "../../kana/catalog";
 import {
   isPracticeConfig,
   PRACTICE_RESULT_STORAGE_KEY,
@@ -121,12 +122,24 @@ export function PracticeResult({ initialSummary }: PracticeResultProps) {
       .filter((result) => result.evaluation === "retry")
       .map((result) => result.kanaId),
   )];
+  const good = summary.results.filter((result) => result.evaluation === "good").length;
+  const successRate = summary.results.length === 0
+    ? 0
+    : Math.round(good / summary.results.length * 100);
 
   return (
     <main className="page-container">
       <section aria-label="연습 결과">
         <h1>연습 결과</h1>
         <p>{summary.results.length}문제 중 {retryKanaIds.length}문자를 다시 연습해 보세요.</p>
+        <p>성공률 {successRate}% ({good}/{summary.results.length})</p>
+        {retryKanaIds.length > 0 ? (
+          <ul aria-label="다시 연습할 문자" className="kana-grid">
+            {retryKanaIds.map((kanaId) => (
+              <li key={kanaId}>{getKanaById(kanaId)?.display ?? kanaId}</li>
+            ))}
+          </ul>
+        ) : null}
         <div className="primary-actions">
           {retryKanaIds.length > 0 ? (
             <Link className="primary-action" href={practiceRunHref(summary.config, retryKanaIds)}>

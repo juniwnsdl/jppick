@@ -10,6 +10,7 @@ async function expectMinimumTarget(page: Page, role: "button" | "textbox" | "sli
 
 async function drawStroke(page: Page) {
   const canvas = page.getByRole("img", { name: "쓰기 영역" });
+  await canvas.scrollIntoViewIfNeeded();
   const box = await canvas.boundingBox();
 
   if (!box) {
@@ -20,6 +21,44 @@ async function drawStroke(page: Page) {
   await page.mouse.down();
   await page.mouse.move(box.x + box.width * 0.75, box.y + box.height * 0.75, { steps: 4 });
   await page.mouse.up();
+}
+
+interface WebKitProtocolPage extends Page {
+  _connection: {
+    toImpl(page: Page): {
+      delegate: {
+        rawTouchscreen: {
+          _pageProxySession: {
+            send(method: string, params: unknown): Promise<unknown>;
+          };
+        };
+      };
+    };
+  };
+}
+
+async function drawTrustedWebKitTouchStroke(
+  page: Page,
+  start: { x: number; y: number },
+  end: { x: number; y: number },
+) {
+  const implementation = (page as WebKitProtocolPage)._connection.toImpl(page);
+  const session = implementation.delegate.rawTouchscreen._pageProxySession;
+  await session.send("Input.dispatchTouchEvent", {
+    type: "touchStart",
+    touchPoints: [start],
+  });
+  for (let step = 1; step <= 4; step += 1) {
+    await session.send("Input.dispatchTouchEvent", {
+      type: "touchMove",
+      touchPoints: [{
+        x: start.x + (end.x - start.x) * step / 4,
+        y: start.y + (end.y - start.y) * step / 4,
+      }],
+    });
+  }
+  // WebKit's inspector gesture stream is terminated by its trusted tap command.
+  await page.touchscreen.tap(end.x, end.y);
 }
 
 async function answerCurrentQuestion(
@@ -74,6 +113,8 @@ test("mixed recall exercises both selected scripts in one session", async ({ pag
   await page.goto("/practice/run?mode=recall&scripts=hiragana,katakana&groups=basic&count=5&strategy=uniform&kanaIds=hiragana-a,katakana-a");
 
   await expect(page.getByLabel("문자 힌트")).toContainText("한국어 읽기");
+  await expect(page.getByLabel("문자 힌트")).toContainText(/문자 종류(히라가나|가타카나)/);
+  await expect(page.getByLabel("문자 힌트")).toContainText("분류기본");
   const answers = await finishFiveQuestions(page);
   expect(answers.some((glyph) => /^[\u3040-\u309f]+$/u.test(glyph)), "session should exercise hiragana").toBe(true);
   expect(answers.some((glyph) => /^[\u30a0-\u30ff]+$/u.test(glyph)), "session should exercise katakana").toBe(true);
@@ -186,6 +227,36 @@ test("touch drawing reaches the app while keeping the page position fixed", asyn
   await expect(canvas).toHaveCSS("touch-action", "none");
   if (testInfo.project.name === "desktop-chromium") {
     await drawStroke(page);
+  } else if (testInfo.project.name === "iphone-webkit") {
+    await canvas.evaluate((element) => {
+      let startedAt: { x: number; y: number } | null = null;
+      element.addEventListener("pointerdown", (event) => {
+        const pointer = event as PointerEvent;
+        if (!startedAt) {
+          startedAt = { x: pointer.clientX, y: pointer.clientY };
+        }
+        element.setAttribute("data-received-pointer-type", pointer.pointerType);
+        element.setAttribute("data-received-trusted-pointer", String(pointer.isTrusted));
+      });
+      element.addEventListener("pointermove", (event) => {
+        const pointer = event as PointerEvent;
+        if (startedAt && (pointer.clientX !== startedAt.x || pointer.clientY !== startedAt.y)) {
+          element.setAttribute("data-received-moving-touch", String(
+            pointer.pointerType === "touch" && pointer.isTrusted,
+          ));
+        }
+      });
+    });
+    const box = await canvas.boundingBox();
+    expect(box, "writing canvas should be visible for touch input").not.toBeNull();
+    await drawTrustedWebKitTouchStroke(
+      page,
+      { x: box!.x + box!.width * 0.25, y: box!.y + box!.height * 0.25 },
+      { x: box!.x + box!.width * 0.75, y: box!.y + box!.height * 0.75 },
+    );
+    await expect(canvas).toHaveAttribute("data-received-pointer-type", "touch");
+    await expect(canvas).toHaveAttribute("data-received-trusted-pointer", "true");
+    await expect(canvas).toHaveAttribute("data-received-moving-touch", "true");
   } else {
     await canvas.evaluate((element) => {
       element.addEventListener("pointerdown", (event) => {

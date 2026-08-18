@@ -29,6 +29,7 @@ export interface InterruptedSession {
   id: string;
   startedAt: string;
   config: PracticeConfig;
+  selectedKanaIds: string[];
   queue: Question[];
   currentIndex: number;
   answers: SessionAnswer[];

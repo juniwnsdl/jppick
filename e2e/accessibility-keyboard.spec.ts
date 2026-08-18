@@ -39,9 +39,11 @@ test("keyboard user completes the core flow from home through results", async ({
   const chart = page.getByRole("link", { name: "글자표", exact: true });
   const practice = page.getByRole("link", { name: "연습", exact: true });
   const records = page.getByRole("link", { name: "기록", exact: true });
+  const navigationOrder = [brand, home, chart, practice, records];
+  const explanationClose = page.getByRole("button", { name: "설명 닫기" });
   const chartStart = page.getByRole("link", { name: "글자표 보기" });
   const startPractice = page.getByRole("link", { name: "쓰기 연습 시작" });
-  await tabThrough(page, [brand, home, chart, practice, records, chartStart, startPractice]);
+  await tabThrough(page, [...navigationOrder, explanationClose, chartStart, startPractice]);
   await expectFocusIndicator(startPractice);
   await tabThrough(page, [chartStart], "Shift+Tab");
   await tabThrough(page, [startPractice]);
@@ -50,11 +52,7 @@ test("keyboard user completes the core flow from home through results", async ({
 
   const fiveQuestions = page.getByRole("button", { name: "5문제" });
   await tabThrough(page, [
-    brand,
-    home,
-    chart,
-    practice,
-    records,
+    ...navigationOrder,
     page.getByRole("button", { name: "따라 쓰기" }),
     page.getByRole("button", { name: "암기 테스트" }),
     page.getByRole("button", { name: "히라가나" }),
@@ -90,7 +88,13 @@ test("keyboard user completes the core flow from home through results", async ({
     if (index === 0) {
       await settleClientNavigation(page);
     }
-    await tabThrough(page, [reveal]);
+    await tabThrough(page, index === 0
+      ? [
+          page.getByRole("checkbox", { name: "보조선 표시" }),
+          page.getByRole("checkbox", { name: "따라 쓰기 가이드 표시" }),
+          reveal,
+        ]
+      : [reveal]);
     await expectFocusIndicator(reveal);
     await revealWithoutInk(page);
     const good = page.getByRole("button", { name: "잘 썼어요" });

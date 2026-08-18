@@ -56,6 +56,7 @@ class CapturingPracticePersistence {
     id: string;
     startedAt: string;
     config: PracticeConfig;
+    selectedKanaIds: string[];
     queue: Question[];
     currentIndex: number;
     answers: Array<{ kanaId: string; evaluation: "good" | "retry"; answeredAt: string }>;
@@ -157,6 +158,7 @@ afterEach(() => {
   cleanup();
   vi.restoreAllMocks();
   window.sessionStorage.clear();
+  window.localStorage.clear();
   window.history.replaceState({}, "", "/");
 });
 
@@ -174,6 +176,30 @@ it("shows the kana and enabled trace guide before reveal in copy mode", () => {
   expect(screen.getByTestId("trace-kana-guide")).toBeInTheDocument();
   expect(screen.queryByLabelText("정답 모델")).not.toBeInTheDocument();
   expect(screen.queryByRole("button", { name: "잘 썼어요" })).not.toBeInTheDocument();
+});
+
+it("lets the learner toggle and persist writing guides", async () => {
+  const user = userEvent.setup();
+  render(
+    <PracticeSession
+      catalog={[kana]}
+      config={config("copy")}
+      initialQuestions={[question]}
+      initialSettings={settings}
+    />,
+  );
+
+  const guideLayer = screen.getByTestId("writing-guide-layer");
+  expect(guideLayer.querySelectorAll("line")).toHaveLength(2);
+  expect(screen.getByTestId("trace-kana-guide")).toBeVisible();
+
+  await user.click(screen.getByRole("checkbox", { name: "보조선 표시" }));
+  await user.click(screen.getByRole("checkbox", { name: "따라 쓰기 가이드 표시" }));
+
+  expect(guideLayer.querySelectorAll("line")).toHaveLength(0);
+  expect(screen.queryByTestId("trace-kana-guide")).not.toBeInTheDocument();
+  expect(window.localStorage.getItem("kana-learning-settings")).toContain('"guideLines":false');
+  expect(window.localStorage.getItem("kana-learning-settings")).toContain('"traceGuide":false');
 });
 
 it("does not generate a random question queue during server rendering", () => {
@@ -214,6 +240,31 @@ it("hides the kana while showing Korean reading and romaji before reveal in reca
   expect(screen.getByText("a")).toBeVisible();
   expect(screen.queryByText("あ")).not.toBeInTheDocument();
   expect(screen.queryByTestId("trace-kana-guide")).not.toBeInTheDocument();
+});
+
+it("disambiguates a mixed-script recall prompt before the answer is revealed", () => {
+  const katakana: KanaUnit = {
+    ...kana,
+    id: "katakana-a",
+    display: "ア",
+    glyphs: ["ア"],
+    script: "katakana",
+    strokeAssetKeys: ["katakana/basic/ア"],
+  };
+
+  render(
+    <PracticeSession
+      catalog={[kana, katakana]}
+      config={{ ...config("recall"), scripts: ["hiragana", "katakana"] }}
+      initialQuestions={[question]}
+      initialSettings={settings}
+    />,
+  );
+
+  const hint = screen.getByLabelText("문자 힌트");
+  expect(hint).toHaveTextContent("문자 종류히라가나");
+  expect(hint).toHaveTextContent("분류기본");
+  expect(screen.queryByText("あ")).not.toBeInTheDocument();
 });
 
 it("confirms an empty attempt and reveals comparison and self-evaluation controls", async () => {
@@ -370,7 +421,11 @@ it("persists each answer once, autosaves stroke-free progress, and finalizes the
 
   await waitFor(() => expect(repository.evaluations).toHaveLength(1));
   const saved = repository.interrupted;
-  expect(saved).toMatchObject({ currentIndex: 1, answers: [{ evaluation: "good" }] });
+  expect(saved).toMatchObject({
+    selectedKanaIds: ["hiragana-a"],
+    currentIndex: 1,
+    answers: [{ evaluation: "good" }],
+  });
   expect(JSON.stringify(saved)).not.toContain("stroke");
 
   await user.click(screen.getByRole("button", { name: "결과 보기" }));
@@ -396,6 +451,7 @@ it("offers to resume a compatible interrupted queue at the next unanswered quest
     id: "session-resume",
     startedAt: "2026-08-18T00:00:00.000Z",
     config: config("copy"),
+    selectedKanaIds: ["hiragana-a", "hiragana-i"],
     queue: [
       question,
       { id: "question-2-hiragana-i", kanaId: "hiragana-i" },
@@ -443,6 +499,7 @@ it("appends the next weighted cycle before resuming an unlimited boundary checkp
     id: "session-unlimited",
     startedAt: "2026-08-18T00:00:00.000Z",
     config: unlimitedConfig(),
+    selectedKanaIds: ["hiragana-a", "hiragana-i"],
     queue: [
       { id: "question-1-hiragana-i", kanaId: "hiragana-i" },
       { id: "question-2-hiragana-a", kanaId: "hiragana-a" },
@@ -489,6 +546,7 @@ it.each([
     id: "session-guard",
     startedAt: "2026-08-18T00:00:00.000Z",
     config: config("copy"),
+    selectedKanaIds: ["hiragana-a"],
     queue: questions(),
     currentIndex: 1,
     answers: [{ kanaId: "hiragana-a", evaluation: "good", answeredAt: "2026-08-18T00:01:00.000Z" }],
@@ -512,12 +570,38 @@ it("rejects an interrupted queue outside the active script and group filters", (
     id: "session-filter-mismatch",
     startedAt: "2026-08-18T00:00:00.000Z",
     config: config("copy"),
+    selectedKanaIds: ["katakana-a"],
     queue,
     currentIndex: 1,
     answers: [{ kanaId: katakana.id, evaluation: "good", answeredAt: "2026-08-18T00:01:00.000Z" }],
   };
 
   expect(isCompatibleInterrupted(candidate, config("copy"), [kana, katakana])).toBe(false);
+});
+
+it("requires an exact selected-kana scope before offering resume", () => {
+  const secondKana: KanaUnit = {
+    ...kana,
+    id: "hiragana-i",
+    display: "い",
+    glyphs: ["い"],
+    romaji: "i",
+    readingKo: "이",
+    strokeAssetKeys: ["hiragana/basic/い"],
+  };
+  const matchingQueue = questions(5, kana.id);
+  const candidate = {
+    id: "session-selection-mismatch",
+    startedAt: "2026-08-18T00:00:00.000Z",
+    config: config("copy"),
+    selectedKanaIds: ["hiragana-a"],
+    queue: matchingQueue,
+    currentIndex: 1,
+    answers: [{ kanaId: kana.id, evaluation: "good", answeredAt: "2026-08-18T00:01:00.000Z" }],
+  };
+
+  expect(isCompatibleInterrupted(candidate, config("copy"), [kana, secondKana])).toBe(false);
+  expect(isCompatibleInterrupted({ ...candidate, selectedKanaIds: undefined }, config("copy"), [kana])).toBe(false);
 });
 
 it("keeps the resume choice visible and offers retry when clearing fails", async () => {
@@ -528,6 +612,7 @@ it("keeps the resume choice visible and offers retry when clearing fails", async
     id: "session-clear-failure",
     startedAt: "2026-08-18T00:00:00.000Z",
     config: config("copy"),
+    selectedKanaIds: ["hiragana-a"],
     queue: questions(),
     currentIndex: 1,
     answers: [{ kanaId: "hiragana-a", evaluation: "good", answeredAt: "2026-08-18T00:01:00.000Z" }],
@@ -609,6 +694,8 @@ it("offers difficult-only, same-settings, and home actions from results", () => 
   );
 
   expect(screen.getByText("2문제 중 1문자를 다시 연습해 보세요.")).toBeVisible();
+  expect(screen.getByText("성공률 50% (1/2)")).toBeVisible();
+  expect(screen.getByRole("list", { name: "다시 연습할 문자" })).toHaveTextContent("あ");
   expect(screen.getByRole("link", { name: "어려웠던 문자만 다시 하기" })).toHaveAttribute(
     "href",
     "/practice/run?mode=copy&scripts=hiragana&groups=basic&count=5&strategy=uniform&kanaIds=hiragana-a",

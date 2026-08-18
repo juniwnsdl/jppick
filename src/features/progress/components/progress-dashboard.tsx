@@ -50,16 +50,26 @@ export function ProgressDashboard({
   const [activeRepository, setActiveRepository] = useState<LearningRepository | null>(repository ?? null);
   const [deleteStep, setDeleteStep] = useState(false);
   const [confirmation, setConfirmation] = useState("");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     let current = true;
     const nextRepository = repository ?? getLearningRepository();
-    void nextRepository.getDashboard().then((value) => {
-      if (current) {
-        setActiveRepository(nextRepository);
-        setDashboard(value);
-      }
-    });
+    void nextRepository.getDashboard().then(
+      (value) => {
+        if (current) {
+          setActiveRepository(nextRepository);
+          setDashboard(value);
+          setErrorMessage(null);
+        }
+      },
+      () => {
+        if (current) {
+          setActiveRepository(nextRepository);
+          setErrorMessage("학습 기록을 불러오지 못했어요. 잠시 후 다시 열어 주세요.");
+        }
+      },
+    );
     return () => {
       current = false;
     };
@@ -73,14 +83,22 @@ export function ProgressDashboard({
     if (!activeRepository) {
       return;
     }
-    await activeRepository.clearAll();
-    setDashboard(await activeRepository.getDashboard());
-    setDeleteStep(false);
-    setConfirmation("");
+    try {
+      await activeRepository.clearAll();
+      setDashboard(await activeRepository.getDashboard());
+      setErrorMessage(null);
+      setDeleteStep(false);
+      setConfirmation("");
+    } catch {
+      setErrorMessage("기록을 삭제하지 못했어요. 저장 공간을 확인하고 다시 시도해 주세요.");
+      setDeleteStep(false);
+      setConfirmation("");
+    }
   }
 
   return (
     <>
+      {errorMessage ? <p role="alert">{errorMessage}</p> : null}
       {activeRepository && !activeRepository.persistent ? (
         <p role="status">이 브라우저에서는 기록이 유지되지 않아요.</p>
       ) : null}

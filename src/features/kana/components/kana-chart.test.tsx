@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { KanaChart } from "./kana-chart";
@@ -15,6 +15,8 @@ it("opens the selected katakana yoon unit with its practice target", async () =>
   const detail = screen.getByRole("dialog", { name: "キャ 상세" });
   expect(detail).toHaveTextContent("kya");
   expect(detail).toHaveTextContent("캬");
+  expect(detail).toHaveTextContent("문자 종류가타카나");
+  expect(detail).toHaveTextContent("분류요음");
   expect(screen.getByRole("link", { name: "이 문자 연습" })).toHaveAttribute(
     "href",
     "/practice?kana=katakana-kya",
@@ -62,4 +64,12 @@ it("renders every component of a compound stroke guide statically by default", (
   expect(screen.getByRole("img", { name: "キ 획순" })).toBeVisible();
   expect(screen.getByRole("img", { name: "ャ 획순" })).toBeVisible();
   expect(screen.queryByRole("button", { name: "획순 다시 보기" })).not.toBeInTheDocument();
+});
+
+it("shows a visible fallback when a stroke asset fails at runtime", () => {
+  render(<StrokeGuide assetKeys={["hiragana/あ"]} />);
+
+  fireEvent.error(screen.getByRole("img", { name: "あ 획순" }));
+
+  expect(screen.getByRole("status")).toHaveTextContent("あ 획순 이미지를 불러오지 못했어요");
 });

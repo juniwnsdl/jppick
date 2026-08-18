@@ -40,3 +40,20 @@ it("loads persisted counters before generating a least-practiced queue", async (
 
   expect(await screen.findByLabelText("따라 쓸 문자")).toHaveTextContent("い");
 });
+
+it("starts safely with empty progress and reports a dashboard read failure", async () => {
+  const repository = createLearningRepository({ indexedDB: null });
+  vi.spyOn(repository, "getDashboard").mockRejectedValue(new DOMException("read failed"));
+
+  render(
+    <PersistentPracticeSession
+      catalog={catalog}
+      config={{ mode: "copy", scripts: ["hiragana"], groups: ["basic"], count: 5, strategy: "uniform" }}
+      random={() => 0}
+      repository={repository}
+    />,
+  );
+
+  expect(await screen.findByRole("alert")).toHaveTextContent("학습 기록을 불러오지 못했어요");
+  expect(await screen.findByLabelText("따라 쓸 문자")).toHaveTextContent(/[あい]/);
+});

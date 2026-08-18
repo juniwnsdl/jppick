@@ -1,9 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Fragment, useEffect, useReducer, useRef, useState, useSyncExternalStore } from "react";
+import { Fragment, useEffect, useMemo, useReducer, useRef, useState, useSyncExternalStore } from "react";
 
-import { DEFAULT_SETTINGS, loadSettings, type AppSettings } from "../../../lib/settings";
+import { loadSettings, saveSettings, type AppSettings } from "../../../lib/settings";
 import { StrokeGuide } from "../../kana/components/stroke-guide";
 import type { KanaUnit } from "../../kana/types";
 import {
@@ -18,6 +18,7 @@ import {
   type PracticeSessionSummary,
 } from "../session-reducer";
 import { createQuestionQueue } from "../question-generator";
+import { GROUP_OPTIONS, SCRIPT_OPTIONS } from "../practice-config";
 import type { Stroke } from "../strokes";
 import type { KanaProgressById, PracticeConfig, Question, Random } from "../types";
 import { WritingCanvas } from "./writing-canvas";
@@ -37,6 +38,7 @@ interface InterruptedPracticeSession {
   id: string;
   startedAt: string;
   config: PracticeConfig;
+  selectedKanaIds: string[];
   queue: Question[];
   currentIndex: number;
   answers: PracticeResultEntry[];
@@ -114,6 +116,7 @@ export function isCompatibleInterrupted(
 ): value is InterruptedPracticeSession {
   if (!isRecord(value) || typeof value.id !== "string" || value.id.length === 0
     || !isValidDate(value.startedAt) || !isPracticeConfig(value.config)
+    || !Array.isArray(value.selectedKanaIds)
     || !Array.isArray(value.queue) || !Array.isArray(value.answers)
     || !Number.isInteger(value.currentIndex)) {
     return false;
@@ -123,6 +126,12 @@ export function isCompatibleInterrupted(
     config.scripts.includes(unit.script) && config.groups.includes(unit.group)
   ));
   const catalogIds = new Set(selectedCatalog.map((unit) => unit.id));
+  const expectedSelectedKanaIds = Array.from(catalogIds).sort();
+  const selectedKanaIdsHaveValidShape = session.selectedKanaIds.every((kanaId, index) => (
+    typeof kanaId === "string"
+    && kanaId.length > 0
+    && kanaId === expectedSelectedKanaIds[index]
+  ));
   const questionIds = new Set<string>();
   const selectedCount = selectedCatalog.length;
   const queueHasValidShape = session.queue.every((question) => {
@@ -145,6 +154,8 @@ export function isCompatibleInterrupted(
     : session.queue.length === session.config.count;
 
   return configsMatch(session.config, config)
+    && selectedKanaIdsHaveValidShape
+    && session.selectedKanaIds.length === expectedSelectedKanaIds.length
     && queueHasValidShape
     && answersHaveValidShape
     && queueLengthMatches
@@ -354,10 +365,8 @@ function ActivePracticeSession({
   repository,
 }: ActivePracticeSessionProps) {
   const router = useRouter();
-  const settings = useSyncExternalStore(
-    subscribeToStaticSettings,
+  const [settings, setSettings] = useState<AppSettings>(
     () => initialSettings ?? storedSettingsSnapshot(),
-    () => initialSettings ?? DEFAULT_SETTINGS,
   );
   const [state, dispatch] = useReducer(
     practiceSessionReducer,
@@ -384,6 +393,7 @@ function ActivePracticeSession({
   const persistedAnswerCountRef = useRef(interrupted?.answers.length ?? 0);
   const resumedAnswerCountRef = useRef(interrupted?.answers.length ?? 0);
   const persistenceChainRef = useRef(Promise.resolve());
+  const selectedKanaIds = useMemo(() => catalog.map((unit) => unit.id).sort(), [catalog]);
 
   useEffect(() => {
     if (state.results.length <= persistedAnswerCountRef.current) {
@@ -404,6 +414,7 @@ function ActivePracticeSession({
           id: `session:${state.startedAt}`,
           startedAt: state.startedAt,
           config: state.config,
+          selectedKanaIds,
           queue: questions,
           currentIndex: answerIndex + 1,
           answers: answers.slice(0, answerIndex + 1),
@@ -412,7 +423,7 @@ function ActivePracticeSession({
     }).catch(() => {
       // Practice remains usable even if a browser revokes storage mid-session.
     });
-  }, [repository, state.config, state.questions, state.results, state.startedAt]);
+  }, [repository, selectedKanaIds, state.config, state.questions, state.results, state.startedAt]);
 
   useEffect(() => {
     if (state.phase === "complete") {
@@ -611,6 +622,15 @@ function ActivePracticeSession({
     }
   }
 
+  function updateSettings(change: Partial<Pick<AppSettings, "guideLines" | "traceGuide" | "overlayOpacity">>) {
+    setSettings((current) => {
+      const next = { ...current, ...change };
+      cachedSettings = next;
+      saveSettings(next);
+      return next;
+    });
+  }
+
   function revealAnswer() {
     if (
       state.currentStrokes.length === 0
@@ -685,10 +705,35 @@ function ActivePracticeSession({
           </p>
         ) : (
           <dl aria-label="문자 힌트" style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
+            <div><dt>문자 종류</dt><dd>{SCRIPT_OPTIONS.find((option) => option.value === kana.script)?.label}</dd></div>
+            <div><dt>분류</dt><dd>{GROUP_OPTIONS.find((option) => option.value === kana.group)?.label}</dd></div>
             <div><dt>한국어 읽기</dt><dd>{kana.readingKo}</dd></div>
             <div><dt>로마자</dt><dd>{kana.romaji}</dd></div>
           </dl>
         )}
+
+        {state.phase === "writing" ? (
+          <fieldset aria-label="쓰기 도우미 설정" className="practice-guide-settings">
+            <legend>쓰기 도우미</legend>
+            <label>
+              <input
+                checked={settings.guideLines}
+                onChange={(event) => updateSettings({ guideLines: event.currentTarget.checked })}
+                type="checkbox"
+              />
+              보조선 표시
+            </label>
+            <label>
+              <input
+                checked={settings.traceGuide}
+                disabled={config.mode !== "copy"}
+                onChange={(event) => updateSettings({ traceGuide: event.currentTarget.checked })}
+                type="checkbox"
+              />
+              따라 쓰기 가이드 표시
+            </label>
+          </fieldset>
+        ) : null}
 
         <div style={{ position: "relative" }}>
           <div style={{ pointerEvents: state.phase === "writing" ? "auto" : "none" }}>
@@ -728,10 +773,11 @@ function ActivePracticeSession({
                 aria-label="정답 투명도"
                 max="1"
                 min="0"
-                onChange={(event) => dispatch({
-                  type: "SET_OVERLAY_OPACITY",
-                  opacity: Number(event.currentTarget.value),
-                })}
+                onChange={(event) => {
+                  const opacity = Number(event.currentTarget.value);
+                  dispatch({ type: "SET_OVERLAY_OPACITY", opacity });
+                  updateSettings({ overlayOpacity: opacity });
+                }}
                 step="0.05"
                 type="range"
                 value={state.overlayOpacity}

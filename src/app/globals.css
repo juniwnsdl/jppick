@@ -437,6 +437,52 @@ textarea:focus-visible {
   gap: 1rem;
 }
 
+.practice-guide-settings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  margin: 0;
+  padding: 0.75rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+}
+
+.practice-guide-settings legend {
+  padding-inline: 0.25rem;
+  font-weight: 700;
+}
+
+.practice-guide-settings label {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  gap: 0.5rem;
+}
+
+.practice-guide-settings input {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.stroke-guide-fallback {
+  display: grid;
+  place-items: center;
+  width: min(10rem, 44vw);
+  min-height: 8rem;
+  margin: 0;
+  padding: 0.75rem;
+  color: var(--muted);
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  text-align: center;
+}
+
+.first-visit-guide {
+  margin-bottom: 2rem;
+}
+
 .practice-session > p,
 .practice-review > label {
   margin: 0;

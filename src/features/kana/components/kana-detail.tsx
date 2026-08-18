@@ -4,6 +4,15 @@ import { useEffect, useRef, type KeyboardEvent } from "react";
 import type { KanaUnit } from "../types";
 import { StrokeGuide } from "./stroke-guide";
 
+const SCRIPT_LABEL = { hiragana: "히라가나", katakana: "가타카나" } as const;
+const GROUP_LABEL = {
+  basic: "기본",
+  voiced: "탁음·반탁음",
+  yoon: "요음",
+  small: "작은 문자·기호",
+  extended: "확장 가타카나",
+} as const;
+
 interface KanaDetailProps {
   unit: KanaUnit;
   onClose: () => void;
@@ -67,6 +76,14 @@ export function KanaDetail({ unit, onClose }: KanaDetailProps) {
           <div>
             <dt>한국어 읽기</dt>
             <dd>{unit.readingKo}</dd>
+          </div>
+          <div>
+            <dt>문자 종류</dt>
+            <dd>{SCRIPT_LABEL[unit.script]}</dd>
+          </div>
+          <div>
+            <dt>분류</dt>
+            <dd>{GROUP_LABEL[unit.group]}</dd>
           </div>
         </dl>
         <h3 className="stroke-guide-title">획순 안내</h3>
