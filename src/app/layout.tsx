@@ -1,5 +1,8 @@
 import type { Metadata, Viewport } from "next";
+import Link from "next/link";
 import type { ReactNode } from "react";
+
+import { AppNav } from "../components/app-nav";
 
 import "./globals.css";
 
@@ -16,7 +19,17 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="ko">
-      <body>{children}</body>
+      <body>
+        <div className="app-shell">
+          <header className="app-shell-header">
+            <Link className="app-brand" href="/">
+              가나 학습
+            </Link>
+            <AppNav />
+          </header>
+          {children}
+        </div>
+      </body>
     </html>
   );
 }
