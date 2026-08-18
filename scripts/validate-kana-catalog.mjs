@@ -1,3 +1,7 @@
+import { existsSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
 import { tsImport } from "tsx/esm/api";
 
 const { KANA_CATALOG } = await tsImport("../src/features/kana/catalog.ts", import.meta.url);
@@ -6,6 +10,9 @@ const scripts = ["hiragana", "katakana"];
 const groups = ["basic", "voiced", "yoon", "small", "extended"];
 const ids = new Set();
 const errors = [];
+const strokeAssetKeys = new Set();
+const projectRoot = dirname(dirname(fileURLToPath(import.meta.url)));
+const strokeAssetRoot = join(projectRoot, "public", "strokes");
 
 for (const unit of KANA_CATALOG) {
   if (ids.has(unit.id)) {
@@ -30,6 +37,13 @@ for (const unit of KANA_CATALOG) {
   if (unit.strokeAssetKeys.some((key) => !key)) {
     errors.push(`${unit.id} has a missing stroke asset key`);
   }
+
+  for (const key of unit.strokeAssetKeys) {
+    strokeAssetKeys.add(key);
+    if (!existsSync(join(strokeAssetRoot, `${key}.svg`))) {
+      errors.push(`${unit.id} references a missing stroke asset: ${key}`);
+    }
+  }
 }
 
 if (errors.length > 0) {
@@ -44,3 +58,4 @@ for (const script of scripts) {
   console.log(`${script}: ${groups.map((group) => `${group}=${count(script, group)}`).join(", ")}`);
 }
 console.log(`groups: ${groups.map((group) => `${group}=${countByGroup(group)}`).join(", ")}`);
+console.log(`stroke assets=${strokeAssetKeys.size}`);

@@ -166,6 +166,169 @@ textarea:focus-visible {
   line-height: 1.5;
 }
 
+.kana-tabs,
+.kana-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.kana-filters {
+  margin-top: 0.75rem;
+}
+
+.kana-tabs button,
+.kana-filters button {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0.625rem 0.875rem;
+  color: var(--foreground);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.kana-tabs button[aria-pressed="true"],
+.kana-filters button[aria-pressed="true"] {
+  color: #fff;
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.kana-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(4.5rem, 1fr));
+  gap: 0.625rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.kana-cell {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-width: 44px;
+  min-height: 5rem;
+  padding: 0.5rem;
+  color: var(--foreground);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  cursor: pointer;
+}
+
+.kana-cell:hover {
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgb(126 53 28 / 12%);
+}
+
+.kana-cell-glyph {
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+.kana-cell-romaji {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.kana-detail-backdrop {
+  position: fixed;
+  z-index: 20;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 1rem 1rem 0;
+  background: rgb(39 33 29 / 48%);
+}
+
+.kana-detail {
+  position: relative;
+  width: min(100%, 32rem);
+  max-height: calc(100vh - 2rem);
+  padding: 1.5rem;
+  overflow: auto;
+  background: var(--surface);
+  border-radius: 1rem 1rem 0 0;
+  box-shadow: 0 18px 60px rgb(39 33 29 / 24%);
+}
+
+.kana-detail h2 {
+  margin: 0;
+}
+
+.kana-detail-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 44px;
+  height: 44px;
+  color: var(--foreground);
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+  font-size: 1.75rem;
+  cursor: pointer;
+}
+
+.kana-detail-glyph {
+  margin: 1.25rem 0;
+  font-size: clamp(4rem, 22vw, 7rem);
+  line-height: 1;
+  text-align: center;
+}
+
+.kana-detail-reading {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin: 0 0 1.25rem;
+}
+
+.kana-detail-reading div {
+  padding: 0.875rem;
+  background: var(--background);
+  border-radius: 0.75rem;
+}
+
+.kana-detail-reading dt {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.kana-detail-reading dd {
+  margin: 0.25rem 0 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.stroke-guide-title {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+}
+
+.stroke-guide {
+  display: flex;
+  justify-content: center;
+  gap: 0.625rem;
+  margin-bottom: 1.25rem;
+}
+
+.stroke-guide-image {
+  width: min(10rem, 44vw);
+  height: auto;
+  aspect-ratio: 1;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+}
+
 @media (min-width: 768px) {
   .page-container {
     padding-block: 3.5rem;
@@ -194,5 +357,14 @@ textarea:focus-visible {
   .primary-actions,
   .progress-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .kana-detail-backdrop {
+    align-items: center;
+    padding: 1rem;
+  }
+
+  .kana-detail {
+    border-radius: 1rem;
   }
 }
