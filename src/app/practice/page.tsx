@@ -25,7 +25,8 @@ export default async function PracticePage({ searchParams }: PracticePageProps) 
   return (
     <main className="page-container">
       <PageHeader
-        title="쓰기 연습 설정"
+        eyebrow="쓰기 연습"
+        title="연습 설정"
         description="연습할 문자와 문제 수를 고른 뒤 바로 시작하세요."
       />
       {message ? <p role="alert">{message}</p> : null}

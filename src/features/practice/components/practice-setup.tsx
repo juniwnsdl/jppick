@@ -48,97 +48,111 @@ export function PracticeSetup({
 
   return (
     <section aria-label="연습 설정" className="practice-setup">
-      <fieldset>
-        <legend>연습 모드</legend>
-        {([
-          { value: "copy", label: "따라 쓰기" },
-          { value: "recall", label: "암기 테스트" },
-        ] as ReadonlyArray<{ value: PracticeMode; label: string }>).map((option) => (
-          <button
-            aria-pressed={config.mode === option.value}
-            key={option.value}
-            onClick={() => setConfig((current) => ({ ...current, mode: option.value }))}
-            type="button"
-          >
-            {option.label} {selectedIndicator(config.mode === option.value)}
-          </button>
-        ))}
-      </fieldset>
+      <div className="setup-card">
+        <div aria-labelledby="setup-mode-label" className="setup-row" role="group">
+          <span className="setup-label" id="setup-mode-label">연습 모드</span>
+          <div className="pill-group">
+            {([
+              { value: "copy", label: "따라 쓰기" },
+              { value: "recall", label: "암기 테스트" },
+            ] as ReadonlyArray<{ value: PracticeMode; label: string }>).map((option) => (
+              <button
+                aria-pressed={config.mode === option.value}
+                key={option.value}
+                onClick={() => setConfig((current) => ({ ...current, mode: option.value }))}
+                type="button"
+              >
+                {option.label} {selectedIndicator(config.mode === option.value)}
+              </button>
+            ))}
+          </div>
+        </div>
 
-      <fieldset>
-        <legend>문자 체계</legend>
-        {SCRIPT_OPTIONS.map((option) => (
-          <button
-            aria-pressed={config.scripts.length === 1 && config.scripts[0] === option.value}
-            key={option.value}
-            onClick={() => setConfig((current) => ({ ...current, scripts: [option.value] }))}
-            type="button"
-          >
-            {option.label} {selectedIndicator(config.scripts.length === 1 && config.scripts[0] === option.value)}
-          </button>
-        ))}
-        <button
-          aria-pressed={config.scripts.length === SCRIPT_OPTIONS.length}
-          onClick={() => setConfig((current) => ({ ...current, scripts: SCRIPT_OPTIONS.map((option) => option.value) }))}
-          type="button"
-        >
-          혼합 {selectedIndicator(config.scripts.length === SCRIPT_OPTIONS.length)}
-        </button>
-      </fieldset>
+        <div aria-labelledby="setup-script-label" className="setup-row" role="group">
+          <span className="setup-label" id="setup-script-label">문자 체계</span>
+          <div className="pill-group">
+            {SCRIPT_OPTIONS.map((option) => (
+              <button
+                aria-pressed={config.scripts.length === 1 && config.scripts[0] === option.value}
+                key={option.value}
+                onClick={() => setConfig((current) => ({ ...current, scripts: [option.value] }))}
+                type="button"
+              >
+                {option.label} {selectedIndicator(config.scripts.length === 1 && config.scripts[0] === option.value)}
+              </button>
+            ))}
+            <button
+              aria-pressed={config.scripts.length === SCRIPT_OPTIONS.length}
+              onClick={() => setConfig((current) => ({ ...current, scripts: SCRIPT_OPTIONS.map((option) => option.value) }))}
+              type="button"
+            >
+              혼합 {selectedIndicator(config.scripts.length === SCRIPT_OPTIONS.length)}
+            </button>
+          </div>
+        </div>
 
-      <fieldset>
-        <legend>연습 범위</legend>
-        {GROUP_OPTIONS.map((option) => (
-          <button
-            aria-pressed={config.groups.includes(option.value)}
-            key={option.value}
-            onClick={() => setConfig((current) => ({ ...current, groups: toggle(current.groups, option.value) }))}
-            type="button"
-          >
-            {option.label} {selectedIndicator(config.groups.includes(option.value))}
-          </button>
-        ))}
-      </fieldset>
+        <div aria-labelledby="setup-range-label" className="setup-row" role="group">
+          <span className="setup-label" id="setup-range-label">연습 범위</span>
+          <div className="pill-group">
+            {GROUP_OPTIONS.map((option) => (
+              <button
+                aria-pressed={config.groups.includes(option.value)}
+                key={option.value}
+                onClick={() => setConfig((current) => ({ ...current, groups: toggle(current.groups, option.value) }))}
+                type="button"
+              >
+                {option.label} {selectedIndicator(config.groups.includes(option.value))}
+              </button>
+            ))}
+          </div>
+        </div>
 
-      <fieldset>
-        <legend>문제 수</legend>
-        {COUNT_OPTIONS.map((option) => (
-          <button
-            aria-pressed={config.count === option.value}
-            key={option.label}
-            onClick={() => setConfig((current) => ({ ...current, count: option.value }))}
-            type="button"
-          >
-            {option.label} {selectedIndicator(config.count === option.value)}
-          </button>
-        ))}
-      </fieldset>
+        <div aria-labelledby="setup-count-label" className="setup-row" role="group">
+          <span className="setup-label" id="setup-count-label">문제 수</span>
+          <div className="pill-group">
+            {COUNT_OPTIONS.map((option) => (
+              <button
+                aria-pressed={config.count === option.value}
+                key={option.label}
+                onClick={() => setConfig((current) => ({ ...current, count: option.value }))}
+                type="button"
+              >
+                {option.label} {selectedIndicator(config.count === option.value)}
+              </button>
+            ))}
+          </div>
+        </div>
 
-      <fieldset>
-        <legend>출제 방식</legend>
-        {STRATEGY_OPTIONS.map((option) => (
-          <button
-            aria-pressed={config.strategy === option.value}
-            key={option.value}
-            onClick={() => setConfig((current) => ({ ...current, strategy: option.value }))}
-            type="button"
-          >
-            {option.label} {selectedIndicator(config.strategy === option.value)}
-          </button>
-        ))}
-      </fieldset>
+        <div aria-labelledby="setup-strategy-label" className="setup-row" role="group">
+          <span className="setup-label" id="setup-strategy-label">출제 방식</span>
+          <div className="pill-group">
+            {STRATEGY_OPTIONS.map((option) => (
+              <button
+                aria-pressed={config.strategy === option.value}
+                key={option.value}
+                onClick={() => setConfig((current) => ({ ...current, strategy: option.value }))}
+                type="button"
+              >
+                {option.label} {selectedIndicator(config.strategy === option.value)}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
 
-      <p aria-live="polite">선택한 문자: {selectedKanaCount}개</p>
-      {canStart ? (
-        <Link className="primary-action" href={practiceRunHref(config, activeSelectedKanaIds)}>
-          연습 시작
-        </Link>
-      ) : (
-        <>
-          <p>선택한 범위에 연습할 문자가 없어요.</p>
-          <button disabled type="button">연습 시작</button>
-        </>
-      )}
+      <div className="practice-setup-summary">
+        <div>
+          <p aria-live="polite">선택한 문자: <strong>{selectedKanaCount}</strong>개</p>
+          {!canStart ? <p className="practice-setup-empty">선택한 범위에 연습할 문자가 없어요.</p> : null}
+        </div>
+        {canStart ? (
+          <Link className="primary-action" href={practiceRunHref(config, activeSelectedKanaIds)}>
+            연습 시작
+          </Link>
+        ) : (
+          <button className="btn-primary" disabled type="button">연습 시작</button>
+        )}
+      </div>
     </section>
   );
 }

@@ -5,6 +5,7 @@ import { Fragment, useEffect, useMemo, useReducer, useRef, useState, useSyncExte
 
 import { loadSettings, saveSettings, type AppSettings } from "../../../lib/settings";
 import { StrokeGuide } from "../../kana/components/stroke-guide";
+import { kanaReadingParts } from "../../kana/reading";
 import type { KanaUnit } from "../../kana/types";
 import {
   appendUnlimitedCycle,
@@ -300,33 +301,35 @@ export function PracticeSession({
 
   if (clearError && interrupted === undefined) {
     return (
-      <main className="page-container">
-        <p role="alert">중단 기록을 삭제하지 못했어요. 잠시 후 다시 시도해 주세요.</p>
-        <button disabled={clearing} onClick={() => void clearInterruptedAndStart()} type="button">
-          삭제 다시 시도
-        </button>
+      <main className="page-container page-container--narrow">
+        <section className="resume-card">
+          <p role="alert">중단 기록을 삭제하지 못했어요. 잠시 후 다시 시도해 주세요.</p>
+          <button className="btn-secondary" disabled={clearing} onClick={() => void clearInterruptedAndStart()} type="button">
+            삭제 다시 시도
+          </button>
+        </section>
       </main>
     );
   }
 
   if (questions.length === 0 || interrupted === undefined) {
     return (
-      <main className="page-container">
-        <p aria-live="polite">연습 문제를 준비하고 있어요.</p>
+      <main className="page-container page-container--narrow">
+        <p aria-live="polite" className="loading-state">연습 문제를 준비하고 있어요.</p>
       </main>
     );
   }
 
   if (interrupted) {
     return (
-      <main className="page-container">
-        <section aria-labelledby="resume-heading" className="progress-card">
+      <main className="page-container page-container--narrow">
+        <section aria-labelledby="resume-heading" className="resume-card">
           <h1 id="resume-heading">중단한 연습이 있어요</h1>
           <p>{interrupted.answers.length}문제를 마친 지점부터 이어갈 수 있어요.</p>
           {clearError ? <p role="alert">중단 기록을 삭제하지 못했어요. 다시 시도해 주세요.</p> : null}
           <div className="primary-actions">
             <button
-              className="primary-action"
+              className="btn-primary"
               onClick={() => {
                 setResumedSession(interrupted);
                 setInterrupted(null);
@@ -336,6 +339,7 @@ export function PracticeSession({
               이어하기
             </button>
             <button
+              className="btn-secondary"
               disabled={clearing}
               onClick={() => void clearInterruptedAndStart()}
               type="button"
@@ -689,7 +693,7 @@ function ActivePracticeSession({
         <text
           data-testid="trace-kana-guide"
           dominantBaseline="central"
-          fill="#d8ccc3"
+          fill="#e5e8eb"
           fontSize="0.72"
           stroke="none"
           textAnchor="middle"
@@ -702,26 +706,54 @@ function ActivePracticeSession({
     </Fragment>
   );
 
+  const reading = kanaReadingParts(kana);
+  const finite = config.count !== "unlimited";
+  const progressPercent = finite && state.questions.length > 0
+    ? Math.round((state.results.length / state.questions.length) * 100)
+    : 0;
+  const modeLabel = config.mode === "copy" ? "따라 쓰기" : "암기 테스트";
+
   return (
-    <main className="page-container">
+    <main className="page-container page-container--narrow">
       {storageWarning ? <p role="alert">{storageWarning}</p> : null}
       <section aria-label="쓰기 연습" className="practice-session">
-        <p aria-live="polite">
-          {config.count === "unlimited"
-            ? `${state.results.length}개 완료 · 무제한 연습`
-            : `${state.currentIndex + 1} / ${state.questions.length}`}
-        </p>
+        <div className="practice-progress">
+          <p aria-live="polite" className="practice-progress-meta">
+            {finite ? (
+              <span className="practice-progress-count">{state.currentIndex + 1} / {state.questions.length}</span>
+            ) : (
+              <span className="practice-progress-count">{state.results.length}개 완료 · 무제한 연습</span>
+            )}
+            <span>{modeLabel}</span>
+          </p>
+          {finite ? (
+            <div aria-hidden="true" className="practice-progress-track">
+              <span style={{ width: `${progressPercent}%` }} />
+            </div>
+          ) : null}
+        </div>
 
         {config.mode === "copy" ? (
-          <p aria-label="따라 쓸 문자" style={{ fontSize: "4rem", margin: "1rem 0", textAlign: "center" }}>
-            {kana.display}
-          </p>
+          <div className="practice-target">
+            <p aria-label="따라 쓸 문자" className="practice-target-glyph">
+              {kana.display}
+            </p>
+            <p aria-hidden="true" className="practice-target-reading">
+              {reading.ko}
+              {reading.romaji ? <small>[{reading.romaji}]</small> : null}
+            </p>
+          </div>
         ) : (
-          <dl aria-label="문자 힌트" style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
-            <div><dt>문자 종류</dt><dd>{SCRIPT_OPTIONS.find((option) => option.value === kana.script)?.label}</dd></div>
-            <div><dt>분류</dt><dd>{GROUP_OPTIONS.find((option) => option.value === kana.group)?.label}</dd></div>
-            <div><dt>한국어 읽기</dt><dd>{kana.readingKo}</dd></div>
-            <div><dt>로마자</dt><dd>{kana.romaji}</dd></div>
+          <dl aria-label="문자 힌트" className="practice-hint">
+            <div className="practice-hint--reading">
+              <dt>한국어 읽기</dt>
+              <dd>
+                {kana.readingKo}
+                {reading.romaji ? <small>[<span>{reading.romaji}</span>]</small> : null}
+              </dd>
+            </div>
+            <div className="practice-hint-meta"><dt>문자 종류</dt><dd>{SCRIPT_OPTIONS.find((option) => option.value === kana.script)?.label}</dd></div>
+            <div className="practice-hint-meta"><dt>분류</dt><dd>{GROUP_OPTIONS.find((option) => option.value === kana.group)?.label}</dd></div>
           </dl>
         )}
 
@@ -748,24 +780,15 @@ function ActivePracticeSession({
           </fieldset>
         ) : null}
 
-        <div style={{ position: "relative" }}>
+        <div className="writing-stage">
           <div style={{ pointerEvents: state.phase === "writing" ? "auto" : "none" }}>
             <WritingCanvas guide={guide} strokes={state.currentStrokes} onChange={handleCanvasChange} />
           </div>
           {state.phase === "reviewing" ? (
             <span
               aria-label="정답 모델"
-              style={{
-                alignItems: "center",
-                aspectRatio: "1",
-                display: "flex",
-                fontSize: "clamp(6rem, 45vw, 14rem)",
-                inset: "0 0 auto",
-                justifyContent: "center",
-                opacity: state.overlayOpacity,
-                pointerEvents: "none",
-                position: "absolute",
-              }}
+              className="writing-answer-overlay"
+              style={{ opacity: state.overlayOpacity }}
             >
               {kana.display}
             </span>
@@ -773,7 +796,7 @@ function ActivePracticeSession({
         </div>
 
         {state.phase === "writing" ? (
-          <button className="primary-action" onClick={revealAnswer} type="button">
+          <button className="btn-primary btn-block" onClick={revealAnswer} type="button">
             정답 확인
           </button>
         ) : null}
@@ -798,14 +821,14 @@ function ActivePracticeSession({
             </label>
             <StrokeGuide assetKeys={kana.strokeAssetKeys} />
             {evaluated ? (
-              <button className="primary-action" onClick={goNext} type="button">
+              <button className="btn-primary btn-block" onClick={goNext} type="button">
                 {config.count !== "unlimited" && state.currentIndex + 1 >= state.questions.length
                   ? "결과 보기"
                   : "다음 문제"}
               </button>
             ) : (
-              <div aria-label="자기 평가" style={{ display: "flex", gap: "0.75rem" }}>
-                <button onClick={() => evaluate("good")} type="button">잘 썼어요</button>
+              <div aria-label="자기 평가" className="practice-evaluation">
+                <button className="btn-good" onClick={() => evaluate("good")} type="button">잘 썼어요</button>
                 <button onClick={() => evaluate("retry")} type="button">다시 연습</button>
               </div>
             )}
@@ -813,7 +836,7 @@ function ActivePracticeSession({
         ) : null}
 
         {config.count === "unlimited" && state.phase !== "complete" ? (
-          <button onClick={() => dispatch({ type: "END", endedAt: now() })} type="button">
+          <button className="btn-ghost practice-end" onClick={() => dispatch({ type: "END", endedAt: now() })} type="button">
             연습 끝내기
           </button>
         ) : null}

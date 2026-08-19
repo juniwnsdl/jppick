@@ -96,7 +96,7 @@ export function WritingCanvas({ strokes, onChange, guide }: WritingCanvasProps) 
     context.lineCap = "round";
     context.lineJoin = "round";
     context.lineWidth = Math.max(3, Math.min(size.width, size.height) * 0.025);
-    context.strokeStyle = "#27211d";
+    context.strokeStyle = "#191f28";
 
     for (const stroke of strokesRef.current) {
       drawStroke(context, stroke, size);
@@ -240,17 +240,7 @@ export function WritingCanvas({ strokes, onChange, guide }: WritingCanvasProps) 
 
   return (
     <div className="writing-canvas">
-      <div
-        ref={wrapperRef}
-        style={{
-          aspectRatio: "1",
-          background: "#ffffff",
-          border: "1px solid #eadbd0",
-          overflow: "hidden",
-          position: "relative",
-          width: "100%",
-        }}
-      >
+      <div className="writing-canvas-frame" ref={wrapperRef}>
         <svg
           aria-hidden="true"
           data-testid="writing-guide-layer"
@@ -262,7 +252,7 @@ export function WritingCanvas({ strokes, onChange, guide }: WritingCanvasProps) 
         >
           <g
             fill="none"
-            stroke="#d8ccc3"
+            stroke="#d1d6db"
             strokeDasharray="0.025 0.025"
             strokeWidth="0.006"
             vectorEffect="non-scaling-stroke"
@@ -292,7 +282,7 @@ export function WritingCanvas({ strokes, onChange, guide }: WritingCanvasProps) 
           style={{ inset: 0, position: "absolute", touchAction: "none" }}
         />
       </div>
-      <div aria-label="쓰기 도구" style={{ display: "flex", gap: "0.5rem", marginTop: "0.75rem" }}>
+      <div aria-label="쓰기 도구" className="writing-tools">
         <button
           aria-label="마지막 획 실행 취소"
           disabled={strokes.length === 0}

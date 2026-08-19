@@ -104,53 +104,81 @@ export function ProgressDashboard({
       ) : null}
 
       <section aria-labelledby="record-summary-heading" className="dashboard-section">
-        <h2 id="record-summary-heading">학습 요약</h2>
-        <div className="progress-grid">
-          <article className="progress-card"><h3>누적 연습</h3><p>총 {value.totalPresented}회</p></article>
-          <article className="progress-card"><h3>완료한 연습</h3><p>완료한 연습 {value.completedSessions}회</p></article>
-          <article className="progress-card"><h3>마지막 연습</h3><p>{formatDate(value.lastPracticedAt)}</p></article>
+        <div className="section-title">
+          <h2 id="record-summary-heading">학습 요약</h2>
+        </div>
+        <div className="progress-grid progress-grid--3">
+          <article className="progress-card">
+            <h3>누적 연습</h3>
+            <p className="stat-large">총 {value.totalPresented}회</p>
+          </article>
+          <article className="progress-card">
+            <h3>연습 세션</h3>
+            <p>완료한 연습 {value.completedSessions}회</p>
+          </article>
+          <article className="progress-card">
+            <h3>마지막 연습</h3>
+            <p>{formatDate(value.lastPracticedAt)}</p>
+          </article>
         </div>
       </section>
 
-      <section aria-labelledby="least-heading" className="dashboard-section">
-        <h2 id="least-heading">가장 적게 연습한 문자</h2>
-        <ol aria-label="가장 적게 연습한 문자">
-          {leastPracticed.length > 0 ? leastPracticed.slice(0, 5).map((item) => (
-            <li key={item.kanaId}>{kanaLabel(item.kanaId)} · {item.presented}회</li>
-          )) : <li>아직 연습한 문자가 없어요.</li>}
-        </ol>
-      </section>
+      <div className="records-columns">
+        <section aria-labelledby="least-heading" className="dashboard-section">
+          <div className="section-title">
+            <h2 id="least-heading">가장 적게 연습한 문자</h2>
+          </div>
+          <ol aria-label="가장 적게 연습한 문자" className="rank-list">
+            {leastPracticed.length > 0 ? leastPracticed.slice(0, 5).map((item) => (
+              <li key={item.kanaId}>
+                <span className="rank-kana">{kanaLabel(item.kanaId)}</span>
+                <span className="rank-meta">{item.presented}회</span>
+              </li>
+            )) : <li className="rank-empty">아직 연습한 문자가 없어요.</li>}
+          </ol>
+        </section>
 
-      <section aria-labelledby="difficult-heading" className="dashboard-section">
-        <h2 id="difficult-heading">어려운 문자</h2>
-        <ol aria-label="어려운 문자 순위">
-          {difficult.length > 0 ? difficult.slice(0, 5).map((item) => (
-            <li key={item.kanaId}>
-              {kanaLabel(item.kanaId)} · 다시 연습 {Math.round(item.retry / item.presented * 100)}%
-            </li>
-          )) : <li>연습 기록이 쌓이면 표시돼요.</li>}
-        </ol>
-      </section>
+        <section aria-labelledby="difficult-heading" className="dashboard-section">
+          <div className="section-title">
+            <h2 id="difficult-heading">어려운 문자</h2>
+          </div>
+          <ol aria-label="어려운 문자 순위" className="rank-list">
+            {difficult.length > 0 ? difficult.slice(0, 5).map((item) => (
+              <li key={item.kanaId}>
+                <span className="rank-kana">{kanaLabel(item.kanaId)}</span>
+                <span className="rank-meta">다시 연습 {Math.round(item.retry / item.presented * 100)}%</span>
+              </li>
+            )) : <li className="rank-empty">연습 기록이 쌓이면 표시돼요.</li>}
+          </ol>
+        </section>
+      </div>
 
       <section aria-labelledby="per-kana-heading" className="dashboard-section">
-        <h2 id="per-kana-heading">문자별 기록</h2>
-        <table className="progress-table">
-          <thead><tr><th scope="col">문자</th><th scope="col">전체</th><th scope="col">잘 씀</th><th scope="col">다시</th></tr></thead>
-          <tbody>
-            {value.kana.map((item) => (
-              <tr key={item.kanaId}>
-                <th scope="row">{kanaLabel(item.kanaId)}</th>
-                <td>{item.presented}</td><td>{item.good}</td><td>{item.retry}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="section-title">
+          <h2 id="per-kana-heading">문자별 기록</h2>
+          <p>{value.kana.length}자</p>
+        </div>
+        <div className="progress-table-wrap">
+          <table className="progress-table">
+            <thead><tr><th scope="col">문자</th><th scope="col">전체</th><th scope="col">잘 씀</th><th scope="col">다시</th></tr></thead>
+            <tbody>
+              {value.kana.map((item) => (
+                <tr key={item.kanaId}>
+                  <th scope="row">{kanaLabel(item.kanaId)}</th>
+                  <td>{item.presented}</td><td>{item.good}</td><td>{item.retry}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {value.kana.length === 0 ? <p className="progress-table-empty">아직 기록이 없어요. 연습을 마치면 문자별 기록이 쌓여요.</p> : null}
+        </div>
       </section>
 
       <section aria-labelledby="delete-heading" className="dashboard-section records-delete">
         <h2 id="delete-heading">기록 관리</h2>
+        <p>모든 학습 기록을 이 브라우저에서 지워요. 삭제 후에는 되돌릴 수 없어요.</p>
         {!deleteStep ? (
-          <button onClick={() => setDeleteStep(true)} type="button">기록 삭제</button>
+          <button className="btn-secondary" onClick={() => setDeleteStep(true)} type="button">기록 삭제</button>
         ) : (
           <div className="records-delete-controls">
             <p role="alert">삭제한 기록은 복구할 수 없어요.</p>
@@ -158,18 +186,20 @@ export function ProgressDashboard({
               삭제 확인
               <input
                 onChange={(event) => setConfirmation(event.currentTarget.value)}
+                placeholder="삭제"
                 value={confirmation}
               />
             </label>
             <div className="records-delete-actions">
               <button
+                className="btn-danger"
                 disabled={confirmation !== "삭제"}
                 onClick={() => void clearRecords()}
                 type="button"
               >
                 모든 기록 영구 삭제
               </button>
-              <button onClick={() => { setDeleteStep(false); setConfirmation(""); }} type="button">취소</button>
+              <button className="btn-secondary" onClick={() => { setDeleteStep(false); setConfirmation(""); }} type="button">취소</button>
             </div>
           </div>
         )}
