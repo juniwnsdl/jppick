@@ -1381,15 +1381,17 @@ p[role="status"] {
 .writing-answer-overlay {
   position: absolute;
   inset: 0 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 100%;
   aspect-ratio: 1;
+  padding: 1.5px; /* match the canvas frame border so the glyph lands exactly on the trace guide */
   color: var(--primary);
   font-family: var(--font-kana);
-  font-size: clamp(6rem, 45vw, 14rem);
-  font-weight: 500;
+  overflow: visible;
   pointer-events: none;
+}
+
+.writing-answer-overlay text {
+  font-family: var(--font-kana);
 }
 
 .writing-tools {
@@ -1441,6 +1443,17 @@ p[role="status"] {
 .practice-actions {
   display: grid;
   gap: 0.75rem;
+}
+
+.practice-rewrite-hint {
+  color: var(--primary-text);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.practice-skip {
+  justify-self: center;
 }
 
 .practice-end {

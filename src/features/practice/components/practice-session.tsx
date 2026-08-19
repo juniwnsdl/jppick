@@ -613,6 +613,9 @@ function ActivePracticeSession({
   const question = state.questions[state.currentIndex];
   const kana = catalog.find((unit) => unit.id === question?.kanaId);
   const evaluated = state.results.length > state.currentIndex;
+  const traceFontSize = kana && kana.glyphs.length > 1 ? 0.46 : 0.72;
+  const isLastQuestion = config.count !== "unlimited" && state.currentIndex + 1 >= state.questions.length;
+  const nextLabel = isLastQuestion ? "결과 보기" : "다음 문제";
 
   if (!question || !kana) {
     return <p role="alert">문제를 불러오지 못했어요. 연습 설정으로 돌아가 다시 시작해 주세요.</p>;
@@ -660,6 +663,10 @@ function ActivePracticeSession({
 
   function evaluate(evaluation: Evaluation) {
     dispatch({ type: "EVALUATE", evaluation, answeredAt: now() });
+    if (evaluation === "retry") {
+      // "다시 연습" hands the canvas straight back so the learner can write the kana again.
+      dispatch({ type: "REWRITE" });
+    }
   }
 
   function goNext() {
@@ -694,7 +701,7 @@ function ActivePracticeSession({
           data-testid="trace-kana-guide"
           dominantBaseline="central"
           fill="#e5e8eb"
-          fontSize={kana.glyphs.length > 1 ? 0.46 : 0.72}
+          fontSize={traceFontSize}
           stroke="none"
           textAnchor="middle"
           x="0.5"
@@ -757,7 +764,7 @@ function ActivePracticeSession({
           </dl>
         )}
 
-        {state.phase === "writing" ? (
+        {state.phase !== "complete" ? (
           <fieldset aria-label="쓰기 도우미 설정" className="practice-guide-settings">
             <legend>쓰기 도우미</legend>
             <label>
@@ -785,23 +792,42 @@ function ActivePracticeSession({
             <WritingCanvas guide={guide} strokes={state.currentStrokes} onChange={handleCanvasChange} />
           </div>
           {state.phase === "reviewing" ? (
-            <span
+            <svg
               aria-label="정답 모델"
               className="writing-answer-overlay"
-              style={{
-                fontSize: kana.glyphs.length > 1 ? "46cqw" : "72cqw",
-                opacity: state.overlayOpacity,
-              }}
+              preserveAspectRatio="none"
+              role="img"
+              style={{ opacity: state.overlayOpacity }}
+              viewBox="0 0 1 1"
             >
-              {kana.display}
-            </span>
+              <text
+                dominantBaseline="central"
+                fill="currentColor"
+                fontSize={traceFontSize}
+                textAnchor="middle"
+                x="0.5"
+                y="0.5"
+              >
+                {kana.display}
+              </text>
+            </svg>
           ) : null}
         </div>
 
         {state.phase === "writing" ? (
-          <button className="btn-primary btn-block" onClick={revealAnswer} type="button">
-            정답 확인
-          </button>
+          <div className="practice-actions">
+            {evaluated ? (
+              <p aria-live="polite" className="practice-rewrite-hint">다시 한 번 써 보고 정답을 확인해 보세요.</p>
+            ) : null}
+            <button className="btn-primary btn-block" onClick={revealAnswer} type="button">
+              정답 확인
+            </button>
+            {evaluated ? (
+              <button className="btn-ghost practice-skip" onClick={goNext} type="button">
+                {nextLabel}
+              </button>
+            ) : null}
+          </div>
         ) : null}
 
         {state.phase === "reviewing" ? (
@@ -824,11 +850,14 @@ function ActivePracticeSession({
             </label>
             <StrokeGuide animated assetKeys={kana.strokeAssetKeys} replayable={false} />
             {evaluated ? (
-              <button className="btn-primary btn-block" onClick={goNext} type="button">
-                {config.count !== "unlimited" && state.currentIndex + 1 >= state.questions.length
-                  ? "결과 보기"
-                  : "다음 문제"}
-              </button>
+              <div className="practice-evaluation">
+                <button className="btn-secondary" onClick={() => dispatch({ type: "REWRITE" })} type="button">
+                  다시 써 보기
+                </button>
+                <button className="btn-primary" onClick={goNext} type="button">
+                  {nextLabel}
+                </button>
+              </div>
             ) : (
               <div aria-label="자기 평가" className="practice-evaluation">
                 <button className="btn-good" onClick={() => evaluate("good")} type="button">잘 썼어요</button>

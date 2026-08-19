@@ -46,6 +46,7 @@ export type PracticeSessionAction =
   | { type: "REVEAL" }
   | { type: "SET_OVERLAY_OPACITY"; opacity: number }
   | { type: "EVALUATE"; evaluation: Evaluation; answeredAt: string }
+  | { type: "REWRITE" }
   | { type: "NEXT"; nextQuestions?: Question[]; endedAt?: string }
   | { type: "END"; endedAt: string };
 
@@ -120,8 +121,13 @@ export function practiceSessionReducer(
         }],
       };
     }
+    case "REWRITE":
+      // After a self-evaluation the learner may write the same kana again before moving on.
+      return state.phase === "reviewing" && currentQuestionWasEvaluated(state)
+        ? { ...state, currentStrokes: [], phase: "writing" }
+        : state;
     case "NEXT": {
-      if (state.phase !== "reviewing" || !currentQuestionWasEvaluated(state)) {
+      if (state.phase === "complete" || !currentQuestionWasEvaluated(state)) {
         return state;
       }
 
