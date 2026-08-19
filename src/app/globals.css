@@ -1003,13 +1003,90 @@ p[role="status"] {
 }
 
 .stroke-guide-image {
-  width: min(9.5rem, 40vw);
+  width: min(11rem, 42vw);
   height: auto;
   aspect-ratio: 1;
   padding: 0.5rem;
   background: var(--grey-50);
   border: 1px solid var(--grey-100);
   border-radius: 18px;
+}
+
+.stroke-guide-block {
+  display: grid;
+  gap: 0.5rem;
+  justify-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.stroke-guide:has(> :only-child) .stroke-guide-image {
+  width: min(13rem, 60vw);
+}
+
+.stroke-guide-block .stroke-guide {
+  margin-bottom: 0;
+}
+
+.stroke-guide-replay {
+  min-height: 40px;
+  padding: 0.375rem 0.875rem;
+  color: var(--primary-text);
+  font-size: 0.875rem;
+}
+
+.stroke-guide-replay:hover:not(:disabled) {
+  background: var(--primary-tint);
+}
+
+/* Inline, enhanced stroke-order SVG */
+.stroke-order {
+  --shadow: var(--grey-200);
+  --stroke: var(--grey-900);
+  display: block;
+}
+
+.stroke-order svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.stroke-order-number circle {
+  fill: var(--primary);
+  stroke: #fff;
+  stroke-width: 12;
+}
+
+.stroke-order-number text {
+  fill: #fff;
+  font-family: var(--font-sans);
+  font-weight: 800;
+}
+
+.stroke-order--animated [data-strokesvg="strokes"] path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: stroke-draw 0.55s ease-out forwards;
+  animation-delay: calc(var(--i, 0) * 0.65s + 0.25s);
+}
+
+.stroke-order--animated .stroke-order-number {
+  opacity: 0;
+  animation: stroke-pop 0.25s ease-out forwards;
+  animation-delay: calc(var(--i, 0) * 0.65s + 0.1s);
+}
+
+@keyframes stroke-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes stroke-pop {
+  to {
+    opacity: 1;
+  }
 }
 
 .stroke-guide-fallback {
@@ -1283,6 +1360,7 @@ p[role="status"] {
 
 .writing-stage {
   position: relative;
+  container-type: inline-size;
 }
 
 .writing-canvas-frame svg text {
@@ -1333,7 +1411,8 @@ p[role="status"] {
   font-weight: 600;
 }
 
-.practice-review .stroke-guide {
+.practice-review .stroke-guide,
+.practice-review .stroke-guide-block {
   margin-bottom: 0;
 }
 
@@ -1709,6 +1788,14 @@ p[role="status"] {
   *::after {
     animation: none !important;
     transition: none !important;
+  }
+
+  .stroke-order--animated [data-strokesvg="strokes"] path {
+    stroke-dashoffset: 0;
+  }
+
+  .stroke-order--animated .stroke-order-number {
+    opacity: 1;
   }
 }
 

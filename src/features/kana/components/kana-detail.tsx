@@ -87,7 +87,7 @@ export function KanaDetail({ unit, onClose }: KanaDetailProps) {
           </div>
         </dl>
         <h3 className="stroke-guide-title">획순 안내</h3>
-        <StrokeGuide assetKeys={unit.strokeAssetKeys} />
+        <StrokeGuide animated assetKeys={unit.strokeAssetKeys} />
         <Link className="primary-action" href={`/practice?kana=${encodeURIComponent(unit.id)}`}>
           이 문자 연습
         </Link>

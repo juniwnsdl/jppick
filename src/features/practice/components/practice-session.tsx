@@ -694,7 +694,7 @@ function ActivePracticeSession({
           data-testid="trace-kana-guide"
           dominantBaseline="central"
           fill="#e5e8eb"
-          fontSize="0.72"
+          fontSize={kana.glyphs.length > 1 ? 0.46 : 0.72}
           stroke="none"
           textAnchor="middle"
           x="0.5"
@@ -788,7 +788,10 @@ function ActivePracticeSession({
             <span
               aria-label="정답 모델"
               className="writing-answer-overlay"
-              style={{ opacity: state.overlayOpacity }}
+              style={{
+                fontSize: kana.glyphs.length > 1 ? "46cqw" : "72cqw",
+                opacity: state.overlayOpacity,
+              }}
             >
               {kana.display}
             </span>
@@ -819,7 +822,7 @@ function ActivePracticeSession({
                 value={state.overlayOpacity}
               />
             </label>
-            <StrokeGuide assetKeys={kana.strokeAssetKeys} />
+            <StrokeGuide animated assetKeys={kana.strokeAssetKeys} replayable={false} />
             {evaluated ? (
               <button className="btn-primary btn-block" onClick={goNext} type="button">
                 {config.count !== "unlimited" && state.currentIndex + 1 >= state.questions.length
