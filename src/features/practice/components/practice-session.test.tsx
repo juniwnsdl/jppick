@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { renderToString } from "react-dom/server";
 import { vi } from "vitest";
@@ -151,7 +151,6 @@ beforeEach(() => {
     setTransform: vi.fn(),
     stroke: vi.fn(),
   } as unknown as CanvasRenderingContext2D);
-  vi.spyOn(window, "confirm").mockReturnValue(true);
 });
 
 afterAll(() => {
@@ -165,6 +164,14 @@ afterEach(() => {
   window.localStorage.clear();
   window.history.replaceState({}, "", "/");
 });
+
+async function revealWithoutInk(user: ReturnType<typeof userEvent.setup>) {
+  await user.click(screen.getByRole("button", { name: "정답 확인" }));
+  const dialog = screen.getByRole("alertdialog", { name: "아직 쓴 획이 없어요" });
+  expect(dialog).toHaveTextContent("그래도 정답을 확인할까요?");
+  await user.click(within(dialog).getByRole("button", { name: "그래도 확인하기" }));
+  expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
+}
 
 it("shows the kana and enabled trace guide before reveal in copy mode", () => {
   render(
@@ -283,8 +290,14 @@ it("confirms an empty attempt and reveals comparison and self-evaluation control
   );
 
   await user.click(screen.getByRole("button", { name: "정답 확인" }));
+  const dialog = screen.getByRole("alertdialog", { name: "아직 쓴 획이 없어요" });
+  expect(within(dialog).getByRole("button", { name: "그래도 확인하기" })).toHaveFocus();
+  await user.click(within(dialog).getByRole("button", { name: "더 써 볼게요" }));
+  expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
+  expect(screen.queryByLabelText("정답 모델")).not.toBeInTheDocument();
 
-  expect(window.confirm).toHaveBeenCalledWith("아직 쓴 획이 없어요. 그래도 정답을 확인할까요?");
+  await revealWithoutInk(user);
+
   expect(screen.getByLabelText("정답 모델")).toHaveTextContent("あ");
   expect(screen.getByRole("slider", { name: "정답 투명도" })).toHaveValue("0.55");
   expect(screen.getByRole("button", { name: "잘 썼어요" })).toBeVisible();
@@ -296,8 +309,8 @@ it("confirms an empty attempt and reveals comparison and self-evaluation control
   expect(screen.getByRole("slider", { name: "정답 투명도" })).toHaveValue("0.8");
 });
 
-it("warns and can cancel an internal link while the session is active", () => {
-  vi.mocked(window.confirm).mockReturnValue(false);
+it("warns and can cancel an internal link while the session is active", async () => {
+  const user = userEvent.setup();
   render(
     <>
       <a href="/chart">문자표</a>
@@ -310,15 +323,22 @@ it("warns and can cancel an internal link while the session is active", () => {
     </>,
   );
 
-  const navigationContinues = fireEvent.click(screen.getByRole("link", { name: "문자표" }));
+  const link = screen.getByRole("link", { name: "문자표" });
+  link.focus();
+  const navigationContinues = fireEvent.click(link);
 
-  expect(window.confirm).toHaveBeenCalledWith("연습을 끝내고 이동할까요?");
   expect(navigationContinues).toBe(false);
+  const dialog = screen.getByRole("alertdialog", { name: "연습을 끝내고 이동할까요?" });
+  expect(within(dialog).getByRole("button", { name: "계속 연습하기" })).toHaveFocus();
+
+  await user.click(within(dialog).getByRole("button", { name: "계속 연습하기" }));
+
+  expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
+  expect(link).toHaveFocus();
 });
 
 it("guards programmatic history navigation and restores history methods on cleanup", () => {
   window.history.replaceState({}, "", "/practice/run");
-  vi.mocked(window.confirm).mockReturnValue(false);
   const { unmount } = render(
     <PracticeSession
       catalog={[kana]}
@@ -328,23 +348,23 @@ it("guards programmatic history navigation and restores history methods on clean
     />,
   );
 
-  window.history.pushState({ source: "programmatic" }, "", "/chart");
+  act(() => {
+    window.history.pushState({ source: "programmatic" }, "", "/chart");
+  });
 
-  expect(window.confirm).toHaveBeenCalledWith("연습을 끝내고 이동할까요?");
+  expect(screen.getByRole("alertdialog", { name: "연습을 끝내고 이동할까요?" })).toBeVisible();
   expect(window.location.pathname).toBe("/practice/run");
 
   unmount();
-  vi.mocked(window.confirm).mockClear();
   window.history.pushState({ source: "after-cleanup" }, "", "/chart");
 
   expect(window.location.pathname).toBe("/chart");
-  expect(window.confirm).not.toHaveBeenCalled();
 });
 
 it("keeps the active route when browser back navigation is cancelled", async () => {
   window.history.replaceState({ source: "previous" }, "", "/chart");
   window.history.pushState({ source: "session" }, "", "/practice/run");
-  vi.mocked(window.confirm).mockReturnValue(false);
+  const user = userEvent.setup();
   render(
     <PracticeSession
       catalog={[kana]}
@@ -356,9 +376,12 @@ it("keeps the active route when browser back navigation is cancelled", async () 
 
   window.history.back();
 
-  await waitFor(() => {
-    expect(window.confirm).toHaveBeenCalledWith("연습을 끝내고 이동할까요?");
-  });
+  const dialog = await screen.findByRole("alertdialog", { name: "연습을 끝내고 이동할까요?" });
+  expect(window.location.pathname).toBe("/practice/run");
+
+  await user.click(within(dialog).getByRole("button", { name: "계속 연습하기" }));
+
+  expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
   expect(window.location.pathname).toBe("/practice/run");
 });
 
@@ -381,7 +404,7 @@ it("hands off only the evaluated result summary when a finite session completes"
     />,
   );
 
-  await user.click(screen.getByRole("button", { name: "정답 확인" }));
+  await revealWithoutInk(user);
   await user.click(screen.getByRole("button", { name: "다시 연습" }));
   await user.click(screen.getByRole("button", { name: "결과 보기" }));
 
@@ -420,7 +443,7 @@ it("persists each answer once, autosaves stroke-free progress, and finalizes the
     />,
   );
 
-  await user.click(screen.getByRole("button", { name: "정답 확인" }));
+  await revealWithoutInk(user);
   await user.click(screen.getByRole("button", { name: "잘 썼어요" }));
 
   await waitFor(() => expect(repository.evaluations).toHaveLength(1));
@@ -693,7 +716,7 @@ it("invalidates a stale result when writing the new handoff fails", async () => 
     />,
   );
 
-  await user.click(screen.getByRole("button", { name: "정답 확인" }));
+  await revealWithoutInk(user);
   await user.click(screen.getByRole("button", { name: "잘 썼어요" }));
   await user.click(screen.getByRole("button", { name: "결과 보기" }));
 

@@ -24,10 +24,15 @@ async function settleClientNavigation(page: Page) {
 }
 
 async function revealWithoutInk(page: Page) {
-  page.once("dialog", (dialog) => dialog.accept());
   const reveal = page.getByRole("button", { name: "정답 확인" });
   await expect(reveal).toBeFocused();
   await page.keyboard.press("Enter");
+
+  const dialog = page.getByRole("alertdialog", { name: "아직 쓴 획이 없어요" });
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByRole("button", { name: "그래도 확인하기" })).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(dialog).toBeHidden();
   await expect(page.getByLabel("정답 모델")).toBeVisible();
 }
 

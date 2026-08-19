@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { Fragment, useEffect, useMemo, useReducer, useRef, useState, useSyncExternalStore } from "react";
 
+import { ConfirmDialog } from "../../../components/confirm-dialog";
 import { loadSettings, saveSettings, type AppSettings } from "../../../lib/settings";
 import { StrokeGuide } from "../../kana/components/stroke-guide";
 import { kanaReadingParts } from "../../kana/reading";
@@ -71,6 +72,12 @@ interface ActivePracticeSessionProps extends Omit<PracticeSessionProps, "initial
   random: Random;
   repository?: PracticePersistence;
   storageWarning?: string;
+}
+
+interface PendingConfirm {
+  kind: "leave" | "reveal-empty";
+  onConfirm: () => void;
+  onCancel: () => void;
 }
 
 let cachedSettings: AppSettings | undefined;
@@ -405,6 +412,7 @@ function ActivePracticeSession({
       };
     },
   );
+  const [pendingConfirm, setPendingConfirm] = useState<PendingConfirm | null>(null);
   const completedRef = useRef(false);
   const persistedAnswerCountRef = useRef(interrupted?.answers.length ?? 0);
   const resumedAnswerCountRef = useRef(interrupted?.answers.length ?? 0);
@@ -441,22 +449,22 @@ function ActivePracticeSession({
     });
   }, [repository, selectedKanaIds, state.config, state.questions, state.results, state.startedAt]);
 
+  const guardActive = state.phase !== "complete";
+  const guardSessionId = state.startedAt;
+
   useEffect(() => {
-    if (state.phase === "complete") {
+    if (!guardActive) {
       return;
     }
 
     const history = window.history;
     const sessionUrl = window.location.href;
-    const originalState = history.state;
     const originalPushState = history.pushState;
     const originalReplaceState = history.replaceState;
     const originalBack = history.back;
-    const guardId = `kana-practice-${Date.now()}-${Math.random()}`;
-    const sentinelState = {
-      ...(originalState && typeof originalState === "object" ? originalState : {}),
-      __kanaPracticeGuard: guardId,
-    };
+    // The guard id is stable for the whole session so a re-mounted effect (React
+    // Strict Mode, phase changes) reuses the sentinel entry instead of stacking more.
+    const guardId = `kana-practice-${guardSessionId}`;
     let allowNextHistoryNavigation = false;
     let installed = true;
 
@@ -468,8 +476,26 @@ function ActivePracticeSession({
       );
     }
 
-    function confirmDeparture(): boolean {
-      return window.confirm("연습을 끝내고 이동할까요?");
+    const currentState = history.state;
+    const sentinelState = isGuardSentinel(currentState)
+      ? currentState
+      : {
+        ...(currentState && typeof currentState === "object" ? currentState : {}),
+        __kanaPracticeGuard: guardId,
+      };
+
+    function askToLeave(proceed: () => void, cancel: () => void = () => {}) {
+      setPendingConfirm({
+        kind: "leave",
+        onConfirm: () => {
+          setPendingConfirm(null);
+          proceed();
+        },
+        onCancel: () => {
+          setPendingConfirm(null);
+          cancel();
+        },
+      });
     }
 
     function shouldGuardUrl(url: string | URL | null | undefined): boolean {
@@ -487,10 +513,6 @@ function ActivePracticeSession({
       window.removeEventListener("popstate", handleHistoryTraversal);
       history.pushState = originalPushState;
       history.replaceState = originalReplaceState;
-
-      if (isGuardSentinel(history.state)) {
-        originalReplaceState.call(history, originalState, "", sessionUrl);
-      }
     }
 
     function handleHistoryTraversal() {
@@ -498,20 +520,28 @@ function ActivePracticeSession({
         return;
       }
 
-      if (!confirmDeparture()) {
-        originalPushState.call(history, sentinelState, "", sessionUrl);
-        return;
-      }
-
-      restoreHistoryGuard();
-      originalBack.call(history);
+      askToLeave(
+        () => {
+          restoreHistoryGuard();
+          originalBack.call(history);
+        },
+        () => {
+          originalPushState.call(history, sentinelState, "", sessionUrl);
+        },
+      );
     }
 
-    originalPushState.call(history, sentinelState, "", sessionUrl);
+    if (!isGuardSentinel(history.state)) {
+      originalPushState.call(history, sentinelState, "", sessionUrl);
+    }
     history.pushState = function guardedPushState(data, unused, url) {
       if (allowNextHistoryNavigation) {
         allowNextHistoryNavigation = false;
-      } else if (shouldGuardUrl(url) && !confirmDeparture()) {
+      } else if (shouldGuardUrl(url)) {
+        askToLeave(() => {
+          restoreHistoryGuard();
+          originalPushState.call(history, data, unused, url);
+        });
         return;
       }
 
@@ -520,7 +550,11 @@ function ActivePracticeSession({
     history.replaceState = function guardedReplaceState(data, unused, url) {
       if (allowNextHistoryNavigation) {
         allowNextHistoryNavigation = false;
-      } else if (shouldGuardUrl(url) && !confirmDeparture()) {
+      } else if (shouldGuardUrl(url)) {
+        askToLeave(() => {
+          restoreHistoryGuard();
+          originalReplaceState.call(history, data, unused, url);
+        });
         return;
       }
 
@@ -533,7 +567,14 @@ function ActivePracticeSession({
       event.returnValue = "";
     }
 
+    let bypassNextClick = false;
+
     function warnBeforeInternalNavigation(event: MouseEvent) {
+      if (bypassNextClick) {
+        bypassNextClick = false;
+        return;
+      }
+
       if (
         event.defaultPrevented
         || event.button !== 0
@@ -556,13 +597,13 @@ function ActivePracticeSession({
         return;
       }
 
-      if (!confirmDeparture()) {
-        event.preventDefault();
-        event.stopPropagation();
-        return;
-      }
-
-      allowNextHistoryNavigation = true;
+      event.preventDefault();
+      event.stopPropagation();
+      askToLeave(() => {
+        allowNextHistoryNavigation = true;
+        bypassNextClick = true;
+        anchor.click();
+      });
     }
 
     window.addEventListener("beforeunload", warnBeforeLeaving);
@@ -571,8 +612,9 @@ function ActivePracticeSession({
       window.removeEventListener("beforeunload", warnBeforeLeaving);
       document.removeEventListener("click", warnBeforeInternalNavigation, true);
       restoreHistoryGuard();
+      setPendingConfirm(null);
     };
-  }, [state.phase]);
+  }, [guardActive, guardSessionId]);
 
   useEffect(() => {
     if (state.phase !== "complete" || completedRef.current) {
@@ -651,10 +693,15 @@ function ActivePracticeSession({
   }
 
   function revealAnswer() {
-    if (
-      state.currentStrokes.length === 0
-      && !window.confirm("아직 쓴 획이 없어요. 그래도 정답을 확인할까요?")
-    ) {
+    if (state.currentStrokes.length === 0) {
+      setPendingConfirm({
+        kind: "reveal-empty",
+        onConfirm: () => {
+          setPendingConfirm(null);
+          dispatch({ type: "REVEAL" });
+        },
+        onCancel: () => setPendingConfirm(null),
+      });
       return;
     }
 
@@ -828,6 +875,29 @@ function ActivePracticeSession({
               </button>
             ) : null}
           </div>
+        ) : null}
+
+        {pendingConfirm?.kind === "reveal-empty" ? (
+          <ConfirmDialog
+            cancelLabel="더 써 볼게요"
+            confirmLabel="그래도 확인하기"
+            initialFocus="confirm"
+            message="그래도 정답을 확인할까요?"
+            onCancel={pendingConfirm.onCancel}
+            onConfirm={pendingConfirm.onConfirm}
+            title="아직 쓴 획이 없어요"
+          />
+        ) : null}
+        {pendingConfirm?.kind === "leave" ? (
+          <ConfirmDialog
+            cancelLabel="계속 연습하기"
+            confirmLabel="끝내고 이동"
+            message="지금까지 마친 문제는 기록에 남고, 같은 설정으로 다시 시작하면 이어서 할 수 있어요."
+            onCancel={pendingConfirm.onCancel}
+            onConfirm={pendingConfirm.onConfirm}
+            title="연습을 끝내고 이동할까요?"
+            tone="danger"
+          />
         ) : null}
 
         {state.phase === "reviewing" ? (
