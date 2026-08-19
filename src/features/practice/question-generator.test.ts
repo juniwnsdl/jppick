@@ -26,6 +26,7 @@ function unit(id: string, script: KanaUnit["script"], group: KanaUnit["group"]):
     glyphs: [id],
     script,
     group,
+    chartRow: 0,
     romaji: id,
     readingKo: id,
     strokeAssetKeys: [id],
@@ -38,6 +39,23 @@ function sequenceRandom(values: number[]): Random {
 }
 
 describe("createQuestionQueue", () => {
+  it("queues every selected kana exactly once in catalog order", () => {
+    const orderedConfig = {
+      ...allBasicConfig,
+      scripts: ["hiragana"],
+      groups: ["basic", "voiced"],
+      count: "all",
+      strategy: "ordered",
+    } as unknown as PracticeConfig;
+
+    const queue = createQuestionQueue(orderedConfig, catalog, undefined, () => 1);
+
+    expect(queue.map((question) => question.kanaId)).toEqual([
+      "hiragana-a",
+      "hiragana-ga",
+    ]);
+  });
+
   it("only queues kana matching every selected script and group filter", () => {
     const queue = createQuestionQueue(
       { ...allBasicConfig, scripts: ["katakana"], groups: ["yoon"], count: 5 },
@@ -150,5 +168,19 @@ describe("createQuestionQueue", () => {
     );
 
     expect(queue.slice(0, 2).map((question) => question.kanaId)).toEqual(["hiragana-ga", "hiragana-a"]);
+  });
+
+  it("excludes ungraded ordered practice from difficult-strategy accuracy", () => {
+    const queue = createQuestionQueue(
+      { ...allBasicConfig, scripts: ["hiragana"], groups: ["basic", "voiced"], count: 5, strategy: "difficult" },
+      catalog,
+      {
+        "hiragana-a": { presented: 100, evaluated: 10, retry: 10 },
+        "hiragana-ga": { presented: 10, evaluated: 10, retry: 5 },
+      },
+      () => 1.75,
+    );
+
+    expect(queue.slice(0, 2).map((question) => question.kanaId)).toEqual(["hiragana-a", "hiragana-ga"]);
   });
 });

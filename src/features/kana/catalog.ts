@@ -43,64 +43,52 @@ const YOON = [
   ["り", "リ", ["rya", "ryu", "ryo"]],
 ] as const;
 
-const SMALL = [
-  ["ぁ", "ァ", "xa"],
-  ["ぃ", "ィ", "xi"],
-  ["ぅ", "ゥ", "xu"],
-  ["ぇ", "ェ", "xe"],
-  ["ぉ", "ォ", "xo"],
-  ["ゕ", "ヵ", "xka"],
-  ["ゖ", "ヶ", "xke"],
-  ["っ", "ッ", "xtsu"],
-  ["ゃ", "ャ", "xya"],
-  ["ゅ", "ュ", "xyu"],
-  ["ょ", "ョ", "xyo"],
-  ["ゎ", "ヮ", "xwa"],
+const SMALL_ROWS = [
+  [
+    ["ぁ", "ァ", "xa"],
+    ["ぃ", "ィ", "xi"],
+    ["ぅ", "ゥ", "xu"],
+    ["ぇ", "ェ", "xe"],
+    ["ぉ", "ォ", "xo"],
+  ],
+  [
+    ["ゕ", "ヵ", "xka"],
+    ["ゖ", "ヶ", "xke"],
+  ],
+  [["っ", "ッ", "xtsu"]],
+  [
+    ["ゃ", "ャ", "xya"],
+    ["ゅ", "ュ", "xyu"],
+    ["ょ", "ョ", "xyo"],
+  ],
+  [["ゎ", "ヮ", "xwa"]],
 ] as const;
 
-const EXTENDED = [
-  ["イェ", "ye"],
-  ["ウィ", "wi"],
-  ["ウェ", "we"],
-  ["ウォ", "wo"],
-  ["ヴァ", "va"],
-  ["ヴィ", "vi"],
-  ["ヴェ", "ve"],
-  ["ヴォ", "vo"],
-  ["ヴュ", "vyu"],
-  ["キェ", "kye"],
-  ["ギェ", "gye"],
-  ["クァ", "kwa"],
-  ["クィ", "kwi"],
-  ["クェ", "kwe"],
-  ["クォ", "kwo"],
-  ["グァ", "gwa"],
-  ["シェ", "she"],
-  ["ジェ", "je"],
-  ["スィ", "si"],
-  ["ズィ", "zi"],
-  ["チェ", "che"],
-  ["ツァ", "tsa"],
-  ["ツィ", "tsi"],
-  ["ツェ", "tse"],
-  ["ツォ", "tso"],
-  ["ティ", "ti"],
-  ["テュ", "tyu"],
-  ["ディ", "di"],
-  ["デュ", "dyu"],
-  ["トゥ", "tu"],
-  ["ドゥ", "du"],
-  ["ニェ", "nye"],
-  ["ヒェ", "hye"],
-  ["ビェ", "bye"],
-  ["ピェ", "pye"],
-  ["ファ", "fa"],
-  ["フィ", "fi"],
-  ["フェ", "fe"],
-  ["フォ", "fo"],
-  ["フュ", "fyu"],
-  ["ミェ", "mye"],
-  ["リェ", "rye"],
+const EXTENDED_ROWS = [
+  [["イェ", "ye"]],
+  [["ウィ", "wi"], ["ウェ", "we"], ["ウォ", "wo"]],
+  [["ヴァ", "va"], ["ヴィ", "vi"], ["ヴェ", "ve"], ["ヴォ", "vo"], ["ヴュ", "vyu"]],
+  [["キェ", "kye"]],
+  [["ギェ", "gye"]],
+  [["クァ", "kwa"], ["クィ", "kwi"], ["クェ", "kwe"], ["クォ", "kwo"]],
+  [["グァ", "gwa"]],
+  [["シェ", "she"]],
+  [["ジェ", "je"]],
+  [["スィ", "si"]],
+  [["ズィ", "zi"]],
+  [["チェ", "che"]],
+  [["ツァ", "tsa"], ["ツィ", "tsi"], ["ツェ", "tse"], ["ツォ", "tso"]],
+  [["ティ", "ti"], ["テュ", "tyu"]],
+  [["ディ", "di"], ["デュ", "dyu"]],
+  [["トゥ", "tu"]],
+  [["ドゥ", "du"]],
+  [["ニェ", "nye"]],
+  [["ヒェ", "hye"]],
+  [["ビェ", "bye"]],
+  [["ピェ", "pye"]],
+  [["ファ", "fa"], ["フィ", "fi"], ["フェ", "fe"], ["フォ", "fo"], ["フュ", "fyu"]],
+  [["ミェ", "mye"]],
+  [["リェ", "rye"]],
 ] as const;
 
 export const ROMAJI_TO_KOREAN: Record<string, string> = {
@@ -119,7 +107,13 @@ export const ROMAJI_TO_KOREAN: Record<string, string> = {
   ye: "예", wi: "위", we: "웨", va: "바", vi: "비", ve: "베", vo: "보", vyu: "뷰", kye: "케", gye: "계", kwa: "콰", kwi: "퀴", kwe: "퀘", kwo: "쿼", gwa: "과", she: "셰", je: "제", si: "스이", zi: "즈이", che: "체", tsa: "차", tsi: "치", tse: "체", tso: "초", ti: "티", tyu: "튜", di: "디", dyu: "듀", tu: "투", du: "두", nye: "녜", hye: "헤", bye: "베", pye: "페", fa: "파", fi: "피", fe: "페", fo: "포", fyu: "퓨", mye: "미에", rye: "리에",
 };
 
-function makeUnit(script: KanaScript, group: KanaGroup, display: string, romaji: string): KanaUnit {
+function makeUnit(
+  script: KanaScript,
+  group: KanaGroup,
+  display: string,
+  romaji: string,
+  chartRow: number,
+): KanaUnit {
   const glyphs = Array.from(display);
   const readingKo = ROMAJI_TO_KOREAN[romaji];
 
@@ -133,6 +127,7 @@ function makeUnit(script: KanaScript, group: KanaGroup, display: string, romaji:
     glyphs,
     script,
     group,
+    chartRow,
     romaji,
     readingKo,
     strokeAssetKeys: glyphs.map((glyph) => `${script}/${glyph}`),
@@ -144,23 +139,31 @@ function unitsFromRows(
   script: KanaScript,
   group: KanaGroup,
 ): KanaUnit[] {
-  return rows.flatMap(([hiragana, katakana, romaji]) => {
+  return rows.flatMap(([hiragana, katakana, romaji], chartRow) => {
     const glyphs = Array.from(script === "hiragana" ? hiragana : katakana);
-    return glyphs.map((display, index) => makeUnit(script, group, display, romaji[index]));
+    return glyphs.map((display, index) => makeUnit(script, group, display, romaji[index], chartRow));
   });
 }
 
 function yoonUnits(script: KanaScript): KanaUnit[] {
   const suffixes = script === "hiragana" ? ["ゃ", "ゅ", "ょ"] : ["ャ", "ュ", "ョ"];
 
-  return YOON.flatMap(([hiragana, katakana, romaji]) => {
+  return YOON.flatMap(([hiragana, katakana, romaji], chartRow) => {
     const initial = script === "hiragana" ? hiragana : katakana;
-    return suffixes.map((suffix, index) => makeUnit(script, "yoon", `${initial}${suffix}`, romaji[index]));
+    return suffixes.map((suffix, index) => makeUnit(script, "yoon", `${initial}${suffix}`, romaji[index], chartRow));
   });
 }
 
 function smallUnits(script: KanaScript): KanaUnit[] {
-  return SMALL.map(([hiragana, katakana, romaji]) => makeUnit(script, "small", script === "hiragana" ? hiragana : katakana, romaji));
+  return SMALL_ROWS.flatMap((row, chartRow) => row.map(
+    ([hiragana, katakana, romaji]) => makeUnit(
+      script,
+      "small",
+      script === "hiragana" ? hiragana : katakana,
+      romaji,
+      chartRow,
+    ),
+  ));
 }
 
 const HIRAGANA_UNITS = [
@@ -175,8 +178,10 @@ const KATAKANA_UNITS = [
   ...unitsFromRows(VOICED, "katakana", "voiced"),
   ...yoonUnits("katakana"),
   ...smallUnits("katakana"),
-  makeUnit("katakana", "small", "ー", "long-vowel-mark"),
-  ...EXTENDED.map(([display, romaji]) => makeUnit("katakana", "extended", display, romaji)),
+  makeUnit("katakana", "small", "ー", "long-vowel-mark", SMALL_ROWS.length),
+  ...EXTENDED_ROWS.flatMap((row, chartRow) => row.map(
+    ([display, romaji]) => makeUnit("katakana", "extended", display, romaji, chartRow),
+  )),
 ];
 
 function assignUniqueIds(units: KanaUnit[]): KanaUnit[] {

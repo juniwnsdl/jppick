@@ -5,13 +5,14 @@ import type {
   KanaProgressById,
   PracticeConfig,
   PracticeCount,
+  PracticeEvaluation,
   PracticeMode,
   PracticeStrategy,
   Question,
   Random,
 } from "./types";
 
-export type Evaluation = "good" | "retry";
+export type Evaluation = PracticeEvaluation;
 export type SessionPhase = "writing" | "reviewing" | "complete";
 
 export interface PracticeResultEntry {
@@ -46,6 +47,7 @@ export type PracticeSessionAction =
   | { type: "REVEAL" }
   | { type: "SET_OVERLAY_OPACITY"; opacity: number }
   | { type: "EVALUATE"; evaluation: Evaluation; answeredAt: string }
+  | { type: "COMPLETE_ORDERED"; answeredAt: string; endedAt?: string }
   | { type: "REWRITE" }
   | { type: "NEXT"; nextQuestions?: Question[]; endedAt?: string }
   | { type: "END"; endedAt: string };
@@ -119,6 +121,37 @@ export function practiceSessionReducer(
           evaluation: action.evaluation,
           answeredAt: action.answeredAt,
         }],
+      };
+    }
+    case "COMPLETE_ORDERED": {
+      const question = state.questions[state.currentIndex];
+      if (state.config.strategy !== "ordered" || state.phase !== "writing"
+        || !question || currentQuestionWasEvaluated(state)) {
+        return state;
+      }
+
+      const nextIndex = state.currentIndex + 1;
+      const results: PracticeResultEntry[] = [...state.results, {
+        kanaId: question.kanaId,
+        evaluation: "practice",
+        answeredAt: action.answeredAt,
+      }];
+      if (nextIndex >= state.questions.length) {
+        return {
+          ...state,
+          currentStrokes: [],
+          results,
+          phase: "complete",
+          endedAt: action.endedAt ?? action.answeredAt,
+        };
+      }
+
+      return {
+        ...state,
+        currentIndex: nextIndex,
+        currentStrokes: [],
+        results,
+        phase: "writing",
       };
     }
     case "REWRITE":
@@ -217,8 +250,8 @@ type SearchParamValues = Record<string, string | string[] | undefined>;
 const MODES: readonly PracticeMode[] = ["copy", "recall"];
 const SCRIPTS: readonly KanaScript[] = ["hiragana", "katakana"];
 const GROUPS: readonly KanaGroup[] = ["basic", "voiced", "yoon", "small", "extended"];
-const COUNTS: ReadonlyArray<PracticeCount | "5" | "10" | "20"> = ["5", "10", "20", "unlimited"];
-const STRATEGIES: readonly PracticeStrategy[] = ["uniform", "least-practiced", "difficult"];
+const COUNTS: ReadonlyArray<PracticeCount | "5" | "10" | "20"> = ["5", "10", "20", "all", "unlimited"];
+const STRATEGIES: readonly PracticeStrategy[] = ["uniform", "least-practiced", "difficult", "ordered"];
 
 function isUniqueAllowedList(value: unknown, allowed: readonly string[]): value is string[] {
   return Array.isArray(value)
@@ -236,7 +269,13 @@ export function isPracticeConfig(value: unknown): value is PracticeConfig {
   return MODES.includes(config.mode as PracticeMode)
     && isUniqueAllowedList(config.scripts, SCRIPTS)
     && isUniqueAllowedList(config.groups, GROUPS)
-    && (config.count === 5 || config.count === 10 || config.count === 20 || config.count === "unlimited")
+    && (
+      config.count === 5
+      || config.count === 10
+      || config.count === 20
+      || config.count === "all"
+      || config.count === "unlimited"
+    )
     && STRATEGIES.includes(config.strategy as PracticeStrategy);
 }
 
@@ -299,7 +338,7 @@ export function parsePracticeRunSearchParams(searchParams: SearchParamValues): P
       mode: mode as PracticeMode,
       scripts: parsedScripts,
       groups: parsedGroups,
-      count: count === "unlimited" ? "unlimited" : Number(count) as 5 | 10 | 20,
+      count: count === "all" || count === "unlimited" ? count : Number(count) as 5 | 10 | 20,
       strategy: strategy as PracticeStrategy,
     },
     ...(parsedKanaIds ? { kanaIds: parsedKanaIds } : {}),

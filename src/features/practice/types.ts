@@ -1,8 +1,9 @@
 import type { KanaGroup, KanaScript } from "../kana/types";
 
 export type PracticeMode = "copy" | "recall";
-export type PracticeCount = 5 | 10 | 20 | "unlimited";
-export type PracticeStrategy = "uniform" | "least-practiced" | "difficult";
+export type PracticeCount = 5 | 10 | 20 | "all" | "unlimited";
+export type PracticeStrategy = "uniform" | "least-practiced" | "difficult" | "ordered";
+export type PracticeEvaluation = "good" | "retry" | "practice";
 
 export interface PracticeConfig {
   mode: PracticeMode;
@@ -24,6 +25,7 @@ export interface Question {
  */
 export interface KanaProgressSnapshot {
   presented: number;
+  evaluated?: number;
   retry: number;
 }
 

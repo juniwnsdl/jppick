@@ -10,8 +10,8 @@ vi.mock("next/navigation", () => ({
 }));
 
 const catalog: KanaUnit[] = [
-  { id: "hiragana-a", display: "あ", glyphs: ["あ"], script: "hiragana", group: "basic", romaji: "a", readingKo: "아", strokeAssetKeys: ["hiragana/あ"] },
-  { id: "hiragana-i", display: "い", glyphs: ["い"], script: "hiragana", group: "basic", romaji: "i", readingKo: "이", strokeAssetKeys: ["hiragana/い"] },
+  { id: "hiragana-a", display: "あ", glyphs: ["あ"], script: "hiragana", group: "basic", chartRow: 0, romaji: "a", readingKo: "아", strokeAssetKeys: ["hiragana/あ"] },
+  { id: "hiragana-i", display: "い", glyphs: ["い"], script: "hiragana", group: "basic", chartRow: 0, romaji: "i", readingKo: "이", strokeAssetKeys: ["hiragana/い"] },
 ];
 
 beforeEach(() => {

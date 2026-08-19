@@ -1,4 +1,4 @@
-import type { PracticeConfig, Question } from "../practice/types";
+import type { PracticeConfig, PracticeEvaluation, Question } from "../practice/types";
 
 export interface KanaProgress {
   kanaId: string;
@@ -10,7 +10,7 @@ export interface KanaProgress {
 
 export interface SessionAnswer {
   kanaId: string;
-  evaluation: "good" | "retry";
+  evaluation: PracticeEvaluation;
   answeredAt: string;
 }
 
@@ -45,7 +45,7 @@ export interface ProgressDashboard {
 
 export interface LearningRepository {
   readonly persistent: boolean;
-  recordEvaluation(kanaId: string, value: "good" | "retry", at: string): Promise<void>;
+  recordEvaluation(kanaId: string, value: PracticeEvaluation, at: string): Promise<void>;
   saveSession(summary: SessionSummary): Promise<void>;
   saveInterrupted(session: InterruptedSession): Promise<void>;
   saveAnswerCheckpoint(session: InterruptedSession): Promise<void>;

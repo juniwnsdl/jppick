@@ -4,6 +4,23 @@ import userEvent from "@testing-library/user-event";
 import { KanaChart } from "./kana-chart";
 import { StrokeGuide } from "./stroke-guide";
 
+it("starts the entire visible chart in catalog order", async () => {
+  const user = userEvent.setup();
+  render(<KanaChart />);
+
+  expect(screen.getByRole("link", { name: "현재 46자 순서대로 연습" })).toHaveAttribute(
+    "href",
+    "/practice/run?mode=copy&scripts=hiragana&groups=basic&count=all&strategy=ordered",
+  );
+
+  await user.click(screen.getByRole("button", { name: "요음" }));
+
+  expect(screen.getByRole("link", { name: "현재 33자 순서대로 연습" })).toHaveAttribute(
+    "href",
+    "/practice/run?mode=copy&scripts=hiragana&groups=yoon&count=all&strategy=ordered",
+  );
+});
+
 it("opens the selected katakana yoon unit with its practice target", async () => {
   const user = userEvent.setup();
   render(<KanaChart />);

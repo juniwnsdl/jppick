@@ -8,6 +8,7 @@ export interface KanaUnit {
   glyphs: string[];
   script: KanaScript;
   group: KanaGroup;
+  chartRow: number;
   romaji: string;
   readingKo: string;
   strokeAssetKeys: string[];

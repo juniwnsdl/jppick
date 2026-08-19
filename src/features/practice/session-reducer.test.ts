@@ -247,6 +247,24 @@ describe("appendUnlimitedCycle", () => {
 });
 
 describe("parsePracticeRunSearchParams", () => {
+  it("accepts a full-chart ordered practice query", () => {
+    expect(parsePracticeRunSearchParams({
+      mode: "copy",
+      scripts: "hiragana",
+      groups: "basic",
+      count: "all",
+      strategy: "ordered",
+    })).toEqual({
+      config: {
+        mode: "copy",
+        scripts: ["hiragana"],
+        groups: ["basic"],
+        count: "all",
+        strategy: "ordered",
+      },
+    });
+  });
+
   it("accepts an exact setup query and optional selected kana ids", () => {
     expect(parsePracticeRunSearchParams({
       mode: "recall",
@@ -286,6 +304,7 @@ function unit(id: string): KanaUnit {
     glyphs: [id],
     script: "hiragana",
     group: "basic",
+    chartRow: 0,
     romaji: id,
     readingKo: id,
     strokeAssetKeys: [id],

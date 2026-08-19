@@ -39,7 +39,7 @@ function hasHistoricalProgress(units: KanaUnit[], progress: KanaProgressById | u
 
 function scoreUnits(
   units: KanaUnit[],
-  strategy: Exclude<PracticeConfig["strategy"], "uniform">,
+  strategy: Exclude<PracticeConfig["strategy"], "uniform" | "ordered">,
   progress: KanaProgressById,
 ): number[] {
   if (strategy === "least-practiced") {
@@ -48,8 +48,9 @@ function scoreUnits(
   }
 
   return units.map((unit) => {
-    const { presented, retry } = progressFor(unit, progress);
-    return 1 + (presented > 0 ? retry / presented : retry);
+    const { evaluated, presented, retry } = progressFor(unit, progress);
+    const evaluatedCount = evaluated ?? presented;
+    return 1 + (evaluatedCount > 0 ? retry / evaluatedCount : retry);
   });
 }
 
@@ -109,16 +110,32 @@ export function createQuestionQueue(
   random: Random,
 ): Question[] {
   const units = selectedUnits(config, catalog);
-  const requestedCount = config.count === "unlimited" ? units.length : config.count;
+  const requestedCount = config.count === "unlimited" || config.count === "all"
+    ? units.length
+    : config.count;
   const queue: KanaUnit[] = [];
-  const useWeightedSampling = config.strategy !== "uniform" && hasHistoricalProgress(units, progress);
+  const useWeightedSampling = (
+    config.strategy === "least-practiced" || config.strategy === "difficult"
+  ) && hasHistoricalProgress(units, progress);
 
   while (queue.length < requestedCount && units.length > 0) {
-    const cycle = useWeightedSampling
-      ? weightedCycle(units, scoreUnits(units, config.strategy as Exclude<PracticeConfig["strategy"], "uniform">, progress ?? {}), random)
-      : uniformCycle(units, random);
+    const cycle = config.strategy === "ordered"
+      ? [...units]
+      : useWeightedSampling
+        ? weightedCycle(
+          units,
+          scoreUnits(
+            units,
+            config.strategy as Exclude<PracticeConfig["strategy"], "uniform" | "ordered">,
+            progress ?? {},
+          ),
+          random,
+        )
+        : uniformCycle(units, random);
 
-    avoidBoundaryRepeat(cycle, queue[queue.length - 1]?.id);
+    if (config.strategy !== "ordered") {
+      avoidBoundaryRepeat(cycle, queue[queue.length - 1]?.id);
+    }
     queue.push(...cycle);
   }
 

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRef, useState } from "react";
 
 import { filterKana, type KanaGroup, type KanaScript, type KanaUnit } from "../catalog";
@@ -29,6 +30,7 @@ export function KanaChart() {
   const [selected, setSelected] = useState<KanaUnit | null>(null);
   const selectedCellRef = useRef<HTMLButtonElement>(null);
   const units = filterKana({ script, group });
+  const orderedPracticeHref = `/practice/run?mode=copy&scripts=${script}&groups=${group}&count=all&strategy=ordered`;
 
   function chooseScript(nextScript: KanaScript) {
     setScript(nextScript);
@@ -73,11 +75,22 @@ export function KanaChart() {
         <p className="kana-count">{units.length}자</p>
       </div>
 
+      <aside className="kana-ordered-practice" aria-label="현재 글자표 순서 연습">
+        <div>
+          <strong>표 순서대로 써 보기</strong>
+          <p>지금 보이는 글자를 처음부터 끝까지 한 번씩 연습해요.</p>
+        </div>
+        <Link className="primary-action" href={orderedPracticeHref}>
+          현재 {units.length}자 순서대로 연습
+        </Link>
+      </aside>
+
       <ul className="kana-grid" aria-label={`${script === "hiragana" ? "히라가나" : "가타카나"} ${GROUP_OPTIONS.find((option) => option.value === group)?.label}`}>
-        {units.map((unit) => {
+        {units.map((unit, index) => {
           const reading = kanaReadingParts(unit);
+          const startsRow = index === 0 || unit.chartRow !== units[index - 1].chartRow;
           return (
-            <li key={unit.id}>
+            <li className={startsRow ? "kana-grid-row-start" : undefined} key={unit.id}>
               <button
                 aria-label={`${unit.display}, ${unit.romaji}, ${unit.readingKo}`}
                 className="kana-cell"

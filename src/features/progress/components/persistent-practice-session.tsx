@@ -32,6 +32,7 @@ export function PersistentPracticeSession({
           setLoadError(false);
           setProgress(Object.fromEntries(dashboard.kana.map((item) => [item.kanaId, {
             presented: item.presented,
+            evaluated: item.good + item.retry,
             retry: item.retry,
           }])));
         }

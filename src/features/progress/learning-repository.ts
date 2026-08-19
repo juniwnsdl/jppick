@@ -1,7 +1,7 @@
 import type { IDBPDatabase } from "idb";
 
 import { isPracticeConfig } from "../practice/session-reducer";
-import type { PracticeConfig } from "../practice/types";
+import type { PracticeConfig, PracticeEvaluation } from "../practice/types";
 import {
   openLearningDatabase,
   type KanaLearningDatabase,
@@ -39,7 +39,7 @@ function isSessionAnswer(value: unknown): boolean {
   return isRecord(value)
     && typeof value.kanaId === "string"
     && value.kanaId.length > 0
-    && (value.evaluation === "good" || value.evaluation === "retry")
+    && (value.evaluation === "good" || value.evaluation === "retry" || value.evaluation === "practice")
     && isIsoTimestamp(value.answeredAt);
 }
 
@@ -49,7 +49,7 @@ function sanitizeStoredProgress(value: unknown): StoredKanaProgress | null {
     || !isNonNegativeInteger(value.presented)
     || !isNonNegativeInteger(value.good)
     || !isNonNegativeInteger(value.retry)
-    || value.good + value.retry !== value.presented
+    || value.good + value.retry > value.presented
     || !isIsoTimestamp(value.lastPracticedAt)) {
     return null;
   }
@@ -84,7 +84,7 @@ function sanitizeSessionSummary(value: unknown): SessionSummary | null {
     || !isNonNegativeInteger(value.retry)
     || !Array.isArray(value.answers)
     || !value.answers.every(isSessionAnswer)
-    || value.good + value.retry !== value.completed
+    || value.good + value.retry > value.completed
     || value.answers.length !== value.completed) {
     return null;
   }
@@ -132,11 +132,19 @@ function sanitizeInterruptedSession(value: unknown): InterruptedSession | null {
   const queueLengthIsValid = config.count === "unlimited"
     ? queue.length >= selectedKanaIds.length
       && queue.length % selectedKanaIds.length === 0
-    : queue.length === config.count;
+    : config.count === "all"
+      ? queue.length === selectedKanaIds.length
+      : queue.length === config.count;
+  const orderedAllQueueIsUnique = config.count !== "all"
+    || config.strategy !== "ordered"
+    || (queueShapeIsValid && new Set(queue.map((question) => (
+      (question as { kanaId: string }).kanaId
+    ))).size === selectedKanaIds.length);
 
   if (!selectedShapeIsValid
     || !queueShapeIsValid
     || !queueLengthIsValid
+    || !orderedAllQueueIsUnique
     || !answers.every(isSessionAnswer)
     || value.currentIndex > queue.length
     || answers.length !== value.currentIndex
@@ -150,7 +158,7 @@ function sanitizeInterruptedSession(value: unknown): InterruptedSession | null {
   return value as unknown as InterruptedSession;
 }
 
-function evaluationKey(kanaId: string, value: "good" | "retry", at: string): string {
+function evaluationKey(kanaId: string, value: PracticeEvaluation, at: string): string {
   return `${kanaId}\u0000${value}\u0000${at}`;
 }
 
@@ -170,7 +178,7 @@ function checkpointEvaluation(session: InterruptedSession) {
 function nextProgress(
   previous: StoredKanaProgress | undefined,
   kanaId: string,
-  value: "good" | "retry",
+  value: PracticeEvaluation,
   at: string,
   key: string,
 ): StoredKanaProgress | null {
@@ -240,7 +248,7 @@ class MemoryLearningRepository implements LearningRepository {
   private readonly sessions = new Map<string, SessionSummary>();
   private interrupted: InterruptedSession | null = null;
 
-  async recordEvaluation(kanaId: string, value: "good" | "retry", at: string): Promise<void> {
+  async recordEvaluation(kanaId: string, value: PracticeEvaluation, at: string): Promise<void> {
     const key = evaluationKey(kanaId, value, at);
     const previous = this.progress.get(kanaId);
 
@@ -324,7 +332,7 @@ class IndexedDbLearningRepository implements LearningRepository {
     }
   }
 
-  async recordEvaluation(kanaId: string, value: "good" | "retry", at: string): Promise<void> {
+  async recordEvaluation(kanaId: string, value: PracticeEvaluation, at: string): Promise<void> {
     const database = await this.database();
     if (!database) {
       return this.fallback.recordEvaluation(kanaId, value, at);

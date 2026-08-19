@@ -22,6 +22,7 @@ const kana: KanaUnit = {
   glyphs: ["あ"],
   script: "hiragana",
   group: "basic",
+  chartRow: 0,
   romaji: "a",
   readingKo: "아",
   strokeAssetKeys: ["hiragana/basic/あ"],
@@ -187,6 +188,54 @@ it("shows the kana and enabled trace guide before reveal in copy mode", () => {
   expect(screen.getByTestId("trace-kana-guide")).toBeInTheDocument();
   expect(screen.queryByLabelText("정답 모델")).not.toBeInTheDocument();
   expect(screen.queryByRole("button", { name: "잘 썼어요" })).not.toBeInTheDocument();
+});
+
+it("advances ordered practice directly without answer review or self-evaluation", async () => {
+  const user = userEvent.setup();
+  const onComplete = vi.fn();
+  const secondKana: KanaUnit = {
+    ...kana,
+    id: "hiragana-i",
+    display: "い",
+    romaji: "i",
+    readingKo: "이",
+    glyphs: ["い"],
+    strokeAssetKeys: ["hiragana/basic/い"],
+  };
+  const orderedConfig: PracticeConfig = {
+    ...config("copy"),
+    count: "all",
+    strategy: "ordered",
+  };
+
+  render(
+    <PracticeSession
+      catalog={[kana, secondKana]}
+      config={orderedConfig}
+      initialQuestions={[
+        { id: "question-1-hiragana-a", kanaId: "hiragana-a" },
+        { id: "question-2-hiragana-i", kanaId: "hiragana-i" },
+      ]}
+      initialSettings={settings}
+      now={() => "2026-08-18T00:00:00.000Z"}
+      onComplete={onComplete}
+    />,
+  );
+
+  expect(screen.queryByRole("button", { name: "정답 확인" })).not.toBeInTheDocument();
+  expect(screen.queryByRole("group", { name: "자기 평가" })).not.toBeInTheDocument();
+  await user.click(screen.getByRole("button", { name: "다음 글자" }));
+
+  expect(screen.getByLabelText("따라 쓸 문자")).toHaveTextContent("い");
+  expect(screen.getByText("2 / 2")).toBeVisible();
+  await user.click(screen.getByRole("button", { name: "연습 완료" }));
+
+  await waitFor(() => expect(onComplete).toHaveBeenCalledWith(expect.objectContaining({
+    results: [
+      expect.objectContaining({ kanaId: "hiragana-a", evaluation: "practice" }),
+      expect.objectContaining({ kanaId: "hiragana-i", evaluation: "practice" }),
+    ],
+  })));
 });
 
 it("lets the learner toggle and persist writing guides", async () => {
@@ -583,6 +632,43 @@ it.each([
   expect(isCompatibleInterrupted(candidate, config("copy"), [kana])).toBe(false);
 });
 
+it.each([
+  ["reordered", [
+    { id: "question-1-hiragana-i", kanaId: "hiragana-i" },
+    { id: "question-2-hiragana-a", kanaId: "hiragana-a" },
+  ]],
+  ["duplicated", [
+    { id: "question-1-hiragana-a", kanaId: "hiragana-a" },
+    { id: "question-2-hiragana-a", kanaId: "hiragana-a" },
+  ]],
+])("rejects a %s ordered all-character interrupted queue", (_name, queue) => {
+  const secondKana: KanaUnit = {
+    ...kana,
+    id: "hiragana-i",
+    display: "い",
+    romaji: "i",
+    readingKo: "이",
+    glyphs: ["い"],
+    strokeAssetKeys: ["hiragana/basic/い"],
+  };
+  const orderedConfig: PracticeConfig = {
+    ...config("copy"),
+    count: "all",
+    strategy: "ordered",
+  };
+  const candidate = {
+    id: "session-ordered-guard",
+    startedAt: "2026-08-18T00:00:00.000Z",
+    config: orderedConfig,
+    selectedKanaIds: ["hiragana-a", "hiragana-i"],
+    queue,
+    currentIndex: 0,
+    answers: [],
+  };
+
+  expect(isCompatibleInterrupted(candidate, orderedConfig, [kana, secondKana])).toBe(false);
+});
+
 it("rejects an interrupted queue outside the active script and group filters", () => {
   const katakana: KanaUnit = {
     ...kana,
@@ -751,6 +837,27 @@ it("offers difficult-only, same-settings, and home actions from results", () => 
     "/practice/run?mode=copy&scripts=hiragana&groups=basic&count=5&strategy=uniform",
   );
   expect(screen.getByRole("link", { name: "홈으로" })).toHaveAttribute("href", "/");
+});
+
+it("shows ordered practice completion without a correctness score", () => {
+  render(
+    <PracticeResult
+      initialSummary={{
+        config: { ...config("copy"), count: "all", strategy: "ordered" },
+        startedAt: "2026-08-18T00:00:00.000Z",
+        endedAt: "2026-08-18T00:02:00.000Z",
+        results: [
+          { kanaId: "hiragana-a", evaluation: "practice" as never, answeredAt: "2026-08-18T00:01:00.000Z" },
+          { kanaId: "hiragana-i", evaluation: "practice" as never, answeredAt: "2026-08-18T00:02:00.000Z" },
+        ],
+      }}
+    />,
+  );
+
+  expect(screen.getByText("2자 순서 연습을 완료했어요.")).toBeVisible();
+  expect(screen.queryByText("성공률", { exact: true })).not.toBeInTheDocument();
+  expect(screen.queryByText("잘 썼어요", { exact: true })).not.toBeInTheDocument();
+  expect(screen.queryByText("다시 연습", { exact: true })).not.toBeInTheDocument();
 });
 
 it("falls back safely when the result handoff contains a malformed config", () => {

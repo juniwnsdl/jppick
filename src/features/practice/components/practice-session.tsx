@@ -155,12 +155,21 @@ export function isCompatibleInterrupted(
   const answersHaveValidShape = session.answers.every((answer) => (
     isRecord(answer)
     && typeof answer.kanaId === "string"
-    && (answer.evaluation === "good" || answer.evaluation === "retry")
+    && (
+      answer.evaluation === "good"
+      || answer.evaluation === "retry"
+      || (session.config.strategy === "ordered" && answer.evaluation === "practice")
+    )
     && isValidDate(answer.answeredAt)
   ));
   const queueLengthMatches = session.config.count === "unlimited"
     ? selectedCount > 0 && session.queue.length >= selectedCount && session.queue.length % selectedCount === 0
-    : session.queue.length === session.config.count;
+    : session.config.count === "all"
+      ? session.queue.length === selectedCount
+      : session.queue.length === session.config.count;
+  const orderedAllQueueMatchesCatalog = session.config.count !== "all"
+    || session.config.strategy !== "ordered"
+    || session.queue.every((question, index) => question.kanaId === selectedCatalog[index]?.id);
 
   return configsMatch(session.config, config)
     && selectedKanaIdsHaveValidShape
@@ -168,6 +177,7 @@ export function isCompatibleInterrupted(
     && queueHasValidShape
     && answersHaveValidShape
     && queueLengthMatches
+    && orderedAllQueueMatchesCatalog
     && session.currentIndex >= 0
     && session.currentIndex <= session.queue.length
     && session.answers.length === session.currentIndex
@@ -205,9 +215,11 @@ function progressWithSessionAnswers(
   }
   const next: KanaProgressById = structuredClone(progress ?? {});
   for (const answer of answers) {
-    const previous = next[answer.kanaId] ?? { presented: 0, retry: 0 };
+    const previous = next[answer.kanaId] ?? { presented: 0, evaluated: 0, retry: 0 };
     next[answer.kanaId] = {
       presented: previous.presented + 1,
+      evaluated: (previous.evaluated ?? previous.presented)
+        + (answer.evaluation === "practice" ? 0 : 1),
       retry: previous.retry + (answer.evaluation === "retry" ? 1 : 0),
     };
   }
@@ -658,6 +670,7 @@ function ActivePracticeSession({
   const traceFontSize = kana && kana.glyphs.length > 1 ? 0.46 : 0.72;
   const isLastQuestion = config.count !== "unlimited" && state.currentIndex + 1 >= state.questions.length;
   const nextLabel = isLastQuestion ? "결과 보기" : "다음 문제";
+  const orderedNextLabel = isLastQuestion ? "연습 완료" : "다음 글자";
 
   if (!question || !kana) {
     return <p role="alert">문제를 불러오지 못했어요. 연습 설정으로 돌아가 다시 시작해 주세요.</p>;
@@ -735,6 +748,15 @@ function ActivePracticeSession({
     dispatch({ type: "NEXT", nextQuestions, endedAt: now() });
   }
 
+  function completeOrderedQuestion() {
+    const completedAt = now();
+    dispatch({
+      type: "COMPLETE_ORDERED",
+      answeredAt: completedAt,
+      endedAt: isLastQuestion ? completedAt : undefined,
+    });
+  }
+
   const guide = (
     <Fragment>
       {settings.guideLines ? (
@@ -765,7 +787,9 @@ function ActivePracticeSession({
   const progressPercent = finite && state.questions.length > 0
     ? Math.round((state.results.length / state.questions.length) * 100)
     : 0;
-  const modeLabel = config.mode === "copy" ? "따라 쓰기" : "암기 테스트";
+  const modeLabel = config.strategy === "ordered"
+    ? "순서 연습"
+    : config.mode === "copy" ? "따라 쓰기" : "암기 테스트";
 
   return (
     <main className="page-container page-container--narrow">
@@ -863,17 +887,25 @@ function ActivePracticeSession({
 
         {state.phase === "writing" ? (
           <div className="practice-actions">
-            {evaluated ? (
-              <p aria-live="polite" className="practice-rewrite-hint">다시 한 번 써 보고 정답을 확인해 보세요.</p>
-            ) : null}
-            <button className="btn-primary btn-block" onClick={revealAnswer} type="button">
-              정답 확인
-            </button>
-            {evaluated ? (
-              <button className="btn-ghost practice-skip" onClick={goNext} type="button">
-                {nextLabel}
+            {config.strategy === "ordered" ? (
+              <button className="btn-primary btn-block" onClick={completeOrderedQuestion} type="button">
+                {orderedNextLabel}
               </button>
-            ) : null}
+            ) : (
+              <>
+                {evaluated ? (
+                  <p aria-live="polite" className="practice-rewrite-hint">다시 한 번 써 보고 정답을 확인해 보세요.</p>
+                ) : null}
+                <button className="btn-primary btn-block" onClick={revealAnswer} type="button">
+                  정답 확인
+                </button>
+                {evaluated ? (
+                  <button className="btn-ghost practice-skip" onClick={goNext} type="button">
+                    {nextLabel}
+                  </button>
+                ) : null}
+              </>
+            )}
           </div>
         ) : null}
 

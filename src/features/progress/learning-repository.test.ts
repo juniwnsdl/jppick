@@ -92,6 +92,30 @@ it("increments kana counters once when the same durable evaluation is replayed",
   await expect(repository.getPresentedOn("2026-08-18")).resolves.toBe(2);
 });
 
+it("counts ordered practice without changing correctness counters", async () => {
+  const repository = createLearningRepository({ indexedDB });
+
+  await repository.recordEvaluation(
+    "hiragana-a",
+    "practice" as never,
+    "2026-08-18T00:01:00.000Z",
+  );
+
+  await expect(repository.getDashboard()).resolves.toMatchObject({
+    totalPresented: 1,
+    kana: [{
+      kanaId: "hiragana-a",
+      presented: 1,
+      good: 0,
+      retry: 0,
+    }],
+  });
+  await expect(createLearningRepository({ indexedDB }).getDashboard()).resolves.toMatchObject({
+    totalPresented: 1,
+    kana: [{ presented: 1, good: 0, retry: 0 }],
+  });
+});
+
 it("stores a completed session idempotently and derives dashboard metadata", async () => {
   const repository = createLearningRepository({ indexedDB });
   await repository.recordEvaluation("hiragana-i", "retry", "2026-08-18T00:02:00.000Z");
@@ -228,5 +252,22 @@ it("discards a malformed interrupted record at the repository boundary", async (
   });
 
   await expect(repository.loadInterrupted()).resolves.toBeNull();
+  await expect(repository.loadInterrupted()).resolves.toBeNull();
+});
+
+it("discards an ordered all-character queue with duplicated kana", async () => {
+  const repository = createLearningRepository({ indexedDB });
+  await repository.getDashboard();
+  await putRaw("interrupted", {
+    ...interrupted,
+    config: { ...config, count: "all", strategy: "ordered" },
+    queue: [
+      { id: "question-1", kanaId: "hiragana-a" },
+      { id: "question-2", kanaId: "hiragana-a" },
+    ],
+    currentIndex: 0,
+    answers: [],
+  });
+
   await expect(repository.loadInterrupted()).resolves.toBeNull();
 });

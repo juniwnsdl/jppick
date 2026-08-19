@@ -51,7 +51,11 @@ function isSessionSummary(value: unknown): value is PracticeSessionSummary {
       result
       && typeof result.kanaId === "string"
       && result.kanaId.length > 0
-      && (result.evaluation === "good" || result.evaluation === "retry")
+      && (
+        result.evaluation === "good"
+        || result.evaluation === "retry"
+        || (candidate.config?.strategy === "ordered" && result.evaluation === "practice")
+      )
       && isValidTimestamp(result.answeredAt)
     )),
   );
@@ -120,6 +124,39 @@ export function PracticeResult({ initialSummary }: PracticeResultProps) {
     );
   }
 
+  if (summary.config.strategy === "ordered") {
+    return (
+      <main className="page-container page-container--narrow">
+        <section aria-label="연습 결과">
+          <div className="result-hero">
+            <div className="result-score">
+              <div aria-hidden="true" className="result-score-ring" style={{ "--rate": 100 } as CSSProperties}>
+                <span>완료</span>
+              </div>
+              <p className="result-score-caption">순서 연습</p>
+            </div>
+            <div>
+              <span className="eyebrow">수고했어요</span>
+              <h1>연습 완료</h1>
+              <p>{summary.results.length}자 순서 연습을 완료했어요.</p>
+            </div>
+          </div>
+
+          <dl className="result-stats result-stats--ordered">
+            <div className="result-stat"><dt>연습한 글자</dt><dd>{summary.results.length}</dd></div>
+          </dl>
+
+          <div className="result-actions">
+            <Link className="primary-action" href={practiceRunHref(summary.config)}>
+              같은 순서로 다시 하기
+            </Link>
+            <Link className="text-link" href="/chart">글자표로</Link>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
   const retryKanaIds = [...new Set(
     summary.results
       .filter((result) => result.evaluation === "retry")
@@ -130,7 +167,7 @@ export function PracticeResult({ initialSummary }: PracticeResultProps) {
     ? 0
     : Math.round(good / summary.results.length * 100);
 
-  const retryCount = summary.results.length - good;
+  const retryCount = summary.results.filter((result) => result.evaluation === "retry").length;
 
   return (
     <main className="page-container page-container--narrow">

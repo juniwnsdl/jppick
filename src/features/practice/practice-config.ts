@@ -64,7 +64,15 @@ export function practiceConfigFromSearchParams(searchParams: SearchParamValues =
     mode: mode === "recall" ? "recall" : "copy",
     scripts: selectedValues(oneValue(searchParams.scripts), SCRIPT_OPTIONS, DEFAULT_PRACTICE_CONFIG.scripts),
     groups: selectedValues(oneValue(searchParams.groups), GROUP_OPTIONS, DEFAULT_PRACTICE_CONFIG.groups),
-    count: count === "5" ? 5 : count === "20" ? 20 : count === "unlimited" ? "unlimited" : 10,
-    strategy: strategy === "least-practiced" || strategy === "difficult" ? strategy : "uniform",
+    count: count === "5"
+      ? 5
+      : count === "20"
+        ? 20
+        : count === "all" || count === "unlimited"
+          ? count
+          : 10,
+    strategy: strategy === "least-practiced" || strategy === "difficult" || strategy === "ordered"
+      ? strategy
+      : "uniform",
   };
 }

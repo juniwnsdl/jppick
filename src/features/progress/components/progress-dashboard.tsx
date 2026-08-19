@@ -38,8 +38,13 @@ function byLeastPracticed(left: KanaProgress, right: KanaProgress): number {
   return left.presented - right.presented || left.kanaId.localeCompare(right.kanaId);
 }
 
+function retryRate(progress: KanaProgress): number {
+  const evaluated = progress.good + progress.retry;
+  return evaluated > 0 ? progress.retry / evaluated : 0;
+}
+
 function byDifficulty(left: KanaProgress, right: KanaProgress): number {
-  const ratioDifference = right.retry / right.presented - left.retry / left.presented;
+  const ratioDifference = retryRate(right) - retryRate(left);
   return ratioDifference || right.retry - left.retry || left.kanaId.localeCompare(right.kanaId);
 }
 
@@ -146,7 +151,7 @@ export function ProgressDashboard({
             {difficult.length > 0 ? difficult.slice(0, 5).map((item) => (
               <li key={item.kanaId}>
                 <span className="rank-kana">{kanaLabel(item.kanaId)}</span>
-                <span className="rank-meta">다시 연습 {Math.round(item.retry / item.presented * 100)}%</span>
+                <span className="rank-meta">다시 연습 {Math.round(retryRate(item) * 100)}%</span>
               </li>
             )) : <li className="rank-empty">연습 기록이 쌓이면 표시돼요.</li>}
           </ol>

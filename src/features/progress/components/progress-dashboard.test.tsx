@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
@@ -39,6 +39,29 @@ it("shows totals and ranks least-practiced and difficult kana from real records"
   expect(screen.getByRole("list", { name: "어려운 문자 순위" })).toHaveTextContent("い");
   expect(screen.getByRole("row", { name: /い.*2.*1.*1/ })).toBeVisible();
   expect(screen.getByText("이 브라우저에서는 기록이 유지되지 않아요.")).toBeVisible();
+});
+
+it("excludes ungraded ordered practice from difficult-kana percentages", async () => {
+  const repository = createLearningRepository({ indexedDB: null });
+  await repository.recordEvaluation("hiragana-a", "retry", "2026-08-18T00:01:00.000Z");
+  for (let index = 0; index < 9; index += 1) {
+    await repository.recordEvaluation(
+      "hiragana-a",
+      "practice",
+      `2026-08-18T00:${String(index + 2).padStart(2, "0")}:00.000Z`,
+    );
+  }
+  await repository.recordEvaluation("hiragana-i", "retry", "2026-08-18T00:11:00.000Z");
+  await repository.recordEvaluation("hiragana-i", "good", "2026-08-18T00:12:00.000Z");
+
+  render(<ProgressDashboard repository={repository} />);
+
+  const difficult = await screen.findByRole("list", { name: "어려운 문자 순위" });
+  const ranked = within(difficult).getAllByRole("listitem");
+  expect(ranked[0]).toHaveTextContent("あ");
+  expect(ranked[0]).toHaveTextContent("다시 연습 100%");
+  expect(ranked[1]).toHaveTextContent("い");
+  expect(ranked[1]).toHaveTextContent("다시 연습 50%");
 });
 
 it("requires the deletion word after entering the destructive confirmation step", async () => {

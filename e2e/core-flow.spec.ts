@@ -138,6 +138,96 @@ test("chart practice keeps the selected kana as the only practice target", async
   await expect(page.getByLabel("따라 쓸 문자")).toHaveText("あ");
 });
 
+test("chart starts the entire visible set in catalog order", async ({ page }) => {
+  await page.goto("/chart");
+  await page.getByRole("link", { name: "현재 46자 순서대로 연습" }).click();
+
+  await expect(page).toHaveURL(/count=all&strategy=ordered/);
+  await expect(page.getByLabel("따라 쓸 문자")).toHaveText("あ");
+  await expect(page.getByText("1 / 46", { exact: true })).toBeVisible();
+  await expect(page.getByText("순서 연습", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "정답 확인" })).toHaveCount(0);
+
+  await page.getByRole("button", { name: "다음 글자" }).click();
+
+  await expect(page.getByLabel("따라 쓸 문자")).toHaveText("い");
+  await expect(page.getByText("2 / 46", { exact: true })).toBeVisible();
+});
+
+test("basic kana chart keeps each a-i-u-e-o row to five columns", async ({ page }) => {
+  await page.goto("/chart");
+
+  const cells = await Promise.all([
+    page.getByRole("button", { name: "あ, a, 아" }).boundingBox(),
+    page.getByRole("button", { name: "い, i, 이" }).boundingBox(),
+    page.getByRole("button", { name: "う, u, 우" }).boundingBox(),
+    page.getByRole("button", { name: "え, e, 에" }).boundingBox(),
+    page.getByRole("button", { name: "お, o, 오" }).boundingBox(),
+    page.getByRole("button", { name: "か, ka, 카" }).boundingBox(),
+  ]);
+
+  for (const cell of cells) {
+    expect(cell, "kana cell should be visible").not.toBeNull();
+  }
+  for (const cell of cells.slice(0, 5)) {
+    expect(cell!.y).toBeCloseTo(cells[0]!.y, 1);
+  }
+  expect(cells.slice(0, 5).map((cell) => cell!.x)).toEqual(
+    [...cells.slice(0, 5).map((cell) => cell!.x)].sort((left, right) => left - right),
+  );
+  expect(cells[5]!.y).toBeGreaterThan(cells[0]!.y);
+});
+
+test("chart starts every phonetic family on its own row", async ({ page }) => {
+  async function cellY(name: string) {
+    const cell = await page.getByRole("button", { name }).boundingBox();
+    expect(cell, `${name} should be visible`).not.toBeNull();
+    return cell!.y;
+  }
+
+  async function expectSameRow(names: string[]) {
+    const row = await Promise.all(names.map(cellY));
+
+    for (const y of row) {
+      expect(y).toBeCloseTo(row[0], 1);
+    }
+    return row[0];
+  }
+
+  async function expectFamilyRow(names: string[], nextFamily: string) {
+    const rowY = await expectSameRow(names);
+    const nextRow = await cellY(nextFamily);
+
+    expect(nextRow).toBeGreaterThan(rowY);
+  }
+
+  await page.goto("/chart");
+  await expectFamilyRow(
+    ["や, ya, 야", "ゆ, yu, 유", "よ, yo, 요"],
+    "ら, ra, 라",
+  );
+  await expectSameRow(["わ, wa, 와", "を, wo, 오", "ん, n, 응"]);
+
+  await page.getByRole("button", { name: "요음" }).click();
+  await expectFamilyRow(
+    ["きゃ, kya, 캬", "きゅ, kyu, 큐", "きょ, kyo, 쿄"],
+    "ぎゃ, gya, 갸",
+  );
+
+  await page.getByRole("button", { name: "작은 글자" }).click();
+  await expectFamilyRow(
+    ["ゕ, xka, 작은 카", "ゖ, xke, 작은 케"],
+    "っ, xtsu, 작은 つ",
+  );
+
+  await page.getByRole("button", { name: "가타카나" }).click();
+  await page.getByRole("button", { name: "확장음" }).click();
+  await expectFamilyRow(
+    ["ウィ, wi, 위", "ウェ, we, 웨", "ウォ, wo, 오"],
+    "ヴァ, va, 바",
+  );
+});
+
 test("retry result starts a difficult-only session", async ({ page }) => {
   await page.addInitScript(() => {
     Math.random = () => 0;
@@ -222,6 +312,35 @@ test("320px pages do not overflow horizontally and expose 44px targets", async (
     expect(box?.width).toBeGreaterThanOrEqual(44);
     expect(box?.height).toBeGreaterThanOrEqual(44);
   }
+});
+
+test("retry result grid remains responsive on compact screens", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 });
+  await page.addInitScript(() => {
+    window.sessionStorage.setItem("kana-learning-practice-result", JSON.stringify({
+      config: {
+        mode: "copy",
+        scripts: ["hiragana"],
+        groups: ["basic"],
+        count: 5,
+        strategy: "uniform",
+      },
+      startedAt: "2026-08-18T00:00:00.000Z",
+      endedAt: "2026-08-18T00:05:00.000Z",
+      results: ["a", "i", "u", "e", "o", "ka"].map((romaji, index) => ({
+        kanaId: `hiragana-${romaji}`,
+        evaluation: "retry",
+        answeredAt: `2026-08-18T00:0${index}:00.000Z`,
+      })),
+    }));
+  });
+  await page.goto("/practice/result");
+
+  const retryGrid = page.getByRole("list", { name: "다시 연습할 문자" });
+  await expect(retryGrid).toBeVisible();
+  await expect.poll(() => retryGrid.evaluate((element) => (
+    getComputedStyle(element).gridTemplateColumns.split(" ").length
+  ))).toBeLessThan(5);
 });
 
 test("touch drawing reaches the app while keeping the page position fixed", async ({ page }, testInfo) => {
