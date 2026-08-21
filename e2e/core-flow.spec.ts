@@ -127,15 +127,27 @@ test("mixed recall exercises both selected scripts in one session", async ({ pag
   expect(answers.some((glyph) => /^[\u30a0-\u30ff]+$/u.test(glyph)), "session should exercise katakana").toBe(true);
 });
 
-test("chart practice keeps the selected kana as the only practice target", async ({ page }) => {
+test("chart practices the selected kana inside its detail", async ({ page }) => {
   await page.goto("/chart");
   await page.getByRole("button", { name: "あ, a, 아" }).click();
-  await page.getByRole("link", { name: "이 문자 연습" }).click();
+  await page.getByRole("button", { name: "이 문자 연습" }).click();
 
-  const start = page.getByRole("link", { name: "연습 시작" });
-  await expect(start).toHaveAttribute("href", /kanaIds=hiragana-a/);
-  await start.click();
-  await expect(page.getByLabel("따라 쓸 문자")).toHaveText("あ");
+  await expect(page).toHaveURL(/\/chart$/);
+  await expect(page.getByRole("dialog", { name: "あ 상세" })).toBeVisible();
+  await expect(page.getByRole("img", { name: "쓰기 영역" })).toBeVisible();
+  await expect(page.getByTestId("trace-kana-guide")).toBeVisible();
+});
+
+test("chart detail moves to adjacent visible kana", async ({ page }) => {
+  await page.goto("/chart");
+  await page.getByRole("button", { name: "あ, a, 아" }).click();
+
+  await expect(page.getByRole("button", { name: "이전 문자" })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "다음 문자" })).toHaveText(">");
+  await page.getByRole("button", { name: "다음 문자" }).click();
+
+  await expect(page.getByRole("dialog", { name: "い 상세" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "이전 문자" })).toHaveText("<");
 });
 
 test("chart starts the entire visible set in catalog order", async ({ page }) => {

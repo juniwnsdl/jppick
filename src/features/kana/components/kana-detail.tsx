@@ -1,6 +1,8 @@
-import Link from "next/link";
-import { useEffect, useRef, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 
+import { KanaCanvasGuide } from "../../practice/components/kana-canvas-guide";
+import { WritingCanvas } from "../../practice/components/writing-canvas";
+import type { Stroke } from "../../practice/strokes";
 import { kanaReadingParts } from "../reading";
 import type { KanaUnit } from "../types";
 import { StrokeGuide } from "./stroke-guide";
@@ -17,12 +19,16 @@ const GROUP_LABEL = {
 interface KanaDetailProps {
   unit: KanaUnit;
   onClose: () => void;
+  onNext?: () => void;
+  onPrevious?: () => void;
 }
 
-export function KanaDetail({ unit, onClose }: KanaDetailProps) {
+export function KanaDetail({ unit, onClose, onNext, onPrevious }: KanaDetailProps) {
   const titleId = `kana-detail-${unit.id}`;
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLElement>(null);
+  const [isPracticing, setIsPracticing] = useState(false);
+  const [strokes, setStrokes] = useState<Stroke[]>([]);
   const reading = kanaReadingParts(unit);
 
   useEffect(() => {
@@ -55,6 +61,12 @@ export function KanaDetail({ unit, onClose }: KanaDetailProps) {
     }
   }
 
+  function moveToAdjacent(move: (() => void) | undefined) {
+    setIsPracticing(false);
+    setStrokes([]);
+    move?.();
+  }
+
   return (
     <div className="kana-detail-backdrop">
       <section
@@ -70,11 +82,31 @@ export function KanaDetail({ unit, onClose }: KanaDetailProps) {
         </button>
         <h2 id={titleId}>{unit.display} 상세</h2>
         <div className="kana-detail-hero">
-          <p className="kana-detail-glyph" aria-hidden="true">{unit.display}</p>
-          <p className="kana-detail-reading-main">
-            {reading.ko}
-            {reading.romaji ? <small>[{reading.romaji}]</small> : null}
-          </p>
+          <button
+            aria-label="이전 문자"
+            className="kana-detail-nav"
+            disabled={!onPrevious}
+            onClick={() => moveToAdjacent(onPrevious)}
+            type="button"
+          >
+            {"<"}
+          </button>
+          <div className="kana-detail-hero-content">
+            <p className="kana-detail-glyph" aria-hidden="true">{unit.display}</p>
+            <p className="kana-detail-reading-main">
+              {reading.ko}
+              {reading.romaji ? <small>[{reading.romaji}]</small> : null}
+            </p>
+          </div>
+          <button
+            aria-label="다음 문자"
+            className="kana-detail-nav"
+            disabled={!onNext}
+            onClick={() => moveToAdjacent(onNext)}
+            type="button"
+          >
+            {">"}
+          </button>
         </div>
         <dl className="kana-detail-reading">
           <div>
@@ -86,11 +118,32 @@ export function KanaDetail({ unit, onClose }: KanaDetailProps) {
             <dd>{GROUP_LABEL[unit.group]}</dd>
           </div>
         </dl>
-        <h3 className="stroke-guide-title">획순 안내</h3>
-        <StrokeGuide animated assetKeys={unit.strokeAssetKeys} />
-        <Link className="primary-action" href={`/practice?kana=${encodeURIComponent(unit.id)}`}>
-          이 문자 연습
-        </Link>
+        <h3 className="stroke-guide-title">{isPracticing ? "직접 써보기" : "획순 안내"}</h3>
+        {isPracticing ? (
+          <div className="kana-detail-writing">
+            <WritingCanvas
+              backgroundGuide={(
+                <KanaCanvasGuide
+                  assetKeys={unit.strokeAssetKeys}
+                  display={unit.display}
+                  variant="trace"
+                />
+              )}
+              guide
+              onChange={setStrokes}
+              strokes={strokes}
+            />
+          </div>
+        ) : (
+          <StrokeGuide animated assetKeys={unit.strokeAssetKeys} />
+        )}
+        <button
+          className="primary-action"
+          onClick={() => setIsPracticing((current) => !current)}
+          type="button"
+        >
+          {isPracticing ? "획순 안내 보기" : "이 문자 연습"}
+        </button>
       </section>
     </div>
   );
