@@ -10,7 +10,8 @@
 		"test": "vitest run",
 		"test:watch": "vitest",
 		"test:e2e": "playwright test",
-		"validate:kana": "node scripts/validate-kana-catalog.mjs"
+		"validate:kana": "node scripts/validate-kana-catalog.mjs",
+		"validate:vocabulary": "node scripts/validate-vocabulary.mjs"
 	},
 	"dependencies": {
 		"idb": "^8.0.3",
