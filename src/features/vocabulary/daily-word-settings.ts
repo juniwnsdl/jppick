@@ -8,7 +8,7 @@ export interface DailyWordLevelSettings {
 }
 
 export const DEFAULT_DAILY_WORD_SETTINGS: DailyWordLevelSettings = {
-  activeLevels: ["N1", "N2", "N3"],
+  activeLevels: ["N3", "N4", "N5"],
   pendingLevels: null,
   effectiveDate: null,
 };

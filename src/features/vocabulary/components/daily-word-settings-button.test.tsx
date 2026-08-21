@@ -8,7 +8,7 @@ const SETTINGS_STORAGE_KEY = "kana-learning-settings";
 
 function saveDailyWordSettings(dailyWords: unknown) {
   window.localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify({
-    version: 2,
+    version: 3,
     guideLines: true,
     traceGuide: true,
     overlayOpacity: 0.55,
@@ -21,17 +21,18 @@ describe("DailyWordSettingsButton", () => {
     window.localStorage.clear();
   });
 
-  it("opens the difficulty dialog with the default N1, N2, and N3 choices", async () => {
+  it("opens the difficulty dialog with the default N3, N4, and N5 choices", async () => {
     const user = userEvent.setup();
     render(<DailyWordSettingsButton />);
 
     await user.click(screen.getByRole("button", { name: "오늘의 단어 설정" }));
 
     const dialog = screen.getByRole("dialog", { name: "오늘의 단어 난이도" });
-    expect(within(dialog).getByRole("checkbox", { name: "N1" })).toBeChecked();
-    expect(within(dialog).getByRole("checkbox", { name: "N2" })).toBeChecked();
+    expect(within(dialog).getByRole("checkbox", { name: "N1" })).not.toBeChecked();
+    expect(within(dialog).getByRole("checkbox", { name: "N2" })).not.toBeChecked();
     expect(within(dialog).getByRole("checkbox", { name: "N3" })).toBeChecked();
-    expect(within(dialog).getByRole("checkbox", { name: "N4" })).not.toBeChecked();
+    expect(within(dialog).getByRole("checkbox", { name: "N4" })).toBeChecked();
+    expect(within(dialog).getByRole("checkbox", { name: "N5" })).toBeChecked();
     expect(within(dialog).getByText("변경한 난이도는 내일부터 적용됩니다")).toBeVisible();
   });
 
@@ -59,9 +60,9 @@ describe("DailyWordSettingsButton", () => {
     await user.click(screen.getByRole("button", { name: "오늘의 단어 설정" }));
 
     const dialog = screen.getByRole("dialog", { name: "오늘의 단어 난이도" });
-    await user.click(within(dialog).getByRole("checkbox", { name: "N1" }));
-    await user.click(within(dialog).getByRole("checkbox", { name: "N2" }));
     await user.click(within(dialog).getByRole("checkbox", { name: "N3" }));
+    await user.click(within(dialog).getByRole("checkbox", { name: "N4" }));
+    await user.click(within(dialog).getByRole("checkbox", { name: "N5" }));
 
     expect(within(dialog).getByText("최소 한 개의 난이도를 선택해 주세요.")).toBeVisible();
     expect(within(dialog).getByRole("button", { name: "저장" })).toBeDisabled();
@@ -96,14 +97,14 @@ describe("DailyWordSettingsButton", () => {
     await user.click(screen.getByRole("button", { name: "오늘의 단어 설정" }));
 
     const dialog = screen.getByRole("dialog", { name: "오늘의 단어 난이도" });
-    await user.click(within(dialog).getByRole("checkbox", { name: "N1" }));
+    await user.click(within(dialog).getByRole("checkbox", { name: "N2" }));
     await user.click(within(dialog).getByRole("checkbox", { name: "N3" }));
-    await user.click(within(dialog).getByRole("checkbox", { name: "N4" }));
+    await user.click(within(dialog).getByRole("checkbox", { name: "N5" }));
     await user.click(within(dialog).getByRole("button", { name: "저장" }));
 
     expect(screen.getByRole("status")).toHaveTextContent("내일부터 N2, N4 단어가 표시됩니다.");
     expect(JSON.parse(window.localStorage.getItem(SETTINGS_STORAGE_KEY) ?? "{}").dailyWords).toEqual({
-      activeLevels: ["N1", "N2", "N3"],
+      activeLevels: ["N3", "N4", "N5"],
       pendingLevels: ["N2", "N4"],
       effectiveDate: expectedEffectiveDate,
     });

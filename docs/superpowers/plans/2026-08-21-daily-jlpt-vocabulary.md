@@ -1,5 +1,7 @@
 # Daily JLPT Vocabulary Implementation Plan
 
+> Post-implementation amendment (2026-08-21): the approved default changed to N3/N4/N5 and the daily count changed to six (two per default level). The steps below preserve the original execution record.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Bundle translated N1~N5 vocabulary and show five balanced, deterministic daily words with next-day difficulty settings.

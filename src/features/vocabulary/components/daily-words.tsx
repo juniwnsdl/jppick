@@ -64,7 +64,7 @@ export function DailyWords({ date = new Date(), loader = defaultLoader }: DailyW
         const wordsByLevel = Object.fromEntries(loadedLevels) as Partial<Record<JlptLevel, VocabularyWord[]>>;
         setLoadState({
           requestKey,
-          words: getDailyWords(wordsByLevel, dateKey, activeSettings.activeLevels, 5),
+          words: getDailyWords(wordsByLevel, dateKey, activeSettings.activeLevels, 6),
           loadError: false,
         });
       },

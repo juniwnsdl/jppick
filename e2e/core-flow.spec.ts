@@ -491,8 +491,8 @@ test("daily words keep today's cards while next-day difficulty changes are saved
   await page.goto("/");
 
   const cards = page.locator(".daily-word-card");
-  await expect(cards).toHaveCount(5);
-  await expect(page.locator(".daily-word-level")).toHaveCount(5);
+  await expect(cards).toHaveCount(6);
+  await expect(page.locator(".daily-word-level")).toHaveCount(6);
   await expect(page.locator(".daily-words-grid")).toHaveCSS("display", "grid");
   await expect.poll(() => page.evaluate(() => (
     document.documentElement.scrollWidth <= document.documentElement.clientWidth
@@ -512,13 +512,12 @@ test("daily words keep today's cards while next-day difficulty changes are saved
   expect(dialogBox!.x + dialogBox!.width).toBeLessThanOrEqual((await page.viewportSize())!.width);
   expect(dialogBox!.y).toBeGreaterThanOrEqual(0);
   expect(dialogBox!.y + dialogBox!.height).toBeLessThanOrEqual((await page.viewportSize())!.height);
-  await page.getByLabel("N1").uncheck();
-  await page.getByLabel("N2").uncheck();
   await page.getByLabel("N3").uncheck();
+  await page.getByLabel("N5").uncheck();
   await page.getByLabel("N4").check();
   await dialog.getByRole("button", { name: "저장" }).click();
 
   await expect(page.getByRole("status")).toContainText("내일부터 N4 단어가 표시됩니다.");
-  await expect(cards).toHaveCount(5);
+  await expect(cards).toHaveCount(6);
   expect(await cards.allTextContents()).toEqual(todayWords);
 });

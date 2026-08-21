@@ -66,6 +66,12 @@ describe("getDailyWords", () => {
     expect([counts.N1, counts.N2, counts.N3].sort()).toEqual([1, 2, 2]);
   });
 
+  it("allocates six slots evenly across the default N3, N4, and N5 levels", () => {
+    const dailyWords = getDailyWords(wordsByLevel, "2026-08-21", ["N3", "N4", "N5"], 6);
+
+    expect(countByLevel(dailyWords)).toEqual({ N1: 0, N2: 0, N3: 2, N4: 2, N5: 2 });
+  });
+
   it("allocates one slot to each of five selected levels", () => {
     const dailyWords = getDailyWords(wordsByLevel, "2026-08-21", ["N1", "N2", "N3", "N4", "N5"], 5);
 

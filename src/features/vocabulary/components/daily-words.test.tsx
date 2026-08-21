@@ -8,7 +8,7 @@ import { DailyWords } from "./daily-words";
 const date = new Date(2026, 7, 21, 9, 30);
 
 function wordsFor(level: JlptLevel): VocabularyWord[] {
-  return Array.from({ length: 5 }, (_, index) => ({
+  return Array.from({ length: 6 }, (_, index) => ({
     word: `단어${index + 1}-${level.slice(1)}`,
     reading: `읽기${index + 1}-${level.slice(1)}`,
     pronunciationKo: `발음 ${index + 1}-${level.slice(1)}`,
@@ -26,7 +26,7 @@ beforeEach(() => {
 });
 
 describe("DailyWords", () => {
-  it("shows a loading status before today's five word cards are ready", () => {
+  it("shows a loading status before today's six word cards are ready", () => {
     const loader = vi.fn(() => new Promise<VocabularyWord[]>(() => {}));
 
     render(<DailyWords date={date} loader={loader} />);
@@ -34,20 +34,20 @@ describe("DailyWords", () => {
     expect(screen.getByRole("status")).toHaveTextContent("오늘의 단어를 불러오는 중이에요");
   });
 
-  it("shows five semantic cards with reading, Korean pronunciation, meaning, and level", async () => {
+  it("shows six semantic cards with reading, Korean pronunciation, meaning, and level", async () => {
     const loader = successfulLoader();
 
     render(<DailyWords date={date} loader={loader} />);
 
     const cards = await screen.findAllByRole("article");
-    expect(cards).toHaveLength(5);
+    expect(cards).toHaveLength(6);
     expect(screen.getByText("2026년 8월 21일")).toBeVisible();
 
     const firstCard = within(cards[0]);
     expect(firstCard.getByRole("heading")).toBeVisible();
     expect(firstCard.getByText(/ · /)).toBeVisible();
     expect(firstCard.getByText(/^뜻 /)).toBeVisible();
-    expect(firstCard.getByText(/N[1-3]/)).toBeVisible();
+    expect(firstCard.getByText(/N[3-5]/)).toBeVisible();
   });
 
   it("loads only the currently active default levels", async () => {
@@ -56,7 +56,7 @@ describe("DailyWords", () => {
     render(<DailyWords date={date} loader={loader} />);
 
     await screen.findAllByRole("article");
-    expect(loader.mock.calls.map(([level]) => level).sort()).toEqual(["N1", "N2", "N3"]);
+    expect(loader.mock.calls.map(([level]) => level).sort()).toEqual(["N3", "N4", "N5"]);
   });
 
   it("promotes an effective setting before loading and persists the promoted levels", async () => {
@@ -92,7 +92,7 @@ describe("DailyWords", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent("오늘의 단어를 불러오지 못했어요");
     await user.click(screen.getByRole("button", { name: "다시 시도" }));
 
-    expect(await screen.findAllByRole("article")).toHaveLength(5);
+    expect(await screen.findAllByRole("article")).toHaveLength(6);
   });
 
   it("reports a selection failure instead of leaving the loading status visible", async () => {

@@ -35,7 +35,7 @@ const question: Question = {
 };
 
 const settings: AppSettings = {
-  version: 2,
+  version: 3,
   guideLines: true,
   traceGuide: true,
   overlayOpacity: 0.55,

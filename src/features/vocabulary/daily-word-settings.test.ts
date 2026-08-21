@@ -16,7 +16,7 @@ describe("daily word level settings", () => {
     );
 
     expect(scheduled).toEqual({
-      activeLevels: ["N1", "N2", "N3"],
+      activeLevels: ["N3", "N4", "N5"],
       pendingLevels: ["N2", "N5"],
       effectiveDate: "2026-08-22",
     });
@@ -31,7 +31,7 @@ describe("daily word level settings", () => {
 
     expect(scheduleDailyWordLevels(firstSave, ["N1", "N5"], new Date(2026, 7, 21, 18)))
       .toEqual({
-        activeLevels: ["N1", "N2", "N3"],
+        activeLevels: ["N3", "N4", "N5"],
         pendingLevels: ["N1", "N5"],
         effectiveDate: "2026-08-22",
       });

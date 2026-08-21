@@ -5,7 +5,7 @@ import {
 } from "../features/vocabulary/daily-word-settings";
 
 export interface AppSettings {
-  version: 2;
+  version: 3;
   guideLines: boolean;
   traceGuide: boolean;
   overlayOpacity: number;
@@ -13,7 +13,7 @@ export interface AppSettings {
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
-  version: 2,
+  version: 3,
   guideLines: true,
   traceGuide: true,
   overlayOpacity: 0.55,
@@ -43,20 +43,28 @@ function parseSettings(value: unknown): AppSettings {
     dailyWords?: unknown;
   };
 
-  if (stored.version !== 1 && stored.version !== 2) {
+  if (stored.version !== 1 && stored.version !== 2 && stored.version !== 3) {
     return { ...DEFAULT_SETTINGS };
   }
 
+  const normalizedDailyWords = stored.version === 1
+    ? normalizeDailyWordSettings(DEFAULT_DAILY_WORD_SETTINGS)
+    : normalizeDailyWordSettings(stored.dailyWords);
+  const usesPreviousDefault = stored.version === 2
+    && normalizedDailyWords.activeLevels.join("|") === "N1|N2|N3"
+    && normalizedDailyWords.pendingLevels === null
+    && normalizedDailyWords.effectiveDate === null;
+
   return {
-    version: 2,
+    version: 3,
     guideLines:
       typeof stored.guideLines === "boolean" ? stored.guideLines : DEFAULT_SETTINGS.guideLines,
     traceGuide:
       typeof stored.traceGuide === "boolean" ? stored.traceGuide : DEFAULT_SETTINGS.traceGuide,
     overlayOpacity: clampOpacity(stored.overlayOpacity),
-    dailyWords: stored.version === 2
-      ? normalizeDailyWordSettings(stored.dailyWords)
-      : normalizeDailyWordSettings(DEFAULT_DAILY_WORD_SETTINGS),
+    dailyWords: usesPreviousDefault
+      ? normalizeDailyWordSettings(DEFAULT_DAILY_WORD_SETTINGS)
+      : normalizedDailyWords,
   };
 }
 
