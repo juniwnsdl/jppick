@@ -1,15 +1,23 @@
+import {
+  DEFAULT_DAILY_WORD_SETTINGS,
+  normalizeDailyWordSettings,
+  type DailyWordLevelSettings,
+} from "../features/vocabulary/daily-word-settings";
+
 export interface AppSettings {
-  version: 1;
+  version: 2;
   guideLines: boolean;
   traceGuide: boolean;
   overlayOpacity: number;
+  dailyWords: DailyWordLevelSettings;
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
-  version: 1,
+  version: 2,
   guideLines: true,
   traceGuide: true,
   overlayOpacity: 0.55,
+  dailyWords: DEFAULT_DAILY_WORD_SETTINGS,
 };
 
 const SETTINGS_STORAGE_KEY = "kana-learning-settings";
@@ -27,19 +35,28 @@ function parseSettings(value: unknown): AppSettings {
     return { ...DEFAULT_SETTINGS };
   }
 
-  const stored = value as Partial<AppSettings>;
+  const stored = value as {
+    version?: unknown;
+    guideLines?: unknown;
+    traceGuide?: unknown;
+    overlayOpacity?: unknown;
+    dailyWords?: unknown;
+  };
 
-  if (stored.version !== 1) {
+  if (stored.version !== 1 && stored.version !== 2) {
     return { ...DEFAULT_SETTINGS };
   }
 
   return {
-    version: 1,
+    version: 2,
     guideLines:
       typeof stored.guideLines === "boolean" ? stored.guideLines : DEFAULT_SETTINGS.guideLines,
     traceGuide:
       typeof stored.traceGuide === "boolean" ? stored.traceGuide : DEFAULT_SETTINGS.traceGuide,
     overlayOpacity: clampOpacity(stored.overlayOpacity),
+    dailyWords: stored.version === 2
+      ? normalizeDailyWordSettings(stored.dailyWords)
+      : normalizeDailyWordSettings(DEFAULT_DAILY_WORD_SETTINGS),
   };
 }
 

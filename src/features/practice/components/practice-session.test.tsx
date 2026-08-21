@@ -5,6 +5,7 @@ import { vi } from "vitest";
 
 import type { KanaUnit } from "../../kana/types";
 import type { AppSettings } from "../../../lib/settings";
+import { DEFAULT_DAILY_WORD_SETTINGS } from "../../vocabulary/daily-word-settings";
 import { PRACTICE_RESULT_STORAGE_KEY } from "../session-reducer";
 import type { PracticeConfig, Question } from "../types";
 import { PracticeResult } from "./practice-result";
@@ -34,10 +35,11 @@ const question: Question = {
 };
 
 const settings: AppSettings = {
-  version: 1,
+  version: 2,
   guideLines: true,
   traceGuide: true,
   overlayOpacity: 0.55,
+  dailyWords: DEFAULT_DAILY_WORD_SETTINGS,
 };
 
 function config(mode: PracticeConfig["mode"]): PracticeConfig {
