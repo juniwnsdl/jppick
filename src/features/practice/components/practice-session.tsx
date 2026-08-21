@@ -24,6 +24,7 @@ import { GROUP_OPTIONS, SCRIPT_OPTIONS } from "../practice-config";
 import type { Stroke } from "../strokes";
 import type { KanaProgressById, PracticeConfig, Question, Random } from "../types";
 import { WritingCanvas } from "./writing-canvas";
+import { KanaCanvasGuide } from "./kana-canvas-guide";
 
 interface PersistedSessionSummary {
   id: string;
@@ -667,7 +668,6 @@ function ActivePracticeSession({
   const question = state.questions[state.currentIndex];
   const kana = catalog.find((unit) => unit.id === question?.kanaId);
   const evaluated = state.results.length > state.currentIndex;
-  const traceFontSize = kana && kana.glyphs.length > 1 ? 0.46 : 0.72;
   const isLastQuestion = config.count !== "unlimited" && state.currentIndex + 1 >= state.questions.length;
   const nextLabel = isLastQuestion ? "결과 보기" : "다음 문제";
   const orderedNextLabel = isLastQuestion ? "연습 완료" : "다음 글자";
@@ -765,22 +765,23 @@ function ActivePracticeSession({
           <line x1="0" y1="0.5" x2="1" y2="0.5" />
         </>
       ) : null}
-      {config.mode === "copy" && settings.traceGuide && state.phase === "writing" ? (
-        <text
-          data-testid="trace-kana-guide"
-          dominantBaseline="central"
-          fill="#e5e8eb"
-          fontSize={traceFontSize}
-          stroke="none"
-          textAnchor="middle"
-          x="0.5"
-          y="0.5"
-        >
-          {kana.display}
-        </text>
-      ) : null}
     </Fragment>
   );
+  const traceGuide = config.mode === "copy" && settings.traceGuide && state.phase === "writing" ? (
+    <KanaCanvasGuide
+      assetKeys={kana.strokeAssetKeys}
+      display={kana.display}
+      variant="trace"
+    />
+  ) : null;
+  const answerOverlay = state.phase === "reviewing" ? (
+    <KanaCanvasGuide
+      assetKeys={kana.strokeAssetKeys}
+      display={kana.display}
+      opacity={state.overlayOpacity}
+      variant="answer"
+    />
+  ) : null;
 
   const reading = kanaReadingParts(kana);
   const finite = config.count !== "unlimited";
@@ -860,29 +861,14 @@ function ActivePracticeSession({
 
         <div className="writing-stage">
           <div style={{ pointerEvents: state.phase === "writing" ? "auto" : "none" }}>
-            <WritingCanvas guide={guide} strokes={state.currentStrokes} onChange={handleCanvasChange} />
+            <WritingCanvas
+              backgroundGuide={traceGuide}
+              foregroundGuide={answerOverlay}
+              guide={guide}
+              strokes={state.currentStrokes}
+              onChange={handleCanvasChange}
+            />
           </div>
-          {state.phase === "reviewing" ? (
-            <svg
-              aria-label="정답 모델"
-              className="writing-answer-overlay"
-              preserveAspectRatio="none"
-              role="img"
-              style={{ opacity: state.overlayOpacity }}
-              viewBox="0 0 1 1"
-            >
-              <text
-                dominantBaseline="central"
-                fill="currentColor"
-                fontSize={traceFontSize}
-                textAnchor="middle"
-                x="0.5"
-                y="0.5"
-              >
-                {kana.display}
-              </text>
-            </svg>
-          ) : null}
         </div>
 
         {state.phase === "writing" ? (

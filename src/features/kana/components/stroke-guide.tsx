@@ -3,6 +3,7 @@
 import { useEffect, useId, useState } from "react";
 
 import { enhanceStrokeSvg, type StrokeOrderSvg } from "../stroke-order";
+import { strokeAssetUrl } from "../stroke-asset-url";
 
 interface StrokeGuideProps {
   assetKeys: readonly string[];
@@ -10,10 +11,6 @@ interface StrokeGuideProps {
   animated?: boolean;
   /** Offer a "획순 다시 보기" button. Defaults to `animated`. */
   replayable?: boolean;
-}
-
-function assetUrl(assetKey: string): string {
-  return `/strokes/${assetKey.split("/").map(encodeURIComponent).join("/")}.svg`;
 }
 
 function glyphOf(assetKey: string): string {
@@ -31,7 +28,7 @@ function loadStrokeSource(assetKey: string): Promise<string | null> {
         if (typeof fetch !== "function" || typeof window === "undefined") {
           return null;
         }
-        const response = await fetch(new URL(assetUrl(assetKey), window.location.href));
+        const response = await fetch(new URL(strokeAssetUrl(assetKey), window.location.href));
         if (!response.ok) {
           return null;
         }
@@ -97,7 +94,7 @@ function StrokeGuideAsset({ assetKey, animated, replayToken }: StrokeGuideAssetP
       className="stroke-guide-image"
       onError={() => setFailed(true)}
       role="img"
-      src={assetUrl(assetKey)}
+      src={strokeAssetUrl(assetKey)}
     />
   );
 }

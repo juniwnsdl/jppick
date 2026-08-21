@@ -25,7 +25,7 @@ const kana: KanaUnit = {
   chartRow: 0,
   romaji: "a",
   readingKo: "아",
-  strokeAssetKeys: ["hiragana/basic/あ"],
+  strokeAssetKeys: ["hiragana/あ"],
 };
 
 const question: Question = {
@@ -190,6 +190,48 @@ it("shows the kana and enabled trace guide before reveal in copy mode", () => {
   expect(screen.queryByRole("button", { name: "잘 썼어요" })).not.toBeInTheDocument();
 });
 
+it("renders the trace glyph from the stroke asset inside the responsive canvas frame", () => {
+  render(
+    <PracticeSession
+      catalog={[kana]}
+      config={config("copy")}
+      initialQuestions={[question]}
+      initialSettings={settings}
+    />,
+  );
+
+  const canvas = screen.getByRole("img", { name: "쓰기 영역" });
+  const frame = canvas.parentElement;
+  const traceGuide = screen.getByTestId("trace-kana-guide");
+  const traceGlyph = within(traceGuide).getByTestId("kana-guide-glyph");
+
+  expect(frame).toContainElement(traceGuide);
+  expect(traceGlyph.getAttribute("style")).toContain(
+    "/strokes/hiragana/%E3%81%82.svg",
+  );
+});
+
+it("renders the answer overlay in the same responsive canvas frame as the trace guide", async () => {
+  const user = userEvent.setup();
+  render(
+    <PracticeSession
+      catalog={[kana]}
+      config={config("copy")}
+      initialQuestions={[question]}
+      initialSettings={settings}
+    />,
+  );
+
+  const canvas = screen.getByRole("img", { name: "쓰기 영역" });
+  const frame = canvas.parentElement;
+
+  await revealWithoutInk(user);
+
+  const answerOverlay = screen.getByRole("img", { name: "정답 모델" });
+  expect(frame).toContainElement(answerOverlay);
+  expect(within(answerOverlay).getByTestId("kana-guide-glyph")).toBeVisible();
+});
+
 it("advances ordered practice directly without answer review or self-evaluation", async () => {
   const user = userEvent.setup();
   const onComplete = vi.fn();
@@ -200,7 +242,7 @@ it("advances ordered practice directly without answer review or self-evaluation"
     romaji: "i",
     readingKo: "이",
     glyphs: ["い"],
-    strokeAssetKeys: ["hiragana/basic/い"],
+    strokeAssetKeys: ["hiragana/い"],
   };
   const orderedConfig: PracticeConfig = {
     ...config("copy"),
@@ -271,7 +313,7 @@ it("does not generate a random question queue during server rendering", () => {
     glyphs: ["い"],
     romaji: "i",
     readingKo: "이",
-    strokeAssetKeys: ["hiragana/basic/い"],
+    strokeAssetKeys: ["hiragana/い"],
   };
 
   renderToString(
@@ -309,7 +351,7 @@ it("disambiguates a mixed-script recall prompt before the answer is revealed", (
     display: "ア",
     glyphs: ["ア"],
     script: "katakana",
-    strokeAssetKeys: ["katakana/basic/ア"],
+    strokeAssetKeys: ["katakana/ア"],
   };
 
   render(
@@ -521,7 +563,7 @@ it("offers to resume a compatible interrupted queue at the next unanswered quest
     romaji: "i",
     readingKo: "이",
     glyphs: ["い"],
-    strokeAssetKeys: ["hiragana/basic/い"],
+    strokeAssetKeys: ["hiragana/い"],
   };
   await repository.saveInterrupted({
     id: "session-resume",
@@ -569,7 +611,7 @@ it("appends the next weighted cycle before resuming an unlimited boundary checkp
     romaji: "i",
     readingKo: "이",
     glyphs: ["い"],
-    strokeAssetKeys: ["hiragana/basic/い"],
+    strokeAssetKeys: ["hiragana/い"],
   };
   await repository.saveInterrupted({
     id: "session-unlimited",
@@ -649,7 +691,7 @@ it.each([
     romaji: "i",
     readingKo: "이",
     glyphs: ["い"],
-    strokeAssetKeys: ["hiragana/basic/い"],
+    strokeAssetKeys: ["hiragana/い"],
   };
   const orderedConfig: PracticeConfig = {
     ...config("copy"),
@@ -676,7 +718,7 @@ it("rejects an interrupted queue outside the active script and group filters", (
     display: "ア",
     glyphs: ["ア"],
     script: "katakana",
-    strokeAssetKeys: ["katakana/basic/ア"],
+    strokeAssetKeys: ["katakana/ア"],
   };
   const queue = questions(5, katakana.id);
   const candidate = {
@@ -700,7 +742,7 @@ it("requires an exact selected-kana scope before offering resume", () => {
     glyphs: ["い"],
     romaji: "i",
     readingKo: "이",
-    strokeAssetKeys: ["hiragana/basic/い"],
+    strokeAssetKeys: ["hiragana/い"],
   };
   const matchingQueue = questions(5, kana.id);
   const candidate = {

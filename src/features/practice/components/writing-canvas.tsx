@@ -21,6 +21,8 @@ interface WritingCanvasProps {
   strokes: readonly Stroke[];
   onChange: (strokes: Stroke[]) => void;
   guide?: ReactNode;
+  backgroundGuide?: ReactNode;
+  foregroundGuide?: ReactNode;
 }
 
 interface DrawingSize {
@@ -68,7 +70,13 @@ function defaultGuide() {
   );
 }
 
-export function WritingCanvas({ strokes, onChange, guide }: WritingCanvasProps) {
+export function WritingCanvas({
+  strokes,
+  onChange,
+  guide,
+  backgroundGuide,
+  foregroundGuide,
+}: WritingCanvasProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const strokesRef = useRef(strokes);
@@ -260,6 +268,7 @@ export function WritingCanvas({ strokes, onChange, guide }: WritingCanvasProps) 
             {guide === true ? defaultGuide() : guide}
           </g>
         </svg>
+        {backgroundGuide}
         <canvas
           aria-label="쓰기 영역"
           onLostPointerCapture={(event) => {
@@ -281,6 +290,7 @@ export function WritingCanvas({ strokes, onChange, guide }: WritingCanvasProps) 
           role="img"
           style={{ inset: 0, position: "absolute", touchAction: "none" }}
         />
+        {foregroundGuide}
       </div>
       <div aria-label="쓰기 도구" className="writing-tools">
         <button

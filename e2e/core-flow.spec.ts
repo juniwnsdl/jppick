@@ -282,6 +282,83 @@ test("practice controls keep 44px touch targets", async ({ page }) => {
   await expectMinimumTarget(page, "button", "다시 연습");
 });
 
+test("responsive canvas keeps single and compound guides centered and inside its frame", async ({ page }, testInfo) => {
+  const viewport = testInfo.project.name === "desktop-chromium"
+    ? { width: 1280, height: 720 }
+    : testInfo.project.name === "compact-chromium"
+      ? { width: 320, height: 568 }
+      : { width: 402, height: 874 };
+  await page.setViewportSize(viewport);
+
+  for (const practiceCase of [
+    {
+      url: "/practice/run?mode=copy&scripts=hiragana&groups=basic&count=5&strategy=uniform&kanaIds=hiragana-a",
+      glyphCount: 1,
+    },
+    {
+      url: "/practice/run?mode=copy&scripts=katakana&groups=yoon&count=5&strategy=uniform&kanaIds=katakana-kya",
+      glyphCount: 2,
+    },
+  ]) {
+    await page.goto(practiceCase.url);
+
+    const frame = page.locator(".writing-canvas-frame");
+    const grid = page.getByTestId("writing-guide-layer");
+    const traceGuide = page.getByTestId("trace-kana-guide");
+    const canvas = page.getByRole("img", { name: "쓰기 영역" });
+    const frameBox = await frame.boundingBox();
+    const traceBox = await traceGuide.boundingBox();
+
+    expect(frameBox).not.toBeNull();
+    expect(traceBox).not.toBeNull();
+    expect(Math.abs((frameBox?.width ?? 0) - (frameBox?.height ?? 0))).toBeLessThanOrEqual(1);
+    expect(Math.abs(
+      (traceBox?.x ?? 0) + (traceBox?.width ?? 0) / 2
+      - ((frameBox?.x ?? 0) + (frameBox?.width ?? 0) / 2),
+    )).toBeLessThanOrEqual(0.5);
+    expect(Math.abs(
+      (traceBox?.y ?? 0) + (traceBox?.height ?? 0) / 2
+      - ((frameBox?.y ?? 0) + (frameBox?.height ?? 0) / 2),
+    )).toBeLessThanOrEqual(0.5);
+    expect((traceBox?.x ?? 0) - (frameBox?.x ?? 0)).toBeGreaterThanOrEqual((frameBox?.width ?? 0) * 0.05);
+    expect((traceBox?.y ?? 0) - (frameBox?.y ?? 0)).toBeGreaterThanOrEqual((frameBox?.height ?? 0) * 0.05);
+    await expect(grid.locator("line").nth(0)).toHaveAttribute("x1", "0.5");
+    await expect(grid.locator("line").nth(1)).toHaveAttribute("y1", "0.5");
+    await expect(traceGuide.getByTestId("kana-guide-glyph")).toHaveCount(practiceCase.glyphCount);
+    expect(await traceGuide.evaluate((guide, writingCanvas) => (
+      Boolean(guide.compareDocumentPosition(writingCanvas) & Node.DOCUMENT_POSITION_FOLLOWING)
+    ), await canvas.elementHandle())).toBe(true);
+
+    for (const glyph of await traceGuide.getByTestId("kana-guide-glyph").all()) {
+      const maskImage = await glyph.evaluate((element) => getComputedStyle(element).maskImage);
+      const assetUrl = /^url\(["']?(.*?)["']?\)$/.exec(maskImage)?.[1];
+      expect(assetUrl).toBeTruthy();
+      expect((await page.request.get(assetUrl ?? "")).ok()).toBe(true);
+    }
+
+    await drawStroke(page);
+    await page.getByRole("button", { name: "정답 확인" }).click();
+    const answerOverlay = page.getByRole("img", { name: "정답 모델" });
+    const reviewFrameBox = await frame.boundingBox();
+    const answerBox = await answerOverlay.boundingBox();
+    expect(reviewFrameBox).not.toBeNull();
+    expect(answerBox).not.toBeNull();
+    expect(Math.abs(
+      (answerBox?.x ?? 0) + (answerBox?.width ?? 0) / 2
+      - ((reviewFrameBox?.x ?? 0) + (reviewFrameBox?.width ?? 0) / 2),
+    )).toBeLessThanOrEqual(0.5);
+    expect(Math.abs(
+      (answerBox?.y ?? 0) + (answerBox?.height ?? 0) / 2
+      - ((reviewFrameBox?.y ?? 0) + (reviewFrameBox?.height ?? 0) / 2),
+    )).toBeLessThanOrEqual(0.5);
+    expect((answerBox?.width ?? 0)).toBeCloseTo(traceBox?.width ?? 0, 1);
+    expect((answerBox?.height ?? 0)).toBeCloseTo(traceBox?.height ?? 0, 1);
+    expect(await canvas.evaluate((writingCanvas, answer) => (
+      Boolean(writingCanvas.compareDocumentPosition(answer) & Node.DOCUMENT_POSITION_FOLLOWING)
+    ), await answerOverlay.elementHandle())).toBe(true);
+  }
+});
+
 test("record controls keep 44px touch targets", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/records");
