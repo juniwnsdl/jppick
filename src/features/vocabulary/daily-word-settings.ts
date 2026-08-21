@@ -1,4 +1,4 @@
-import { nextLocalDateKey } from "./local-date";
+import { localDateKey, nextLocalDateKey } from "./local-date";
 import { JLPT_LEVELS, type JlptLevel } from "./types";
 
 export interface DailyWordLevelSettings {
@@ -102,9 +102,9 @@ export function scheduleDailyWordLevels(
     throw new Error("Daily word settings require at least one level.");
   }
 
-  const normalized = normalizeDailyWordSettings(settings);
+  const resolved = resolveDailyWordSettings(settings, localDateKey(now));
   return {
-    activeLevels: normalized.activeLevels,
+    activeLevels: resolved.activeLevels,
     pendingLevels,
     effectiveDate: nextLocalDateKey(now),
   };

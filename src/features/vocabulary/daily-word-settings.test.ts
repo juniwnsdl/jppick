@@ -4,6 +4,7 @@ import {
   DEFAULT_DAILY_WORD_SETTINGS,
   resolveDailyWordSettings,
   scheduleDailyWordLevels,
+  type DailyWordLevelSettings,
 } from "./daily-word-settings";
 
 describe("daily word level settings", () => {
@@ -33,6 +34,21 @@ describe("daily word level settings", () => {
         activeLevels: ["N1", "N2", "N3"],
         pendingLevels: ["N1", "N5"],
         effectiveDate: "2026-08-22",
+      });
+  });
+
+  it("promotes an effective selection before scheduling a new next-day selection", () => {
+    const dayOneSettings: DailyWordLevelSettings = {
+      activeLevels: ["N1", "N2", "N3"],
+      pendingLevels: ["N4"],
+      effectiveDate: "2026-08-22",
+    };
+
+    expect(scheduleDailyWordLevels(dayOneSettings, ["N5"], new Date(2026, 7, 22, 9)))
+      .toEqual({
+        activeLevels: ["N4"],
+        pendingLevels: ["N5"],
+        effectiveDate: "2026-08-23",
       });
   });
 
