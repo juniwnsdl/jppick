@@ -3,6 +3,7 @@ import type { JlptLevel, VocabularyWord } from "./types";
 type VocabularyFetcher = (input: RequestInfo | URL) => Promise<Response>;
 
 const vocabularyCache = new Map<JlptLevel, Promise<VocabularyWord[]>>();
+const vocabularyFields = ["word", "reading", "pronunciationKo", "meaningKo", "level"] as const;
 
 function vocabularyUrl(level: JlptLevel): string {
   return `/data/jlpt/${level.toLowerCase()}.json`;
@@ -14,10 +15,13 @@ function isVocabularyWord(value: unknown, level: JlptLevel): value is Vocabulary
   }
 
   const word = value as Record<string, unknown>;
-  return typeof word.word === "string"
-    && typeof word.reading === "string"
-    && typeof word.pronunciationKo === "string"
-    && typeof word.meaningKo === "string"
+  const fields = Object.keys(word);
+  return fields.length === vocabularyFields.length
+    && fields.every((field) => vocabularyFields.includes(field as typeof vocabularyFields[number]))
+    && typeof word.word === "string" && word.word.trim().length > 0
+    && typeof word.reading === "string" && word.reading.trim().length > 0
+    && typeof word.pronunciationKo === "string" && word.pronunciationKo.trim().length > 0
+    && typeof word.meaningKo === "string" && word.meaningKo.trim().length > 0
     && word.level === level;
 }
 

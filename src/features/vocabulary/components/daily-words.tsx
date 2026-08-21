@@ -18,6 +18,12 @@ interface DailyWordsProps {
 
 const defaultLoader: VocabularyLevelLoader = loadVocabularyLevel;
 
+interface DailyWordLoadState {
+  requestKey: string;
+  words: VocabularyWord[] | null;
+  loadError: boolean;
+}
+
 function sameSettings(left: DailyWordLevelSettings, right: DailyWordLevelSettings): boolean {
   return left.effectiveDate === right.effectiveDate
     && left.pendingLevels?.join("|") === right.pendingLevels?.join("|")
@@ -30,9 +36,12 @@ function displayDate(date: Date): string {
 
 export function DailyWords({ date = new Date(), loader = defaultLoader }: DailyWordsProps) {
   const dateKey = localDateKey(date);
-  const [words, setWords] = useState<VocabularyWord[] | null>(null);
-  const [loadError, setLoadError] = useState(false);
+  const [loadState, setLoadState] = useState<DailyWordLoadState | null>(null);
   const [attempt, setAttempt] = useState(0);
+  const requestKey = `${dateKey}|${attempt}`;
+  const currentState = loadState?.requestKey === requestKey ? loadState : null;
+  const words = currentState?.words ?? null;
+  const loadError = currentState?.loadError ?? false;
 
   useEffect(() => {
     let current = true;
@@ -42,9 +51,6 @@ export function DailyWords({ date = new Date(), loader = defaultLoader }: DailyW
     if (!sameSettings(settings.dailyWords, activeSettings)) {
       saveSettings({ ...settings, dailyWords: activeSettings });
     }
-
-    setWords(null);
-    setLoadError(false);
 
     void Promise.all(activeSettings.activeLevels.map(async (level) => [
       level,
@@ -56,12 +62,16 @@ export function DailyWords({ date = new Date(), loader = defaultLoader }: DailyW
         }
 
         const wordsByLevel = Object.fromEntries(loadedLevels) as Partial<Record<JlptLevel, VocabularyWord[]>>;
-        setWords(getDailyWords(wordsByLevel, dateKey, activeSettings.activeLevels, 5));
+        setLoadState({
+          requestKey,
+          words: getDailyWords(wordsByLevel, dateKey, activeSettings.activeLevels, 5),
+          loadError: false,
+        });
       },
     ).catch(
       () => {
         if (current) {
-          setLoadError(true);
+          setLoadState({ requestKey, words: null, loadError: true });
         }
       },
     );
@@ -69,7 +79,7 @@ export function DailyWords({ date = new Date(), loader = defaultLoader }: DailyW
     return () => {
       current = false;
     };
-  }, [attempt, dateKey, loader]);
+  }, [dateKey, loader, requestKey]);
 
   return (
     <section aria-labelledby="daily-words-heading" className="dashboard-section daily-words-section">

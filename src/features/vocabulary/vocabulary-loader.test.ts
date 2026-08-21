@@ -61,6 +61,18 @@ describe("loadVocabularyLevel", () => {
     await expect(loadVocabularyLevel("N1", fetcher)).rejects.toThrow("N1 단어 데이터를 불러오지 못했어요.");
   });
 
+  it("rejects a word with an empty display field", async () => {
+    const fetcher = vi.fn(async () => jsonResponse([{ ...n1Word, reading: "  " }]));
+
+    await expect(loadVocabularyLevel("N1", fetcher)).rejects.toThrow("N1 단어 데이터를 불러오지 못했어요.");
+  });
+
+  it("rejects a source payload that includes fields outside the five runtime fields", async () => {
+    const fetcher = vi.fn(async () => jsonResponse([{ ...n1Word, examples: [] }]));
+
+    await expect(loadVocabularyLevel("N1", fetcher)).rejects.toThrow("N1 단어 데이터를 불러오지 못했어요.");
+  });
+
   it("does not retain a rejected request in the cache", async () => {
     const fetcher = vi.fn()
       .mockResolvedValueOnce(jsonResponse([], false))
