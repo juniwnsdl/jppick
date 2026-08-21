@@ -5,6 +5,7 @@ import { useEffect, useState, useSyncExternalStore } from "react";
 import { getKanaById, KANA_CATALOG } from "../features/kana/catalog";
 import { getLearningRepository } from "../features/progress/learning-repository";
 import type { LearningRepository, ProgressDashboard } from "../features/progress/types";
+import { DailyWords } from "../features/vocabulary/components/daily-words";
 
 interface HomeDashboardProps {
   repository?: LearningRepository;
@@ -223,6 +224,8 @@ export default function HomePage() {
           </a>
         </nav>
       </section>
+
+      <DailyWords />
 
       <HomeDashboard />
     </main>

@@ -1,11 +1,16 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { vi } from "vitest";
+import { afterEach, vi } from "vitest";
 import { createLearningRepository } from "../features/progress/learning-repository";
 import HomePage, { HomeDashboard } from "./page";
 
 beforeEach(() => {
   window.localStorage.clear();
+  vi.stubGlobal("fetch", vi.fn(() => new Promise(() => {})));
+});
+
+afterEach(() => {
+  vi.unstubAllGlobals();
 });
 
 it("offers chart and practice as the two primary actions", () => {
@@ -20,6 +25,17 @@ it("shows a dashboard with progress placeholders until learning data is availabl
   expect(screen.getByRole("heading", { name: "바로 시작하기" })).toBeVisible();
   expect(screen.getByRole("heading", { name: "오늘의 연습" })).toBeVisible();
   expect(screen.getByRole("heading", { name: "최근 연습 문자" })).toBeVisible();
+});
+
+it("places today's vocabulary between quick start and the learning dashboard", () => {
+  render(<HomePage />);
+
+  const quickStart = screen.getByRole("heading", { name: "바로 시작하기" });
+  const dailyWords = screen.getByRole("heading", { name: "오늘의 단어" });
+  const dashboard = screen.getByRole("heading", { name: "학습 현황" });
+
+  expect(quickStart.compareDocumentPosition(dailyWords) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  expect(dailyWords.compareDocumentPosition(dashboard) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
 });
 
 it("shows today's evaluations and recent kana from the repository", async () => {
