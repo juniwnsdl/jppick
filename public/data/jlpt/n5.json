@@ -1,0 +1,4636 @@
+[
+  {
+    "word": "あさって",
+    "reading": "あさって",
+    "pronunciationKo": "아삿테",
+    "meaningKo": "모레",
+    "level": "N5"
+  },
+  {
+    "word": "あそこ",
+    "reading": "あそこ",
+    "pronunciationKo": "아소코",
+    "meaningKo": "저기",
+    "level": "N5"
+  },
+  {
+    "word": "あちら",
+    "reading": "あちら",
+    "pronunciationKo": "아치라",
+    "meaningKo": "저쪽, 그쪽",
+    "level": "N5"
+  },
+  {
+    "word": "あっち",
+    "reading": "あっち",
+    "pronunciationKo": "앗치",
+    "meaningKo": "저쪽",
+    "level": "N5"
+  },
+  {
+    "word": "あなた",
+    "reading": "あなた",
+    "pronunciationKo": "아나타",
+    "meaningKo": "당신",
+    "level": "N5"
+  },
+  {
+    "word": "あの",
+    "reading": "あの",
+    "pronunciationKo": "아노",
+    "meaningKo": "저",
+    "level": "N5"
+  },
+  {
+    "word": "アパート",
+    "reading": "アパート",
+    "pronunciationKo": "아파아토",
+    "meaningKo": "아파트",
+    "level": "N5"
+  },
+  {
+    "word": "あびる",
+    "reading": "あびる",
+    "pronunciationKo": "아비루",
+    "meaningKo": "샤워하다, 뒤집어쓰다",
+    "level": "N5"
+  },
+  {
+    "word": "あまり",
+    "reading": "あまり",
+    "pronunciationKo": "아마리",
+    "meaningKo": "별로",
+    "level": "N5"
+  },
+  {
+    "word": "ある",
+    "reading": "ある",
+    "pronunciationKo": "아루",
+    "meaningKo": "있다 (사물)",
+    "level": "N5"
+  },
+  {
+    "word": "あれ",
+    "reading": "あれ",
+    "pronunciationKo": "아레",
+    "meaningKo": "저것",
+    "level": "N5"
+  },
+  {
+    "word": "いい",
+    "reading": "いい",
+    "pronunciationKo": "이이",
+    "meaningKo": "좋다",
+    "level": "N5"
+  },
+  {
+    "word": "いいえ",
+    "reading": "いいえ",
+    "pronunciationKo": "이이에",
+    "meaningKo": "아니요",
+    "level": "N5"
+  },
+  {
+    "word": "いかが",
+    "reading": "いかが",
+    "pronunciationKo": "이카가",
+    "meaningKo": "어떻게, 어떠한가",
+    "level": "N5"
+  },
+  {
+    "word": "いくつ",
+    "reading": "いくつ",
+    "pronunciationKo": "이쿠츠",
+    "meaningKo": "몇 개, 몇 살",
+    "level": "N5"
+  },
+  {
+    "word": "いくら",
+    "reading": "いくら",
+    "pronunciationKo": "이쿠라",
+    "meaningKo": "얼마",
+    "level": "N5"
+  },
+  {
+    "word": "いす",
+    "reading": "いす",
+    "pronunciationKo": "이스",
+    "meaningKo": "의자",
+    "level": "N5"
+  },
+  {
+    "word": "いちばん",
+    "reading": "いちばん",
+    "pronunciationKo": "이치반",
+    "meaningKo": "가장, 제일",
+    "level": "N5"
+  },
+  {
+    "word": "いつ",
+    "reading": "いつ",
+    "pronunciationKo": "이츠",
+    "meaningKo": "언제",
+    "level": "N5"
+  },
+  {
+    "word": "いつも",
+    "reading": "いつも",
+    "pronunciationKo": "이츠모",
+    "meaningKo": "항상",
+    "level": "N5"
+  },
+  {
+    "word": "いろいろ",
+    "reading": "いろいろ",
+    "pronunciationKo": "이로이로",
+    "meaningKo": "여러 가지",
+    "level": "N5"
+  },
+  {
+    "word": "ええ",
+    "reading": "ええ",
+    "pronunciationKo": "에에",
+    "meaningKo": "네",
+    "level": "N5"
+  },
+  {
+    "word": "エレベーター",
+    "reading": "エレベーター",
+    "pronunciationKo": "에레베에타아",
+    "meaningKo": "엘리베이터",
+    "level": "N5"
+  },
+  {
+    "word": "おいしい",
+    "reading": "おいしい",
+    "pronunciationKo": "오이시이",
+    "meaningKo": "맛있다",
+    "level": "N5"
+  },
+  {
+    "word": "おなか",
+    "reading": "おなか",
+    "pronunciationKo": "오나카",
+    "meaningKo": "배",
+    "level": "N5"
+  },
+  {
+    "word": "おばあさん",
+    "reading": "おばあさん",
+    "pronunciationKo": "오바아산",
+    "meaningKo": "할머니, 노부인",
+    "level": "N5"
+  },
+  {
+    "word": "おまわりさん",
+    "reading": "おまわりさん",
+    "pronunciationKo": "오마와리산",
+    "meaningKo": "경찰관 아저씨",
+    "level": "N5"
+  },
+  {
+    "word": "おもしろい",
+    "reading": "おもしろい",
+    "pronunciationKo": "오모시로이",
+    "meaningKo": "재미있다",
+    "level": "N5"
+  },
+  {
+    "word": "お菓子",
+    "reading": "おかし",
+    "pronunciationKo": "오카시",
+    "meaningKo": "과자, 사탕",
+    "level": "N5"
+  },
+  {
+    "word": "お金",
+    "reading": "おかね",
+    "pronunciationKo": "오카네",
+    "meaningKo": "돈",
+    "level": "N5"
+  },
+  {
+    "word": "お兄さん",
+    "reading": "おにいさん",
+    "pronunciationKo": "오니이산",
+    "meaningKo": "형, 오빠",
+    "level": "N5"
+  },
+  {
+    "word": "お皿",
+    "reading": "おさら",
+    "pronunciationKo": "오사라",
+    "meaningKo": "접시",
+    "level": "N5"
+  },
+  {
+    "word": "お姉さん",
+    "reading": "おねえさん",
+    "pronunciationKo": "오네에산",
+    "meaningKo": "누나, 언니",
+    "level": "N5"
+  },
+  {
+    "word": "お手洗い",
+    "reading": "おてあらい",
+    "pronunciationKo": "오테아라이",
+    "meaningKo": "화장실",
+    "level": "N5"
+  },
+  {
+    "word": "お酒",
+    "reading": "おさけ",
+    "pronunciationKo": "오사케",
+    "meaningKo": "술, 일본주",
+    "level": "N5"
+  },
+  {
+    "word": "お茶",
+    "reading": "おちゃ",
+    "pronunciationKo": "오챠",
+    "meaningKo": "녹차, 차",
+    "level": "N5"
+  },
+  {
+    "word": "お父さん",
+    "reading": "おとうさん",
+    "pronunciationKo": "오토우산",
+    "meaningKo": "아버지",
+    "level": "N5"
+  },
+  {
+    "word": "お風呂",
+    "reading": "おふろ",
+    "pronunciationKo": "오후로",
+    "meaningKo": "목욕",
+    "level": "N5"
+  },
+  {
+    "word": "お弁当",
+    "reading": "おべんとう",
+    "pronunciationKo": "오벤토우",
+    "meaningKo": "도시락",
+    "level": "N5"
+  },
+  {
+    "word": "お母さん",
+    "reading": "おかあさん",
+    "pronunciationKo": "오카아산",
+    "meaningKo": "어머니",
+    "level": "N5"
+  },
+  {
+    "word": "かかる",
+    "reading": "かかる",
+    "pronunciationKo": "카카루",
+    "meaningKo": "걸리다 (시간·돈)",
+    "level": "N5"
+  },
+  {
+    "word": "かぎ",
+    "reading": "かぎ",
+    "pronunciationKo": "카기",
+    "meaningKo": "열쇠",
+    "level": "N5"
+  },
+  {
+    "word": "かける",
+    "reading": "かける",
+    "pronunciationKo": "카케루",
+    "meaningKo": "전화하다",
+    "level": "N5"
+  },
+  {
+    "word": "カップ",
+    "reading": "カップ",
+    "pronunciationKo": "캇푸",
+    "meaningKo": "컵",
+    "level": "N5"
+  },
+  {
+    "word": "かばん",
+    "reading": "かばん",
+    "pronunciationKo": "카반",
+    "meaningKo": "가방",
+    "level": "N5"
+  },
+  {
+    "word": "カメラ",
+    "reading": "カメラ",
+    "pronunciationKo": "카메라",
+    "meaningKo": "카메라",
+    "level": "N5"
+  },
+  {
+    "word": "カレー",
+    "reading": "カレー",
+    "pronunciationKo": "카레에",
+    "meaningKo": "카레",
+    "level": "N5"
+  },
+  {
+    "word": "カレンダー",
+    "reading": "カレンダー",
+    "pronunciationKo": "카렌다아",
+    "meaningKo": "달력",
+    "level": "N5"
+  },
+  {
+    "word": "かわいい",
+    "reading": "かわいい",
+    "pronunciationKo": "카와이이",
+    "meaningKo": "귀엽다",
+    "level": "N5"
+  },
+  {
+    "word": "ギター",
+    "reading": "ギター",
+    "pronunciationKo": "기타아",
+    "meaningKo": "기타",
+    "level": "N5"
+  },
+  {
+    "word": "きれい",
+    "reading": "きれい",
+    "pronunciationKo": "키레이",
+    "meaningKo": "예쁘다, 깨끗하다",
+    "level": "N5"
+  },
+  {
+    "word": "キログラム",
+    "reading": "キログラム",
+    "pronunciationKo": "키로구라무",
+    "meaningKo": "킬로그램",
+    "level": "N5"
+  },
+  {
+    "word": "キロメートル",
+    "reading": "キロメートル",
+    "pronunciationKo": "키로메에토루",
+    "meaningKo": "킬로미터",
+    "level": "N5"
+  },
+  {
+    "word": "ください",
+    "reading": "ください",
+    "pronunciationKo": "쿠다사이",
+    "meaningKo": "주세요",
+    "level": "N5"
+  },
+  {
+    "word": "クラス",
+    "reading": "クラス",
+    "pronunciationKo": "쿠라스",
+    "meaningKo": "반, 학급",
+    "level": "N5"
+  },
+  {
+    "word": "グラム",
+    "reading": "グラム",
+    "pronunciationKo": "구라무",
+    "meaningKo": "그램",
+    "level": "N5"
+  },
+  {
+    "word": "コート",
+    "reading": "コート",
+    "pronunciationKo": "코오토",
+    "meaningKo": "외투, 테니스 코트",
+    "level": "N5"
+  },
+  {
+    "word": "コーヒー",
+    "reading": "コーヒー",
+    "pronunciationKo": "코오히이",
+    "meaningKo": "커피",
+    "level": "N5"
+  },
+  {
+    "word": "ここ",
+    "reading": "ここ",
+    "pronunciationKo": "코코",
+    "meaningKo": "여기",
+    "level": "N5"
+  },
+  {
+    "word": "こちら",
+    "reading": "こちら",
+    "pronunciationKo": "코치라",
+    "meaningKo": "이쪽, 이분",
+    "level": "N5"
+  },
+  {
+    "word": "こっち",
+    "reading": "こっち",
+    "pronunciationKo": "콧치",
+    "meaningKo": "이쪽, 이 사람",
+    "level": "N5"
+  },
+  {
+    "word": "コップ",
+    "reading": "コップ",
+    "pronunciationKo": "콧푸",
+    "meaningKo": "유리컵",
+    "level": "N5"
+  },
+  {
+    "word": "この",
+    "reading": "この",
+    "pronunciationKo": "코노",
+    "meaningKo": "이",
+    "level": "N5"
+  },
+  {
+    "word": "コピーする",
+    "reading": "コピーする",
+    "pronunciationKo": "코피이스루",
+    "meaningKo": "복사하다",
+    "level": "N5"
+  },
+  {
+    "word": "これ",
+    "reading": "これ",
+    "pronunciationKo": "코레",
+    "meaningKo": "이것",
+    "level": "N5"
+  },
+  {
+    "word": "こんな",
+    "reading": "こんな",
+    "pronunciationKo": "콘나",
+    "meaningKo": "이러한",
+    "level": "N5"
+  },
+  {
+    "word": "さあ",
+    "reading": "さあ",
+    "pronunciationKo": "사아",
+    "meaningKo": "자, 글쎄",
+    "level": "N5"
+  },
+  {
+    "word": "再来年",
+    "reading": "さらいねん",
+    "pronunciationKo": "사라이넨",
+    "meaningKo": "내후년",
+    "level": "N5"
+  },
+  {
+    "word": "しかし",
+    "reading": "しかし",
+    "pronunciationKo": "시카시",
+    "meaningKo": "그러나",
+    "level": "N5"
+  },
+  {
+    "word": "じゃあ",
+    "reading": "じゃあ",
+    "pronunciationKo": "자아",
+    "meaningKo": "그러면",
+    "level": "N5"
+  },
+  {
+    "word": "シャツ",
+    "reading": "シャツ",
+    "pronunciationKo": "샤츠",
+    "meaningKo": "셔츠",
+    "level": "N5"
+  },
+  {
+    "word": "シャワー",
+    "reading": "シャワー",
+    "pronunciationKo": "샤와아",
+    "meaningKo": "샤워",
+    "level": "N5"
+  },
+  {
+    "word": "しょうゆ",
+    "reading": "しょうゆ",
+    "pronunciationKo": "쇼우유",
+    "meaningKo": "간장",
+    "level": "N5"
+  },
+  {
+    "word": "スカート",
+    "reading": "スカート",
+    "pronunciationKo": "스카아토",
+    "meaningKo": "치마",
+    "level": "N5"
+  },
+  {
+    "word": "すぐに",
+    "reading": "すぐに",
+    "pronunciationKo": "스구니",
+    "meaningKo": "곧, 즉시",
+    "level": "N5"
+  },
+  {
+    "word": "ストーブ",
+    "reading": "ストーブ",
+    "pronunciationKo": "스토오부",
+    "meaningKo": "난로",
+    "level": "N5"
+  },
+  {
+    "word": "スプーン",
+    "reading": "スプーン",
+    "pronunciationKo": "스푸운",
+    "meaningKo": "숟가락",
+    "level": "N5"
+  },
+  {
+    "word": "スポーツ",
+    "reading": "スポーツ",
+    "pronunciationKo": "스포오츠",
+    "meaningKo": "스포츠",
+    "level": "N5"
+  },
+  {
+    "word": "ズボン",
+    "reading": "ズボン",
+    "pronunciationKo": "즈본",
+    "meaningKo": "바지",
+    "level": "N5"
+  },
+  {
+    "word": "スリッパ",
+    "reading": "スリッパ",
+    "pronunciationKo": "스릿파",
+    "meaningKo": "슬리퍼",
+    "level": "N5"
+  },
+  {
+    "word": "する",
+    "reading": "する",
+    "pronunciationKo": "스루",
+    "meaningKo": "하다",
+    "level": "N5"
+  },
+  {
+    "word": "セーター",
+    "reading": "セーター",
+    "pronunciationKo": "세에타아",
+    "meaningKo": "스웨터",
+    "level": "N5"
+  },
+  {
+    "word": "せっけん",
+    "reading": "せっけん",
+    "pronunciationKo": "셋켄",
+    "meaningKo": "비누",
+    "level": "N5"
+  },
+  {
+    "word": "ゼロ",
+    "reading": "ゼロ",
+    "pronunciationKo": "제로",
+    "meaningKo": "영, 제로",
+    "level": "N5"
+  },
+  {
+    "word": "そして",
+    "reading": "そして",
+    "pronunciationKo": "소시테",
+    "meaningKo": "그리고",
+    "level": "N5"
+  },
+  {
+    "word": "そこ",
+    "reading": "そこ",
+    "pronunciationKo": "소코",
+    "meaningKo": "그곳",
+    "level": "N5"
+  },
+  {
+    "word": "そちら",
+    "reading": "そちら",
+    "pronunciationKo": "소치라",
+    "meaningKo": "그쪽",
+    "level": "N5"
+  },
+  {
+    "word": "そっち",
+    "reading": "そっち",
+    "pronunciationKo": "솟치",
+    "meaningKo": "그쪽",
+    "level": "N5"
+  },
+  {
+    "word": "その",
+    "reading": "その",
+    "pronunciationKo": "소노",
+    "meaningKo": "그",
+    "level": "N5"
+  },
+  {
+    "word": "そば",
+    "reading": "そば",
+    "pronunciationKo": "소바",
+    "meaningKo": "곁, 근처",
+    "level": "N5"
+  },
+  {
+    "word": "それ",
+    "reading": "それ",
+    "pronunciationKo": "소레",
+    "meaningKo": "그것",
+    "level": "N5"
+  },
+  {
+    "word": "それから",
+    "reading": "それから",
+    "pronunciationKo": "소레카라",
+    "meaningKo": "그 후, 그리고",
+    "level": "N5"
+  },
+  {
+    "word": "それでは",
+    "reading": "それでは",
+    "pronunciationKo": "소레데와",
+    "meaningKo": "그러면",
+    "level": "N5"
+  },
+  {
+    "word": "たいへん",
+    "reading": "たいへん",
+    "pronunciationKo": "타이헨",
+    "meaningKo": "매우, 큰일",
+    "level": "N5"
+  },
+  {
+    "word": "たくさん",
+    "reading": "たくさん",
+    "pronunciationKo": "타쿠산",
+    "meaningKo": "많이, 많은",
+    "level": "N5"
+  },
+  {
+    "word": "タクシー",
+    "reading": "タクシー",
+    "pronunciationKo": "타쿠시이",
+    "meaningKo": "택시",
+    "level": "N5"
+  },
+  {
+    "word": "たて",
+    "reading": "たて",
+    "pronunciationKo": "타테",
+    "meaningKo": "세로, 높이",
+    "level": "N5"
+  },
+  {
+    "word": "たばこ",
+    "reading": "たばこ",
+    "pronunciationKo": "타바코",
+    "meaningKo": "담배",
+    "level": "N5"
+  },
+  {
+    "word": "たぶん",
+    "reading": "たぶん",
+    "pronunciationKo": "타분",
+    "meaningKo": "아마",
+    "level": "N5"
+  },
+  {
+    "word": "だんだん",
+    "reading": "だんだん",
+    "pronunciationKo": "단단",
+    "meaningKo": "점점",
+    "level": "N5"
+  },
+  {
+    "word": "ちゃわん",
+    "reading": "ちゃわん",
+    "pronunciationKo": "챠완",
+    "meaningKo": "밥그릇",
+    "level": "N5"
+  },
+  {
+    "word": "ちょうど",
+    "reading": "ちょうど",
+    "pronunciationKo": "쵸우도",
+    "meaningKo": "정확히, 꼭",
+    "level": "N5"
+  },
+  {
+    "word": "ちょっと",
+    "reading": "ちょっと",
+    "pronunciationKo": "춋토",
+    "meaningKo": "조금, 잠깐",
+    "level": "N5"
+  },
+  {
+    "word": "つける",
+    "reading": "つける",
+    "pronunciationKo": "츠케루",
+    "meaningKo": "켜다, 붙이다",
+    "level": "N5"
+  },
+  {
+    "word": "つまらない",
+    "reading": "つまらない",
+    "pronunciationKo": "츠마라나이",
+    "meaningKo": "재미없다, 시시하다",
+    "level": "N5"
+  },
+  {
+    "word": "テープ",
+    "reading": "テープ",
+    "pronunciationKo": "테에푸",
+    "meaningKo": "테이프",
+    "level": "N5"
+  },
+  {
+    "word": "テーブル",
+    "reading": "テーブル",
+    "pronunciationKo": "테에부루",
+    "meaningKo": "탁자",
+    "level": "N5"
+  },
+  {
+    "word": "テープレコーダー",
+    "reading": "テープレコーダー",
+    "pronunciationKo": "테에푸레코오다아",
+    "meaningKo": "테이프 녹음기",
+    "level": "N5"
+  },
+  {
+    "word": "できる",
+    "reading": "できる",
+    "pronunciationKo": "데키루",
+    "meaningKo": "할 수 있다",
+    "level": "N5"
+  },
+  {
+    "word": "テスト",
+    "reading": "テスト",
+    "pronunciationKo": "테스토",
+    "meaningKo": "시험",
+    "level": "N5"
+  },
+  {
+    "word": "では",
+    "reading": "では",
+    "pronunciationKo": "데와",
+    "meaningKo": "그러면",
+    "level": "N5"
+  },
+  {
+    "word": "デパート",
+    "reading": "デパート",
+    "pronunciationKo": "데파아토",
+    "meaningKo": "백화점",
+    "level": "N5"
+  },
+  {
+    "word": "でも",
+    "reading": "でも",
+    "pronunciationKo": "데모",
+    "meaningKo": "하지만",
+    "level": "N5"
+  },
+  {
+    "word": "テレビ",
+    "reading": "テレビ",
+    "pronunciationKo": "테레비",
+    "meaningKo": "텔레비전",
+    "level": "N5"
+  },
+  {
+    "word": "ドア",
+    "reading": "ドア",
+    "pronunciationKo": "도아",
+    "meaningKo": "문",
+    "level": "N5"
+  },
+  {
+    "word": "トイレ",
+    "reading": "トイレ",
+    "pronunciationKo": "토이레",
+    "meaningKo": "화장실",
+    "level": "N5"
+  },
+  {
+    "word": "どう",
+    "reading": "どう",
+    "pronunciationKo": "도우",
+    "meaningKo": "어떻게",
+    "level": "N5"
+  },
+  {
+    "word": "どうして",
+    "reading": "どうして",
+    "pronunciationKo": "도우시테",
+    "meaningKo": "왜, 어째서",
+    "level": "N5"
+  },
+  {
+    "word": "どうぞ",
+    "reading": "どうぞ",
+    "pronunciationKo": "도우조",
+    "meaningKo": "부디, 어서",
+    "level": "N5"
+  },
+  {
+    "word": "どうも",
+    "reading": "どうも",
+    "pronunciationKo": "도우모",
+    "meaningKo": "고맙습니다, 정말",
+    "level": "N5"
+  },
+  {
+    "word": "どこ",
+    "reading": "どこ",
+    "pronunciationKo": "도코",
+    "meaningKo": "어디",
+    "level": "N5"
+  },
+  {
+    "word": "どちら",
+    "reading": "どちら",
+    "pronunciationKo": "도치라",
+    "meaningKo": "어느 쪽",
+    "level": "N5"
+  },
+  {
+    "word": "どっち",
+    "reading": "どっち",
+    "pronunciationKo": "돗치",
+    "meaningKo": "어느 쪽",
+    "level": "N5"
+  },
+  {
+    "word": "とても",
+    "reading": "とても",
+    "pronunciationKo": "토테모",
+    "meaningKo": "매우",
+    "level": "N5"
+  },
+  {
+    "word": "どなた",
+    "reading": "どなた",
+    "pronunciationKo": "도나타",
+    "meaningKo": "어느 분, 누구",
+    "level": "N5"
+  },
+  {
+    "word": "どの",
+    "reading": "どの",
+    "pronunciationKo": "도노",
+    "meaningKo": "어느",
+    "level": "N5"
+  },
+  {
+    "word": "とり肉",
+    "reading": "とりにく",
+    "pronunciationKo": "토리니쿠",
+    "meaningKo": "닭고기",
+    "level": "N5"
+  },
+  {
+    "word": "どれ",
+    "reading": "どれ",
+    "pronunciationKo": "도레",
+    "meaningKo": "어느 것",
+    "level": "N5"
+  },
+  {
+    "word": "ナイフ",
+    "reading": "ナイフ",
+    "pronunciationKo": "나이후",
+    "meaningKo": "칼",
+    "level": "N5"
+  },
+  {
+    "word": "なぜ",
+    "reading": "なぜ",
+    "pronunciationKo": "나제",
+    "meaningKo": "왜",
+    "level": "N5"
+  },
+  {
+    "word": "など",
+    "reading": "など",
+    "pronunciationKo": "나도",
+    "meaningKo": "등",
+    "level": "N5"
+  },
+  {
+    "word": "なる",
+    "reading": "なる",
+    "pronunciationKo": "나루",
+    "meaningKo": "되다",
+    "level": "N5"
+  },
+  {
+    "word": "ニュース",
+    "reading": "ニュース",
+    "pronunciationKo": "뉴우스",
+    "meaningKo": "뉴스",
+    "level": "N5"
+  },
+  {
+    "word": "ネクタイ",
+    "reading": "ネクタイ",
+    "pronunciationKo": "네쿠타이",
+    "meaningKo": "넥타이",
+    "level": "N5"
+  },
+  {
+    "word": "ノート",
+    "reading": "ノート",
+    "pronunciationKo": "노오토",
+    "meaningKo": "공책",
+    "level": "N5"
+  },
+  {
+    "word": "パーティー",
+    "reading": "パーティー",
+    "pronunciationKo": "파아티이",
+    "meaningKo": "파티",
+    "level": "N5"
+  },
+  {
+    "word": "はい",
+    "reading": "はい",
+    "pronunciationKo": "하이",
+    "meaningKo": "네",
+    "level": "N5"
+  },
+  {
+    "word": "はく",
+    "reading": "はく",
+    "pronunciationKo": "하쿠",
+    "meaningKo": "신다, 입다",
+    "level": "N5"
+  },
+  {
+    "word": "はし",
+    "reading": "はし",
+    "pronunciationKo": "하시",
+    "meaningKo": "젓가락",
+    "level": "N5"
+  },
+  {
+    "word": "バス",
+    "reading": "バス",
+    "pronunciationKo": "바스",
+    "meaningKo": "버스",
+    "level": "N5"
+  },
+  {
+    "word": "バター",
+    "reading": "バター",
+    "pronunciationKo": "바타아",
+    "meaningKo": "버터",
+    "level": "N5"
+  },
+  {
+    "word": "パン",
+    "reading": "パン",
+    "pronunciationKo": "판",
+    "meaningKo": "빵",
+    "level": "N5"
+  },
+  {
+    "word": "ハンカチ",
+    "reading": "ハンカチ",
+    "pronunciationKo": "한카치",
+    "meaningKo": "손수건",
+    "level": "N5"
+  },
+  {
+    "word": "フィルム",
+    "reading": "フィルム",
+    "pronunciationKo": "피루무",
+    "meaningKo": "필름",
+    "level": "N5"
+  },
+  {
+    "word": "プール",
+    "reading": "プール",
+    "pronunciationKo": "푸우루",
+    "meaningKo": "수영장",
+    "level": "N5"
+  },
+  {
+    "word": "フォーク",
+    "reading": "フォーク",
+    "pronunciationKo": "포오쿠",
+    "meaningKo": "포크",
+    "level": "N5"
+  },
+  {
+    "word": "ふろ",
+    "reading": "ふろ",
+    "pronunciationKo": "후로",
+    "meaningKo": "목욕",
+    "level": "N5"
+  },
+  {
+    "word": "ページ",
+    "reading": "ページ",
+    "pronunciationKo": "페에지",
+    "meaningKo": "페이지",
+    "level": "N5"
+  },
+  {
+    "word": "ベッド",
+    "reading": "ベッド",
+    "pronunciationKo": "벳도",
+    "meaningKo": "침대",
+    "level": "N5"
+  },
+  {
+    "word": "ペット",
+    "reading": "ペット",
+    "pronunciationKo": "펫토",
+    "meaningKo": "애완동물",
+    "level": "N5"
+  },
+  {
+    "word": "ペン",
+    "reading": "ペン",
+    "pronunciationKo": "펜",
+    "meaningKo": "펜",
+    "level": "N5"
+  },
+  {
+    "word": "ボールペン",
+    "reading": "ボールペン",
+    "pronunciationKo": "보오루펜",
+    "meaningKo": "볼펜",
+    "level": "N5"
+  },
+  {
+    "word": "ほか",
+    "reading": "ほか",
+    "pronunciationKo": "호카",
+    "meaningKo": "다른 것, 나머지",
+    "level": "N5"
+  },
+  {
+    "word": "ポケット",
+    "reading": "ポケット",
+    "pronunciationKo": "포켓토",
+    "meaningKo": "주머니",
+    "level": "N5"
+  },
+  {
+    "word": "ポスト",
+    "reading": "ポスト",
+    "pronunciationKo": "포스토",
+    "meaningKo": "우편함",
+    "level": "N5"
+  },
+  {
+    "word": "ボタン",
+    "reading": "ボタン",
+    "pronunciationKo": "보탄",
+    "meaningKo": "단추",
+    "level": "N5"
+  },
+  {
+    "word": "ホテル",
+    "reading": "ホテル",
+    "pronunciationKo": "호테루",
+    "meaningKo": "호텔",
+    "level": "N5"
+  },
+  {
+    "word": "ほんとう",
+    "reading": "ほんとう",
+    "pronunciationKo": "혼토우",
+    "meaningKo": "사실, 정말",
+    "level": "N5"
+  },
+  {
+    "word": "まずい",
+    "reading": "まずい",
+    "pronunciationKo": "마즈이",
+    "meaningKo": "맛없다, 좋지 않다",
+    "level": "N5"
+  },
+  {
+    "word": "また",
+    "reading": "また",
+    "pronunciationKo": "마타",
+    "meaningKo": "다시, 또",
+    "level": "N5"
+  },
+  {
+    "word": "まだ",
+    "reading": "まだ",
+    "pronunciationKo": "마다",
+    "meaningKo": "아직",
+    "level": "N5"
+  },
+  {
+    "word": "まっすぐ",
+    "reading": "まっすぐ",
+    "pronunciationKo": "맛스구",
+    "meaningKo": "곧장, 똑바로",
+    "level": "N5"
+  },
+  {
+    "word": "マッチ",
+    "reading": "マッチ",
+    "pronunciationKo": "맛치",
+    "meaningKo": "성냥",
+    "level": "N5"
+  },
+  {
+    "word": "みんな",
+    "reading": "みんな",
+    "pronunciationKo": "민나",
+    "meaningKo": "모두",
+    "level": "N5"
+  },
+  {
+    "word": "メートル",
+    "reading": "メートル",
+    "pronunciationKo": "메에토루",
+    "meaningKo": "미터",
+    "level": "N5"
+  },
+  {
+    "word": "もう",
+    "reading": "もう",
+    "pronunciationKo": "모우",
+    "meaningKo": "벌써",
+    "level": "N5"
+  },
+  {
+    "word": "もう一度",
+    "reading": "もういちど",
+    "pronunciationKo": "모우이치도",
+    "meaningKo": "다시 한번",
+    "level": "N5"
+  },
+  {
+    "word": "もっと",
+    "reading": "もっと",
+    "pronunciationKo": "못토",
+    "meaningKo": "더",
+    "level": "N5"
+  },
+  {
+    "word": "やる",
+    "reading": "やる",
+    "pronunciationKo": "야루",
+    "meaningKo": "하다",
+    "level": "N5"
+  },
+  {
+    "word": "ゆっくりと",
+    "reading": "ゆっくりと",
+    "pronunciationKo": "윳쿠리토",
+    "meaningKo": "천천히",
+    "level": "N5"
+  },
+  {
+    "word": "よく",
+    "reading": "よく",
+    "pronunciationKo": "요쿠",
+    "meaningKo": "자주, 잘",
+    "level": "N5"
+  },
+  {
+    "word": "〜より〜のほう",
+    "reading": "よりのほう",
+    "pronunciationKo": "요리노호우",
+    "meaningKo": "~보다 ~쪽이",
+    "level": "N5"
+  },
+  {
+    "word": "ラジオ",
+    "reading": "ラジオ",
+    "pronunciationKo": "라지오",
+    "meaningKo": "라디오",
+    "level": "N5"
+  },
+  {
+    "word": "ラジカセ",
+    "reading": "ラジカセ",
+    "pronunciationKo": "라지카세",
+    "meaningKo": "라디오카세트",
+    "level": "N5"
+  },
+  {
+    "word": "りっぱ",
+    "reading": "りっぱ",
+    "pronunciationKo": "릿파",
+    "meaningKo": "훌륭하다",
+    "level": "N5"
+  },
+  {
+    "word": "レコード",
+    "reading": "レコード",
+    "pronunciationKo": "레코오도",
+    "meaningKo": "레코드, 음반",
+    "level": "N5"
+  },
+  {
+    "word": "レストラン",
+    "reading": "レストラン",
+    "pronunciationKo": "레스토란",
+    "meaningKo": "레스토랑",
+    "level": "N5"
+  },
+  {
+    "word": "ワイシャツ",
+    "reading": "ワイシャツ",
+    "pronunciationKo": "와이샤츠",
+    "meaningKo": "와이셔츠",
+    "level": "N5"
+  },
+  {
+    "word": "悪い",
+    "reading": "わるい",
+    "pronunciationKo": "와루이",
+    "meaningKo": "나쁘다",
+    "level": "N5"
+  },
+  {
+    "word": "飴",
+    "reading": "あめ",
+    "pronunciationKo": "아메",
+    "meaningKo": "사탕",
+    "level": "N5"
+  },
+  {
+    "word": "安い",
+    "reading": "やすい",
+    "pronunciationKo": "야스이",
+    "meaningKo": "싸다",
+    "level": "N5"
+  },
+  {
+    "word": "暗い",
+    "reading": "くらい",
+    "pronunciationKo": "쿠라이",
+    "meaningKo": "어둡다",
+    "level": "N5"
+  },
+  {
+    "word": "意味",
+    "reading": "いみ",
+    "pronunciationKo": "이미",
+    "meaningKo": "의미",
+    "level": "N5"
+  },
+  {
+    "word": "易しい",
+    "reading": "やさしい",
+    "pronunciationKo": "야사시이",
+    "meaningKo": "쉽다",
+    "level": "N5"
+  },
+  {
+    "word": "違う",
+    "reading": "ちがう",
+    "pronunciationKo": "치가우",
+    "meaningKo": "다르다",
+    "level": "N5"
+  },
+  {
+    "word": "医者",
+    "reading": "いしゃ",
+    "pronunciationKo": "이샤",
+    "meaningKo": "의사",
+    "level": "N5"
+  },
+  {
+    "word": "一",
+    "reading": "いち",
+    "pronunciationKo": "이치",
+    "meaningKo": "하나, 일",
+    "level": "N5"
+  },
+  {
+    "word": "一つ",
+    "reading": "ひとつ",
+    "pronunciationKo": "히토츠",
+    "meaningKo": "한 개",
+    "level": "N5"
+  },
+  {
+    "word": "一月",
+    "reading": "ひとつき",
+    "pronunciationKo": "히토츠키",
+    "meaningKo": "한 달",
+    "level": "N5"
+  },
+  {
+    "word": "一昨日",
+    "reading": "おととい",
+    "pronunciationKo": "오토토이",
+    "meaningKo": "그저께",
+    "level": "N5"
+  },
+  {
+    "word": "一昨年",
+    "reading": "おととし",
+    "pronunciationKo": "오토토시",
+    "meaningKo": "재작년",
+    "level": "N5"
+  },
+  {
+    "word": "一緒",
+    "reading": "いっしょ",
+    "pronunciationKo": "잇쇼",
+    "meaningKo": "함께",
+    "level": "N5"
+  },
+  {
+    "word": "一人",
+    "reading": "ひとり",
+    "pronunciationKo": "히토리",
+    "meaningKo": "한 사람",
+    "level": "N5"
+  },
+  {
+    "word": "一日",
+    "reading": "いちにち",
+    "pronunciationKo": "이치니치",
+    "meaningKo": "하루",
+    "level": "N5"
+  },
+  {
+    "word": "引く",
+    "reading": "ひく",
+    "pronunciationKo": "히쿠",
+    "meaningKo": "당기다",
+    "level": "N5"
+  },
+  {
+    "word": "飲み物",
+    "reading": "のみもの",
+    "pronunciationKo": "노미모노",
+    "meaningKo": "음료",
+    "level": "N5"
+  },
+  {
+    "word": "飲む",
+    "reading": "のむ",
+    "pronunciationKo": "노무",
+    "meaningKo": "마시다",
+    "level": "N5"
+  },
+  {
+    "word": "右",
+    "reading": "みぎ",
+    "pronunciationKo": "미기",
+    "meaningKo": "오른쪽",
+    "level": "N5"
+  },
+  {
+    "word": "雨",
+    "reading": "あめ",
+    "pronunciationKo": "아메",
+    "meaningKo": "비",
+    "level": "N5"
+  },
+  {
+    "word": "映画",
+    "reading": "えいが",
+    "pronunciationKo": "에이가",
+    "meaningKo": "영화",
+    "level": "N5"
+  },
+  {
+    "word": "映画館",
+    "reading": "えいがかん",
+    "pronunciationKo": "에이가칸",
+    "meaningKo": "영화관",
+    "level": "N5"
+  },
+  {
+    "word": "泳ぐ",
+    "reading": "およぐ",
+    "pronunciationKo": "오요구",
+    "meaningKo": "수영하다",
+    "level": "N5"
+  },
+  {
+    "word": "英語",
+    "reading": "えいご",
+    "pronunciationKo": "에이고",
+    "meaningKo": "영어",
+    "level": "N5"
+  },
+  {
+    "word": "駅",
+    "reading": "えき",
+    "pronunciationKo": "에키",
+    "meaningKo": "역",
+    "level": "N5"
+  },
+  {
+    "word": "遠い",
+    "reading": "とおい",
+    "pronunciationKo": "토오이",
+    "meaningKo": "멀다",
+    "level": "N5"
+  },
+  {
+    "word": "鉛筆",
+    "reading": "えんぴつ",
+    "pronunciationKo": "엠피츠",
+    "meaningKo": "연필",
+    "level": "N5"
+  },
+  {
+    "word": "塩",
+    "reading": "しお",
+    "pronunciationKo": "시오",
+    "meaningKo": "소금",
+    "level": "N5"
+  },
+  {
+    "word": "汚い",
+    "reading": "きたない",
+    "pronunciationKo": "키타나이",
+    "meaningKo": "더럽다",
+    "level": "N5"
+  },
+  {
+    "word": "奥さん",
+    "reading": "おくさん",
+    "pronunciationKo": "오쿠산",
+    "meaningKo": "부인, 아내분",
+    "level": "N5"
+  },
+  {
+    "word": "押す",
+    "reading": "おす",
+    "pronunciationKo": "오스",
+    "meaningKo": "누르다, 도장을 찍다",
+    "level": "N5"
+  },
+  {
+    "word": "横",
+    "reading": "よこ",
+    "pronunciationKo": "요코",
+    "meaningKo": "옆, 가로",
+    "level": "N5"
+  },
+  {
+    "word": "黄色",
+    "reading": "きいろ",
+    "pronunciationKo": "키이로",
+    "meaningKo": "노란색",
+    "level": "N5"
+  },
+  {
+    "word": "黄色い",
+    "reading": "きいろい",
+    "pronunciationKo": "키이로이",
+    "meaningKo": "노랗다",
+    "level": "N5"
+  },
+  {
+    "word": "温い",
+    "reading": "ぬるい",
+    "pronunciationKo": "누루이",
+    "meaningKo": "미지근하다",
+    "level": "N5"
+  },
+  {
+    "word": "音楽",
+    "reading": "おんがく",
+    "pronunciationKo": "온가쿠",
+    "meaningKo": "음악",
+    "level": "N5"
+  },
+  {
+    "word": "下",
+    "reading": "した",
+    "pronunciationKo": "시타",
+    "meaningKo": "아래",
+    "level": "N5"
+  },
+  {
+    "word": "下手",
+    "reading": "へた",
+    "pronunciationKo": "헤타",
+    "meaningKo": "서투르다",
+    "level": "N5"
+  },
+  {
+    "word": "何",
+    "reading": "なに",
+    "pronunciationKo": "나니",
+    "meaningKo": "무엇",
+    "level": "N5"
+  },
+  {
+    "word": "夏",
+    "reading": "なつ",
+    "pronunciationKo": "나츠",
+    "meaningKo": "여름",
+    "level": "N5"
+  },
+  {
+    "word": "夏休み",
+    "reading": "なつやすみ",
+    "pronunciationKo": "나츠야스미",
+    "meaningKo": "여름방학",
+    "level": "N5"
+  },
+  {
+    "word": "家",
+    "reading": "いえ",
+    "pronunciationKo": "이에",
+    "meaningKo": "집",
+    "level": "N5"
+  },
+  {
+    "word": "家族",
+    "reading": "かぞく",
+    "pronunciationKo": "카조쿠",
+    "meaningKo": "가족",
+    "level": "N5"
+  },
+  {
+    "word": "家庭",
+    "reading": "かてい",
+    "pronunciationKo": "카테이",
+    "meaningKo": "가정",
+    "level": "N5"
+  },
+  {
+    "word": "暇",
+    "reading": "ひま",
+    "pronunciationKo": "히마",
+    "meaningKo": "한가하다, 여가",
+    "level": "N5"
+  },
+  {
+    "word": "果物",
+    "reading": "くだもの",
+    "pronunciationKo": "쿠다모노",
+    "meaningKo": "과일",
+    "level": "N5"
+  },
+  {
+    "word": "歌",
+    "reading": "うた",
+    "pronunciationKo": "우타",
+    "meaningKo": "노래",
+    "level": "N5"
+  },
+  {
+    "word": "歌う",
+    "reading": "うたう",
+    "pronunciationKo": "우타우",
+    "meaningKo": "노래하다",
+    "level": "N5"
+  },
+  {
+    "word": "火曜日",
+    "reading": "かようび",
+    "pronunciationKo": "카요우비",
+    "meaningKo": "화요일",
+    "level": "N5"
+  },
+  {
+    "word": "花",
+    "reading": "はな",
+    "pronunciationKo": "하나",
+    "meaningKo": "꽃",
+    "level": "N5"
+  },
+  {
+    "word": "花瓶",
+    "reading": "かびん",
+    "pronunciationKo": "카빈",
+    "meaningKo": "꽃병",
+    "level": "N5"
+  },
+  {
+    "word": "荷物",
+    "reading": "にもつ",
+    "pronunciationKo": "니모츠",
+    "meaningKo": "짐",
+    "level": "N5"
+  },
+  {
+    "word": "会う",
+    "reading": "あう",
+    "pronunciationKo": "아우",
+    "meaningKo": "만나다",
+    "level": "N5"
+  },
+  {
+    "word": "会社",
+    "reading": "かいしゃ",
+    "pronunciationKo": "카이샤",
+    "meaningKo": "회사",
+    "level": "N5"
+  },
+  {
+    "word": "海",
+    "reading": "うみ",
+    "pronunciationKo": "우미",
+    "meaningKo": "바다",
+    "level": "N5"
+  },
+  {
+    "word": "灰皿",
+    "reading": "はいざら",
+    "pronunciationKo": "하이자라",
+    "meaningKo": "재떨이",
+    "level": "N5"
+  },
+  {
+    "word": "皆さん",
+    "reading": "みなさん",
+    "pronunciationKo": "미나산",
+    "meaningKo": "여러분",
+    "level": "N5"
+  },
+  {
+    "word": "絵",
+    "reading": "え",
+    "pronunciationKo": "에",
+    "meaningKo": "그림",
+    "level": "N5"
+  },
+  {
+    "word": "開く",
+    "reading": "あく",
+    "pronunciationKo": "아쿠",
+    "meaningKo": "열리다",
+    "level": "N5"
+  },
+  {
+    "word": "開ける",
+    "reading": "あける",
+    "pronunciationKo": "아케루",
+    "meaningKo": "열다",
+    "level": "N5"
+  },
+  {
+    "word": "階段",
+    "reading": "かいだん",
+    "pronunciationKo": "카이단",
+    "meaningKo": "계단",
+    "level": "N5"
+  },
+  {
+    "word": "外",
+    "reading": "そと",
+    "pronunciationKo": "소토",
+    "meaningKo": "밖",
+    "level": "N5"
+  },
+  {
+    "word": "外国",
+    "reading": "がいこく",
+    "pronunciationKo": "가이코쿠",
+    "meaningKo": "외국",
+    "level": "N5"
+  },
+  {
+    "word": "外国人",
+    "reading": "がいこくじん",
+    "pronunciationKo": "가이코쿠진",
+    "meaningKo": "외국인",
+    "level": "N5"
+  },
+  {
+    "word": "覚える",
+    "reading": "おぼえる",
+    "pronunciationKo": "오보에루",
+    "meaningKo": "외우다, 기억하다",
+    "level": "N5"
+  },
+  {
+    "word": "角",
+    "reading": "かど",
+    "pronunciationKo": "카도",
+    "meaningKo": "모퉁이",
+    "level": "N5"
+  },
+  {
+    "word": "学校",
+    "reading": "がっこう",
+    "pronunciationKo": "갓코우",
+    "meaningKo": "학교",
+    "level": "N5"
+  },
+  {
+    "word": "学生",
+    "reading": "がくせい",
+    "pronunciationKo": "가쿠세이",
+    "meaningKo": "학생",
+    "level": "N5"
+  },
+  {
+    "word": "楽しい",
+    "reading": "たのしい",
+    "pronunciationKo": "타노시이",
+    "meaningKo": "즐겁다",
+    "level": "N5"
+  },
+  {
+    "word": "寒い",
+    "reading": "さむい",
+    "pronunciationKo": "사무이",
+    "meaningKo": "춥다",
+    "level": "N5"
+  },
+  {
+    "word": "漢字",
+    "reading": "かんじ",
+    "pronunciationKo": "칸지",
+    "meaningKo": "한자",
+    "level": "N5"
+  },
+  {
+    "word": "甘い",
+    "reading": "あまい",
+    "pronunciationKo": "아마이",
+    "meaningKo": "달다",
+    "level": "N5"
+  },
+  {
+    "word": "丸い",
+    "reading": "まるい",
+    "pronunciationKo": "마루이",
+    "meaningKo": "둥글다",
+    "level": "N5"
+  },
+  {
+    "word": "眼鏡",
+    "reading": "めがね",
+    "pronunciationKo": "메가네",
+    "meaningKo": "안경",
+    "level": "N5"
+  },
+  {
+    "word": "危ない",
+    "reading": "あぶない",
+    "pronunciationKo": "아부나이",
+    "meaningKo": "위험하다",
+    "level": "N5"
+  },
+  {
+    "word": "机",
+    "reading": "つくえ",
+    "pronunciationKo": "츠쿠에",
+    "meaningKo": "책상",
+    "level": "N5"
+  },
+  {
+    "word": "帰る",
+    "reading": "かえる",
+    "pronunciationKo": "카에루",
+    "meaningKo": "돌아가다",
+    "level": "N5"
+  },
+  {
+    "word": "起きる",
+    "reading": "おきる",
+    "pronunciationKo": "오키루",
+    "meaningKo": "일어나다",
+    "level": "N5"
+  },
+  {
+    "word": "喫茶店",
+    "reading": "きっさてん",
+    "pronunciationKo": "킷사텐",
+    "meaningKo": "찻집",
+    "level": "N5"
+  },
+  {
+    "word": "休み",
+    "reading": "やすみ",
+    "pronunciationKo": "야스미",
+    "meaningKo": "휴일, 휴식",
+    "level": "N5"
+  },
+  {
+    "word": "休む",
+    "reading": "やすむ",
+    "pronunciationKo": "야스무",
+    "meaningKo": "쉬다",
+    "level": "N5"
+  },
+  {
+    "word": "吸う",
+    "reading": "すう",
+    "pronunciationKo": "스우",
+    "meaningKo": "피우다, 빨다",
+    "level": "N5"
+  },
+  {
+    "word": "牛肉",
+    "reading": "ぎゅうにく",
+    "pronunciationKo": "규우니쿠",
+    "meaningKo": "쇠고기",
+    "level": "N5"
+  },
+  {
+    "word": "牛乳",
+    "reading": "ぎゅうにゅう",
+    "pronunciationKo": "규우뉴우",
+    "meaningKo": "우유",
+    "level": "N5"
+  },
+  {
+    "word": "去年",
+    "reading": "きょねん",
+    "pronunciationKo": "쿄넨",
+    "meaningKo": "작년",
+    "level": "N5"
+  },
+  {
+    "word": "居る",
+    "reading": "いる",
+    "pronunciationKo": "이루",
+    "meaningKo": "있다 (사람·동물)",
+    "level": "N5"
+  },
+  {
+    "word": "魚",
+    "reading": "さかな",
+    "pronunciationKo": "사카나",
+    "meaningKo": "물고기",
+    "level": "N5"
+  },
+  {
+    "word": "強い",
+    "reading": "つよい",
+    "pronunciationKo": "츠요이",
+    "meaningKo": "강하다",
+    "level": "N5"
+  },
+  {
+    "word": "教える",
+    "reading": "おしえる",
+    "pronunciationKo": "오시에루",
+    "meaningKo": "가르치다, 알려주다",
+    "level": "N5"
+  },
+  {
+    "word": "教室",
+    "reading": "きょうしつ",
+    "pronunciationKo": "쿄우시츠",
+    "meaningKo": "교실",
+    "level": "N5"
+  },
+  {
+    "word": "橋",
+    "reading": "はし",
+    "pronunciationKo": "하시",
+    "meaningKo": "다리",
+    "level": "N5"
+  },
+  {
+    "word": "狭い",
+    "reading": "せまい",
+    "pronunciationKo": "세마이",
+    "meaningKo": "좁다",
+    "level": "N5"
+  },
+  {
+    "word": "曲る",
+    "reading": "まがる",
+    "pronunciationKo": "마가루",
+    "meaningKo": "돌다, 구부러지다",
+    "level": "N5"
+  },
+  {
+    "word": "勤める",
+    "reading": "つとめる",
+    "pronunciationKo": "츠토메루",
+    "meaningKo": "근무하다",
+    "level": "N5"
+  },
+  {
+    "word": "近い",
+    "reading": "ちかい",
+    "pronunciationKo": "치카이",
+    "meaningKo": "가깝다",
+    "level": "N5"
+  },
+  {
+    "word": "近く",
+    "reading": "ちかく",
+    "pronunciationKo": "치카쿠",
+    "meaningKo": "근처, 가까이",
+    "level": "N5"
+  },
+  {
+    "word": "金曜日",
+    "reading": "きんようび",
+    "pronunciationKo": "킨요우비",
+    "meaningKo": "금요일",
+    "level": "N5"
+  },
+  {
+    "word": "銀行",
+    "reading": "ぎんこう",
+    "pronunciationKo": "긴코우",
+    "meaningKo": "은행",
+    "level": "N5"
+  },
+  {
+    "word": "九",
+    "reading": "きゅう",
+    "pronunciationKo": "큐우",
+    "meaningKo": "아홉, 구",
+    "level": "N5"
+  },
+  {
+    "word": "九つ",
+    "reading": "ここのつ",
+    "pronunciationKo": "코코노츠",
+    "meaningKo": "아홉 개",
+    "level": "N5"
+  },
+  {
+    "word": "九日",
+    "reading": "ここのか",
+    "pronunciationKo": "코코노카",
+    "meaningKo": "아흐레, 9일",
+    "level": "N5"
+  },
+  {
+    "word": "空",
+    "reading": "そら",
+    "pronunciationKo": "소라",
+    "meaningKo": "하늘",
+    "level": "N5"
+  },
+  {
+    "word": "靴",
+    "reading": "くつ",
+    "pronunciationKo": "쿠츠",
+    "meaningKo": "신발",
+    "level": "N5"
+  },
+  {
+    "word": "靴下",
+    "reading": "くつした",
+    "pronunciationKo": "쿠츠시타",
+    "meaningKo": "양말",
+    "level": "N5"
+  },
+  {
+    "word": "兄",
+    "reading": "あに",
+    "pronunciationKo": "아니",
+    "meaningKo": "형, 오빠",
+    "level": "N5"
+  },
+  {
+    "word": "兄弟",
+    "reading": "きょうだい",
+    "pronunciationKo": "쿄우다이",
+    "meaningKo": "형제자매",
+    "level": "N5"
+  },
+  {
+    "word": "警官",
+    "reading": "けいかん",
+    "pronunciationKo": "케이칸",
+    "meaningKo": "경찰관",
+    "level": "N5"
+  },
+  {
+    "word": "軽い",
+    "reading": "かるい",
+    "pronunciationKo": "카루이",
+    "meaningKo": "가볍다",
+    "level": "N5"
+  },
+  {
+    "word": "結構",
+    "reading": "けっこう",
+    "pronunciationKo": "켓코우",
+    "meaningKo": "충분하다, 훌륭하다",
+    "level": "N5"
+  },
+  {
+    "word": "結婚",
+    "reading": "けっこん",
+    "pronunciationKo": "켓콘",
+    "meaningKo": "결혼",
+    "level": "N5"
+  },
+  {
+    "word": "月曜日",
+    "reading": "げつようび",
+    "pronunciationKo": "게츠요우비",
+    "meaningKo": "월요일",
+    "level": "N5"
+  },
+  {
+    "word": "嫌",
+    "reading": "いや",
+    "pronunciationKo": "이야",
+    "meaningKo": "싫다",
+    "level": "N5"
+  },
+  {
+    "word": "嫌い",
+    "reading": "きらい",
+    "pronunciationKo": "키라이",
+    "meaningKo": "싫어하다",
+    "level": "N5"
+  },
+  {
+    "word": "建物",
+    "reading": "たてもの",
+    "pronunciationKo": "타테모노",
+    "meaningKo": "건물",
+    "level": "N5"
+  },
+  {
+    "word": "犬",
+    "reading": "いぬ",
+    "pronunciationKo": "이누",
+    "meaningKo": "개",
+    "level": "N5"
+  },
+  {
+    "word": "見せる",
+    "reading": "みせる",
+    "pronunciationKo": "미세루",
+    "meaningKo": "보여주다",
+    "level": "N5"
+  },
+  {
+    "word": "見る",
+    "reading": "みる",
+    "pronunciationKo": "미루",
+    "meaningKo": "보다",
+    "level": "N5"
+  },
+  {
+    "word": "元気",
+    "reading": "げんき",
+    "pronunciationKo": "겐키",
+    "meaningKo": "건강하다, 활기차다",
+    "level": "N5"
+  },
+  {
+    "word": "玄関",
+    "reading": "げんかん",
+    "pronunciationKo": "겐칸",
+    "meaningKo": "현관",
+    "level": "N5"
+  },
+  {
+    "word": "言う",
+    "reading": "いう",
+    "pronunciationKo": "이우",
+    "meaningKo": "말하다",
+    "level": "N5"
+  },
+  {
+    "word": "言葉",
+    "reading": "ことば",
+    "pronunciationKo": "코토바",
+    "meaningKo": "말, 언어",
+    "level": "N5"
+  },
+  {
+    "word": "古い",
+    "reading": "ふるい",
+    "pronunciationKo": "후루이",
+    "meaningKo": "오래되다, 낡다",
+    "level": "N5"
+  },
+  {
+    "word": "呼ぶ",
+    "reading": "よぶ",
+    "pronunciationKo": "요부",
+    "meaningKo": "부르다, 초대하다",
+    "level": "N5"
+  },
+  {
+    "word": "戸",
+    "reading": "と",
+    "pronunciationKo": "토",
+    "meaningKo": "문",
+    "level": "N5"
+  },
+  {
+    "word": "五",
+    "reading": "ご",
+    "pronunciationKo": "고",
+    "meaningKo": "다섯, 오",
+    "level": "N5"
+  },
+  {
+    "word": "五つ",
+    "reading": "いつつ",
+    "pronunciationKo": "이츠츠",
+    "meaningKo": "다섯 개",
+    "level": "N5"
+  },
+  {
+    "word": "五日",
+    "reading": "いつか",
+    "pronunciationKo": "이츠카",
+    "meaningKo": "닷새, 5일",
+    "level": "N5"
+  },
+  {
+    "word": "午後",
+    "reading": "ごご",
+    "pronunciationKo": "고고",
+    "meaningKo": "오후",
+    "level": "N5"
+  },
+  {
+    "word": "午前",
+    "reading": "ごぜん",
+    "pronunciationKo": "고젠",
+    "meaningKo": "오전",
+    "level": "N5"
+  },
+  {
+    "word": "後",
+    "reading": "あと",
+    "pronunciationKo": "아토",
+    "meaningKo": "뒤, 나중",
+    "level": "N5"
+  },
+  {
+    "word": "後ろ",
+    "reading": "うしろ",
+    "pronunciationKo": "우시로",
+    "meaningKo": "뒤",
+    "level": "N5"
+  },
+  {
+    "word": "御飯",
+    "reading": "ごはん",
+    "pronunciationKo": "고한",
+    "meaningKo": "밥, 식사",
+    "level": "N5"
+  },
+  {
+    "word": "交差点",
+    "reading": "こうさてん",
+    "pronunciationKo": "코우사텐",
+    "meaningKo": "교차로",
+    "level": "N5"
+  },
+  {
+    "word": "交番",
+    "reading": "こうばん",
+    "pronunciationKo": "코우반",
+    "meaningKo": "파출소",
+    "level": "N5"
+  },
+  {
+    "word": "公園",
+    "reading": "こうえん",
+    "pronunciationKo": "코우엔",
+    "meaningKo": "공원",
+    "level": "N5"
+  },
+  {
+    "word": "厚い",
+    "reading": "あつい",
+    "pronunciationKo": "아츠이",
+    "meaningKo": "두껍다",
+    "level": "N5"
+  },
+  {
+    "word": "口",
+    "reading": "くち",
+    "pronunciationKo": "쿠치",
+    "meaningKo": "입, 입구",
+    "level": "N5"
+  },
+  {
+    "word": "向こう",
+    "reading": "むこう",
+    "pronunciationKo": "무코우",
+    "meaningKo": "저쪽, 건너편",
+    "level": "N5"
+  },
+  {
+    "word": "好き",
+    "reading": "すき",
+    "pronunciationKo": "스키",
+    "meaningKo": "좋아하다",
+    "level": "N5"
+  },
+  {
+    "word": "広い",
+    "reading": "ひろい",
+    "pronunciationKo": "히로이",
+    "meaningKo": "넓다",
+    "level": "N5"
+  },
+  {
+    "word": "紅茶",
+    "reading": "こうちゃ",
+    "pronunciationKo": "코우챠",
+    "meaningKo": "홍차",
+    "level": "N5"
+  },
+  {
+    "word": "行く",
+    "reading": "いく",
+    "pronunciationKo": "이쿠",
+    "meaningKo": "가다",
+    "level": "N5"
+  },
+  {
+    "word": "降りる",
+    "reading": "おりる",
+    "pronunciationKo": "오리루",
+    "meaningKo": "내리다",
+    "level": "N5"
+  },
+  {
+    "word": "降る",
+    "reading": "ふる",
+    "pronunciationKo": "후루",
+    "meaningKo": "내리다 (비·눈)",
+    "level": "N5"
+  },
+  {
+    "word": "高い",
+    "reading": "たかい",
+    "pronunciationKo": "타카이",
+    "meaningKo": "높다, 비싸다",
+    "level": "N5"
+  },
+  {
+    "word": "国",
+    "reading": "くに",
+    "pronunciationKo": "쿠니",
+    "meaningKo": "나라",
+    "level": "N5"
+  },
+  {
+    "word": "黒",
+    "reading": "くろ",
+    "pronunciationKo": "쿠로",
+    "meaningKo": "검은색",
+    "level": "N5"
+  },
+  {
+    "word": "黒い",
+    "reading": "くろい",
+    "pronunciationKo": "쿠로이",
+    "meaningKo": "검다",
+    "level": "N5"
+  },
+  {
+    "word": "今",
+    "reading": "いま",
+    "pronunciationKo": "이마",
+    "meaningKo": "지금",
+    "level": "N5"
+  },
+  {
+    "word": "今月",
+    "reading": "こんげつ",
+    "pronunciationKo": "콘게츠",
+    "meaningKo": "이번 달",
+    "level": "N5"
+  },
+  {
+    "word": "今週",
+    "reading": "こんしゅう",
+    "pronunciationKo": "콘슈우",
+    "meaningKo": "이번 주",
+    "level": "N5"
+  },
+  {
+    "word": "今朝",
+    "reading": "けさ",
+    "pronunciationKo": "케사",
+    "meaningKo": "오늘 아침",
+    "level": "N5"
+  },
+  {
+    "word": "今日",
+    "reading": "きょう",
+    "pronunciationKo": "쿄우",
+    "meaningKo": "오늘",
+    "level": "N5"
+  },
+  {
+    "word": "今年",
+    "reading": "ことし",
+    "pronunciationKo": "코토시",
+    "meaningKo": "올해",
+    "level": "N5"
+  },
+  {
+    "word": "今晩",
+    "reading": "こんばん",
+    "pronunciationKo": "콤반",
+    "meaningKo": "오늘 밤",
+    "level": "N5"
+  },
+  {
+    "word": "困る",
+    "reading": "こまる",
+    "pronunciationKo": "코마루",
+    "meaningKo": "곤란하다",
+    "level": "N5"
+  },
+  {
+    "word": "左",
+    "reading": "ひだり",
+    "pronunciationKo": "히다리",
+    "meaningKo": "왼쪽",
+    "level": "N5"
+  },
+  {
+    "word": "差す",
+    "reading": "さす",
+    "pronunciationKo": "사스",
+    "meaningKo": "우산을 쓰다, 내밀다",
+    "level": "N5"
+  },
+  {
+    "word": "砂糖",
+    "reading": "さとう",
+    "pronunciationKo": "사토우",
+    "meaningKo": "설탕",
+    "level": "N5"
+  },
+  {
+    "word": "座る",
+    "reading": "すわる",
+    "pronunciationKo": "스와루",
+    "meaningKo": "앉다",
+    "level": "N5"
+  },
+  {
+    "word": "細い",
+    "reading": "ほそい",
+    "pronunciationKo": "호소이",
+    "meaningKo": "가늘다",
+    "level": "N5"
+  },
+  {
+    "word": "財布",
+    "reading": "さいふ",
+    "pronunciationKo": "사이후",
+    "meaningKo": "지갑",
+    "level": "N5"
+  },
+  {
+    "word": "咲く",
+    "reading": "さく",
+    "pronunciationKo": "사쿠",
+    "meaningKo": "피다",
+    "level": "N5"
+  },
+  {
+    "word": "作る",
+    "reading": "つくる",
+    "pronunciationKo": "츠쿠루",
+    "meaningKo": "만들다",
+    "level": "N5"
+  },
+  {
+    "word": "作文",
+    "reading": "さくぶん",
+    "pronunciationKo": "사쿠분",
+    "meaningKo": "작문",
+    "level": "N5"
+  },
+  {
+    "word": "昨日",
+    "reading": "きのう",
+    "pronunciationKo": "키노우",
+    "meaningKo": "어제",
+    "level": "N5"
+  },
+  {
+    "word": "昨夜",
+    "reading": "ゆうべ",
+    "pronunciationKo": "유우베",
+    "meaningKo": "어젯밤",
+    "level": "N5"
+  },
+  {
+    "word": "撮る",
+    "reading": "とる",
+    "pronunciationKo": "토루",
+    "meaningKo": "찍다",
+    "level": "N5"
+  },
+  {
+    "word": "雑誌",
+    "reading": "ざっし",
+    "pronunciationKo": "잣시",
+    "meaningKo": "잡지",
+    "level": "N5"
+  },
+  {
+    "word": "三",
+    "reading": "さん",
+    "pronunciationKo": "산",
+    "meaningKo": "셋, 삼",
+    "level": "N5"
+  },
+  {
+    "word": "三つ",
+    "reading": "みっつ",
+    "pronunciationKo": "밋츠",
+    "meaningKo": "세 개",
+    "level": "N5"
+  },
+  {
+    "word": "三日",
+    "reading": "みっか",
+    "pronunciationKo": "밋카",
+    "meaningKo": "사흘, 3일",
+    "level": "N5"
+  },
+  {
+    "word": "傘",
+    "reading": "かさ",
+    "pronunciationKo": "카사",
+    "meaningKo": "우산",
+    "level": "N5"
+  },
+  {
+    "word": "山",
+    "reading": "やま",
+    "pronunciationKo": "야마",
+    "meaningKo": "산",
+    "level": "N5"
+  },
+  {
+    "word": "散歩",
+    "reading": "さんぽ",
+    "pronunciationKo": "삼포",
+    "meaningKo": "산책",
+    "level": "N5"
+  },
+  {
+    "word": "仕事",
+    "reading": "しごと",
+    "pronunciationKo": "시고토",
+    "meaningKo": "일, 직업",
+    "level": "N5"
+  },
+  {
+    "word": "使う",
+    "reading": "つかう",
+    "pronunciationKo": "츠카우",
+    "meaningKo": "사용하다",
+    "level": "N5"
+  },
+  {
+    "word": "四",
+    "reading": "よん",
+    "pronunciationKo": "욘",
+    "meaningKo": "넷, 사",
+    "level": "N5"
+  },
+  {
+    "word": "四つ",
+    "reading": "よっつ",
+    "pronunciationKo": "욧츠",
+    "meaningKo": "네 개",
+    "level": "N5"
+  },
+  {
+    "word": "四日",
+    "reading": "よっか",
+    "pronunciationKo": "욧카",
+    "meaningKo": "나흘, 4일",
+    "level": "N5"
+  },
+  {
+    "word": "始まる",
+    "reading": "はじまる",
+    "pronunciationKo": "하지마루",
+    "meaningKo": "시작되다",
+    "level": "N5"
+  },
+  {
+    "word": "姉",
+    "reading": "あね",
+    "pronunciationKo": "아네",
+    "meaningKo": "누나, 언니",
+    "level": "N5"
+  },
+  {
+    "word": "子供",
+    "reading": "こども",
+    "pronunciationKo": "코도모",
+    "meaningKo": "아이",
+    "level": "N5"
+  },
+  {
+    "word": "止まる",
+    "reading": "とまる",
+    "pronunciationKo": "토마루",
+    "meaningKo": "멈추다",
+    "level": "N5"
+  },
+  {
+    "word": "死ぬ",
+    "reading": "しぬ",
+    "pronunciationKo": "시누",
+    "meaningKo": "죽다",
+    "level": "N5"
+  },
+  {
+    "word": "私",
+    "reading": "わたくし",
+    "pronunciationKo": "와타쿠시",
+    "meaningKo": "저 (격식)",
+    "level": "N5"
+  },
+  {
+    "word": "紙",
+    "reading": "かみ",
+    "pronunciationKo": "카미",
+    "meaningKo": "종이",
+    "level": "N5"
+  },
+  {
+    "word": "歯",
+    "reading": "は",
+    "pronunciationKo": "하",
+    "meaningKo": "이",
+    "level": "N5"
+  },
+  {
+    "word": "字引",
+    "reading": "じびき",
+    "pronunciationKo": "지비키",
+    "meaningKo": "사전",
+    "level": "N5"
+  },
+  {
+    "word": "持つ",
+    "reading": "もつ",
+    "pronunciationKo": "모츠",
+    "meaningKo": "들다, 가지다",
+    "level": "N5"
+  },
+  {
+    "word": "時々",
+    "reading": "ときどき",
+    "pronunciationKo": "토키도키",
+    "meaningKo": "가끔",
+    "level": "N5"
+  },
+  {
+    "word": "時間",
+    "reading": "じかん",
+    "pronunciationKo": "지칸",
+    "meaningKo": "시간",
+    "level": "N5"
+  },
+  {
+    "word": "時計",
+    "reading": "とけい",
+    "pronunciationKo": "토케이",
+    "meaningKo": "시계",
+    "level": "N5"
+  },
+  {
+    "word": "次",
+    "reading": "つぎ",
+    "pronunciationKo": "츠기",
+    "meaningKo": "다음",
+    "level": "N5"
+  },
+  {
+    "word": "耳",
+    "reading": "みみ",
+    "pronunciationKo": "미미",
+    "meaningKo": "귀",
+    "level": "N5"
+  },
+  {
+    "word": "自転車",
+    "reading": "じてんしゃ",
+    "pronunciationKo": "지텐샤",
+    "meaningKo": "자전거",
+    "level": "N5"
+  },
+  {
+    "word": "自動車",
+    "reading": "じどうしゃ",
+    "pronunciationKo": "지도우샤",
+    "meaningKo": "자동차",
+    "level": "N5"
+  },
+  {
+    "word": "自分",
+    "reading": "じぶん",
+    "pronunciationKo": "지분",
+    "meaningKo": "자기 자신",
+    "level": "N5"
+  },
+  {
+    "word": "辞書",
+    "reading": "じしょ",
+    "pronunciationKo": "지쇼",
+    "meaningKo": "사전",
+    "level": "N5"
+  },
+  {
+    "word": "七",
+    "reading": "なな",
+    "pronunciationKo": "나나",
+    "meaningKo": "일곱, 칠",
+    "level": "N5"
+  },
+  {
+    "word": "七つ",
+    "reading": "ななつ",
+    "pronunciationKo": "나나츠",
+    "meaningKo": "일곱 개",
+    "level": "N5"
+  },
+  {
+    "word": "七日",
+    "reading": "なのか",
+    "pronunciationKo": "나노카",
+    "meaningKo": "이레, 7일",
+    "level": "N5"
+  },
+  {
+    "word": "質問",
+    "reading": "しつもん",
+    "pronunciationKo": "시츠몬",
+    "meaningKo": "질문",
+    "level": "N5"
+  },
+  {
+    "word": "写真",
+    "reading": "しゃしん",
+    "pronunciationKo": "샤신",
+    "meaningKo": "사진",
+    "level": "N5"
+  },
+  {
+    "word": "車",
+    "reading": "くるま",
+    "pronunciationKo": "쿠루마",
+    "meaningKo": "차, 차량",
+    "level": "N5"
+  },
+  {
+    "word": "借りる",
+    "reading": "かりる",
+    "pronunciationKo": "카리루",
+    "meaningKo": "빌리다",
+    "level": "N5"
+  },
+  {
+    "word": "若い",
+    "reading": "わかい",
+    "pronunciationKo": "와카이",
+    "meaningKo": "젊다",
+    "level": "N5"
+  },
+  {
+    "word": "弱い",
+    "reading": "よわい",
+    "pronunciationKo": "요와이",
+    "meaningKo": "약하다",
+    "level": "N5"
+  },
+  {
+    "word": "取る",
+    "reading": "とる",
+    "pronunciationKo": "토루",
+    "meaningKo": "잡다, 취하다",
+    "level": "N5"
+  },
+  {
+    "word": "手",
+    "reading": "て",
+    "pronunciationKo": "테",
+    "meaningKo": "손",
+    "level": "N5"
+  },
+  {
+    "word": "手紙",
+    "reading": "てがみ",
+    "pronunciationKo": "테가미",
+    "meaningKo": "편지",
+    "level": "N5"
+  },
+  {
+    "word": "授業",
+    "reading": "じゅぎょう",
+    "pronunciationKo": "주교우",
+    "meaningKo": "수업",
+    "level": "N5"
+  },
+  {
+    "word": "秋",
+    "reading": "あき",
+    "pronunciationKo": "아키",
+    "meaningKo": "가을",
+    "level": "N5"
+  },
+  {
+    "word": "終る",
+    "reading": "おわる",
+    "pronunciationKo": "오와루",
+    "meaningKo": "끝나다",
+    "level": "N5"
+  },
+  {
+    "word": "習う",
+    "reading": "ならう",
+    "pronunciationKo": "나라우",
+    "meaningKo": "배우다",
+    "level": "N5"
+  },
+  {
+    "word": "住む",
+    "reading": "すむ",
+    "pronunciationKo": "스무",
+    "meaningKo": "살다",
+    "level": "N5"
+  },
+  {
+    "word": "十",
+    "reading": "じゅう",
+    "pronunciationKo": "주우",
+    "meaningKo": "열, 십",
+    "level": "N5"
+  },
+  {
+    "word": "十日",
+    "reading": "とおか",
+    "pronunciationKo": "토오카",
+    "meaningKo": "열흘, 10일",
+    "level": "N5"
+  },
+  {
+    "word": "重い",
+    "reading": "おもい",
+    "pronunciationKo": "오모이",
+    "meaningKo": "무겁다",
+    "level": "N5"
+  },
+  {
+    "word": "宿題",
+    "reading": "しゅくだい",
+    "pronunciationKo": "슈쿠다이",
+    "meaningKo": "숙제",
+    "level": "N5"
+  },
+  {
+    "word": "出かける",
+    "reading": "でかける",
+    "pronunciationKo": "데카케루",
+    "meaningKo": "외출하다",
+    "level": "N5"
+  },
+  {
+    "word": "出す",
+    "reading": "だす",
+    "pronunciationKo": "다스",
+    "meaningKo": "내다, 꺼내다",
+    "level": "N5"
+  },
+  {
+    "word": "出る",
+    "reading": "でる",
+    "pronunciationKo": "데루",
+    "meaningKo": "나가다, 나오다",
+    "level": "N5"
+  },
+  {
+    "word": "出口",
+    "reading": "でぐち",
+    "pronunciationKo": "데구치",
+    "meaningKo": "출구",
+    "level": "N5"
+  },
+  {
+    "word": "春",
+    "reading": "はる",
+    "pronunciationKo": "하루",
+    "meaningKo": "봄",
+    "level": "N5"
+  },
+  {
+    "word": "初め",
+    "reading": "はじめ",
+    "pronunciationKo": "하지메",
+    "meaningKo": "시작",
+    "level": "N5"
+  },
+  {
+    "word": "初めて",
+    "reading": "はじめて",
+    "pronunciationKo": "하지메테",
+    "meaningKo": "처음으로",
+    "level": "N5"
+  },
+  {
+    "word": "所",
+    "reading": "ところ",
+    "pronunciationKo": "토코로",
+    "meaningKo": "곳",
+    "level": "N5"
+  },
+  {
+    "word": "暑い",
+    "reading": "あつい",
+    "pronunciationKo": "아츠이",
+    "meaningKo": "덥다",
+    "level": "N5"
+  },
+  {
+    "word": "書く",
+    "reading": "かく",
+    "pronunciationKo": "카쿠",
+    "meaningKo": "쓰다",
+    "level": "N5"
+  },
+  {
+    "word": "女",
+    "reading": "おんな",
+    "pronunciationKo": "온나",
+    "meaningKo": "여자",
+    "level": "N5"
+  },
+  {
+    "word": "女の子",
+    "reading": "おんなのこ",
+    "pronunciationKo": "온나노코",
+    "meaningKo": "여자아이",
+    "level": "N5"
+  },
+  {
+    "word": "小さい",
+    "reading": "ちいさい",
+    "pronunciationKo": "치이사이",
+    "meaningKo": "작다",
+    "level": "N5"
+  },
+  {
+    "word": "小さな",
+    "reading": "ちいさな",
+    "pronunciationKo": "치이사나",
+    "meaningKo": "작은",
+    "level": "N5"
+  },
+  {
+    "word": "少し",
+    "reading": "すこし",
+    "pronunciationKo": "스코시",
+    "meaningKo": "조금",
+    "level": "N5"
+  },
+  {
+    "word": "少ない",
+    "reading": "すくない",
+    "pronunciationKo": "스쿠나이",
+    "meaningKo": "적다",
+    "level": "N5"
+  },
+  {
+    "word": "消える",
+    "reading": "きえる",
+    "pronunciationKo": "키에루",
+    "meaningKo": "사라지다",
+    "level": "N5"
+  },
+  {
+    "word": "消す",
+    "reading": "けす",
+    "pronunciationKo": "케스",
+    "meaningKo": "지우다, 끄다",
+    "level": "N5"
+  },
+  {
+    "word": "上",
+    "reading": "うえ",
+    "pronunciationKo": "우에",
+    "meaningKo": "위",
+    "level": "N5"
+  },
+  {
+    "word": "上げる",
+    "reading": "あげる",
+    "pronunciationKo": "아게루",
+    "meaningKo": "올리다, 주다",
+    "level": "N5"
+  },
+  {
+    "word": "上手",
+    "reading": "じょうず",
+    "pronunciationKo": "조우즈",
+    "meaningKo": "잘하다, 능숙하다",
+    "level": "N5"
+  },
+  {
+    "word": "上着",
+    "reading": "うわぎ",
+    "pronunciationKo": "우와기",
+    "meaningKo": "겉옷, 재킷",
+    "level": "N5"
+  },
+  {
+    "word": "丈夫",
+    "reading": "じょうぶ",
+    "pronunciationKo": "조우부",
+    "meaningKo": "튼튼하다",
+    "level": "N5"
+  },
+  {
+    "word": "乗る",
+    "reading": "のる",
+    "pronunciationKo": "노루",
+    "meaningKo": "타다",
+    "level": "N5"
+  },
+  {
+    "word": "色",
+    "reading": "いろ",
+    "pronunciationKo": "이로",
+    "meaningKo": "색",
+    "level": "N5"
+  },
+  {
+    "word": "食べる",
+    "reading": "たべる",
+    "pronunciationKo": "타베루",
+    "meaningKo": "먹다",
+    "level": "N5"
+  },
+  {
+    "word": "食べ物",
+    "reading": "たべもの",
+    "pronunciationKo": "타베모노",
+    "meaningKo": "음식",
+    "level": "N5"
+  },
+  {
+    "word": "食堂",
+    "reading": "しょくどう",
+    "pronunciationKo": "쇼쿠도우",
+    "meaningKo": "식당",
+    "level": "N5"
+  },
+  {
+    "word": "寝る",
+    "reading": "ねる",
+    "pronunciationKo": "네루",
+    "meaningKo": "자다",
+    "level": "N5"
+  },
+  {
+    "word": "新しい",
+    "reading": "あたらしい",
+    "pronunciationKo": "아타라시이",
+    "meaningKo": "새롭다",
+    "level": "N5"
+  },
+  {
+    "word": "新聞",
+    "reading": "しんぶん",
+    "pronunciationKo": "심분",
+    "meaningKo": "신문",
+    "level": "N5"
+  },
+  {
+    "word": "辛い",
+    "reading": "からい",
+    "pronunciationKo": "카라이",
+    "meaningKo": "맵다",
+    "level": "N5"
+  },
+  {
+    "word": "人",
+    "reading": "ひと",
+    "pronunciationKo": "히토",
+    "meaningKo": "사람",
+    "level": "N5"
+  },
+  {
+    "word": "図書館",
+    "reading": "としょかん",
+    "pronunciationKo": "토쇼칸",
+    "meaningKo": "도서관",
+    "level": "N5"
+  },
+  {
+    "word": "吹く",
+    "reading": "ふく",
+    "pronunciationKo": "후쿠",
+    "meaningKo": "불다",
+    "level": "N5"
+  },
+  {
+    "word": "水",
+    "reading": "みず",
+    "pronunciationKo": "미즈",
+    "meaningKo": "물",
+    "level": "N5"
+  },
+  {
+    "word": "水曜日",
+    "reading": "すいようび",
+    "pronunciationKo": "스이요우비",
+    "meaningKo": "수요일",
+    "level": "N5"
+  },
+  {
+    "word": "晴れ",
+    "reading": "はれ",
+    "pronunciationKo": "하레",
+    "meaningKo": "맑음",
+    "level": "N5"
+  },
+  {
+    "word": "晴れる",
+    "reading": "はれる",
+    "pronunciationKo": "하레루",
+    "meaningKo": "개다",
+    "level": "N5"
+  },
+  {
+    "word": "生まれる",
+    "reading": "うまれる",
+    "pronunciationKo": "우마레루",
+    "meaningKo": "태어나다",
+    "level": "N5"
+  },
+  {
+    "word": "生徒",
+    "reading": "せいと",
+    "pronunciationKo": "세이토",
+    "meaningKo": "학생",
+    "level": "N5"
+  },
+  {
+    "word": "声",
+    "reading": "こえ",
+    "pronunciationKo": "코에",
+    "meaningKo": "목소리",
+    "level": "N5"
+  },
+  {
+    "word": "西",
+    "reading": "にし",
+    "pronunciationKo": "니시",
+    "meaningKo": "서쪽",
+    "level": "N5"
+  },
+  {
+    "word": "青",
+    "reading": "あお",
+    "pronunciationKo": "아오",
+    "meaningKo": "파란색",
+    "level": "N5"
+  },
+  {
+    "word": "青い",
+    "reading": "あおい",
+    "pronunciationKo": "아오이",
+    "meaningKo": "파랗다",
+    "level": "N5"
+  },
+  {
+    "word": "静か",
+    "reading": "しずか",
+    "pronunciationKo": "시즈카",
+    "meaningKo": "조용하다",
+    "level": "N5"
+  },
+  {
+    "word": "赤",
+    "reading": "あか",
+    "pronunciationKo": "아카",
+    "meaningKo": "빨간색",
+    "level": "N5"
+  },
+  {
+    "word": "赤い",
+    "reading": "あかい",
+    "pronunciationKo": "아카이",
+    "meaningKo": "빨갛다",
+    "level": "N5"
+  },
+  {
+    "word": "切る",
+    "reading": "きる",
+    "pronunciationKo": "키루",
+    "meaningKo": "자르다",
+    "level": "N5"
+  },
+  {
+    "word": "切手",
+    "reading": "きって",
+    "pronunciationKo": "킷테",
+    "meaningKo": "우표",
+    "level": "N5"
+  },
+  {
+    "word": "切符",
+    "reading": "きっぷ",
+    "pronunciationKo": "킷푸",
+    "meaningKo": "표",
+    "level": "N5"
+  },
+  {
+    "word": "雪",
+    "reading": "ゆき",
+    "pronunciationKo": "유키",
+    "meaningKo": "눈",
+    "level": "N5"
+  },
+  {
+    "word": "先",
+    "reading": "さき",
+    "pronunciationKo": "사키",
+    "meaningKo": "앞, 먼저",
+    "level": "N5"
+  },
+  {
+    "word": "先月",
+    "reading": "せんげつ",
+    "pronunciationKo": "센게츠",
+    "meaningKo": "지난달",
+    "level": "N5"
+  },
+  {
+    "word": "先週",
+    "reading": "せんしゅう",
+    "pronunciationKo": "센슈우",
+    "meaningKo": "지난주",
+    "level": "N5"
+  },
+  {
+    "word": "先生",
+    "reading": "せんせい",
+    "pronunciationKo": "센세이",
+    "meaningKo": "선생님, 의사",
+    "level": "N5"
+  },
+  {
+    "word": "千",
+    "reading": "せん",
+    "pronunciationKo": "센",
+    "meaningKo": "천",
+    "level": "N5"
+  },
+  {
+    "word": "川",
+    "reading": "かわ",
+    "pronunciationKo": "카와",
+    "meaningKo": "강",
+    "level": "N5"
+  },
+  {
+    "word": "洗う",
+    "reading": "あらう",
+    "pronunciationKo": "아라우",
+    "meaningKo": "씻다",
+    "level": "N5"
+  },
+  {
+    "word": "洗濯",
+    "reading": "せんたく",
+    "pronunciationKo": "센타쿠",
+    "meaningKo": "빨래",
+    "level": "N5"
+  },
+  {
+    "word": "前",
+    "reading": "まえ",
+    "pronunciationKo": "마에",
+    "meaningKo": "앞, 이전",
+    "level": "N5"
+  },
+  {
+    "word": "全部",
+    "reading": "ぜんぶ",
+    "pronunciationKo": "젬부",
+    "meaningKo": "전부",
+    "level": "N5"
+  },
+  {
+    "word": "掃除",
+    "reading": "そうじ",
+    "pronunciationKo": "소우지",
+    "meaningKo": "청소",
+    "level": "N5"
+  },
+  {
+    "word": "早い",
+    "reading": "はやい",
+    "pronunciationKo": "하야이",
+    "meaningKo": "이르다",
+    "level": "N5"
+  },
+  {
+    "word": "窓",
+    "reading": "まど",
+    "pronunciationKo": "마도",
+    "meaningKo": "창문",
+    "level": "N5"
+  },
+  {
+    "word": "走る",
+    "reading": "はしる",
+    "pronunciationKo": "하시루",
+    "meaningKo": "달리다",
+    "level": "N5"
+  },
+  {
+    "word": "足",
+    "reading": "あし",
+    "pronunciationKo": "아시",
+    "meaningKo": "발, 다리",
+    "level": "N5"
+  },
+  {
+    "word": "速い",
+    "reading": "はやい",
+    "pronunciationKo": "하야이",
+    "meaningKo": "빠르다",
+    "level": "N5"
+  },
+  {
+    "word": "村",
+    "reading": "むら",
+    "pronunciationKo": "무라",
+    "meaningKo": "마을",
+    "level": "N5"
+  },
+  {
+    "word": "多い",
+    "reading": "おおい",
+    "pronunciationKo": "오오이",
+    "meaningKo": "많다",
+    "level": "N5"
+  },
+  {
+    "word": "太い",
+    "reading": "ふとい",
+    "pronunciationKo": "후토이",
+    "meaningKo": "굵다, 뚱뚱하다",
+    "level": "N5"
+  },
+  {
+    "word": "体",
+    "reading": "からだ",
+    "pronunciationKo": "카라다",
+    "meaningKo": "몸",
+    "level": "N5"
+  },
+  {
+    "word": "待つ",
+    "reading": "まつ",
+    "pronunciationKo": "마츠",
+    "meaningKo": "기다리다",
+    "level": "N5"
+  },
+  {
+    "word": "貸す",
+    "reading": "かす",
+    "pronunciationKo": "카스",
+    "meaningKo": "빌려주다",
+    "level": "N5"
+  },
+  {
+    "word": "台所",
+    "reading": "だいどころ",
+    "pronunciationKo": "다이도코로",
+    "meaningKo": "부엌",
+    "level": "N5"
+  },
+  {
+    "word": "大きい",
+    "reading": "おおきい",
+    "pronunciationKo": "오오키이",
+    "meaningKo": "크다",
+    "level": "N5"
+  },
+  {
+    "word": "大きな",
+    "reading": "おおきな",
+    "pronunciationKo": "오오키나",
+    "meaningKo": "큰",
+    "level": "N5"
+  },
+  {
+    "word": "大学",
+    "reading": "だいがく",
+    "pronunciationKo": "다이가쿠",
+    "meaningKo": "대학교",
+    "level": "N5"
+  },
+  {
+    "word": "大好き",
+    "reading": "だいすき",
+    "pronunciationKo": "다이스키",
+    "meaningKo": "매우 좋아하다",
+    "level": "N5"
+  },
+  {
+    "word": "大使館",
+    "reading": "たいしかん",
+    "pronunciationKo": "타이시칸",
+    "meaningKo": "대사관",
+    "level": "N5"
+  },
+  {
+    "word": "大丈夫",
+    "reading": "だいじょうぶ",
+    "pronunciationKo": "다이조우부",
+    "meaningKo": "괜찮다",
+    "level": "N5"
+  },
+  {
+    "word": "大人",
+    "reading": "おとな",
+    "pronunciationKo": "오토나",
+    "meaningKo": "어른",
+    "level": "N5"
+  },
+  {
+    "word": "大勢",
+    "reading": "おおぜい",
+    "pronunciationKo": "오오제이",
+    "meaningKo": "많은 사람",
+    "level": "N5"
+  },
+  {
+    "word": "大切",
+    "reading": "たいせつ",
+    "pronunciationKo": "타이세츠",
+    "meaningKo": "소중하다, 중요하다",
+    "level": "N5"
+  },
+  {
+    "word": "脱ぐ",
+    "reading": "ぬぐ",
+    "pronunciationKo": "누구",
+    "meaningKo": "벗다",
+    "level": "N5"
+  },
+  {
+    "word": "誰",
+    "reading": "だれ",
+    "pronunciationKo": "다레",
+    "meaningKo": "누구",
+    "level": "N5"
+  },
+  {
+    "word": "短い",
+    "reading": "みじかい",
+    "pronunciationKo": "미지카이",
+    "meaningKo": "짧다",
+    "level": "N5"
+  },
+  {
+    "word": "誕生日",
+    "reading": "たんじょうび",
+    "pronunciationKo": "탄조우비",
+    "meaningKo": "생일",
+    "level": "N5"
+  },
+  {
+    "word": "弾く",
+    "reading": "ひく",
+    "pronunciationKo": "히쿠",
+    "meaningKo": "연주하다, 치다",
+    "level": "N5"
+  },
+  {
+    "word": "暖かい",
+    "reading": "あたたかい",
+    "pronunciationKo": "아타타카이",
+    "meaningKo": "따뜻하다",
+    "level": "N5"
+  },
+  {
+    "word": "男",
+    "reading": "おとこ",
+    "pronunciationKo": "오토코",
+    "meaningKo": "남자",
+    "level": "N5"
+  },
+  {
+    "word": "男の子",
+    "reading": "おとこのこ",
+    "pronunciationKo": "오토코노코",
+    "meaningKo": "남자아이",
+    "level": "N5"
+  },
+  {
+    "word": "知る",
+    "reading": "しる",
+    "pronunciationKo": "시루",
+    "meaningKo": "알다",
+    "level": "N5"
+  },
+  {
+    "word": "地下鉄",
+    "reading": "ちかてつ",
+    "pronunciationKo": "치카테츠",
+    "meaningKo": "지하철",
+    "level": "N5"
+  },
+  {
+    "word": "地図",
+    "reading": "ちず",
+    "pronunciationKo": "치즈",
+    "meaningKo": "지도",
+    "level": "N5"
+  },
+  {
+    "word": "池",
+    "reading": "いけ",
+    "pronunciationKo": "이케",
+    "meaningKo": "연못",
+    "level": "N5"
+  },
+  {
+    "word": "置く",
+    "reading": "おく",
+    "pronunciationKo": "오쿠",
+    "meaningKo": "놓다",
+    "level": "N5"
+  },
+  {
+    "word": "遅い",
+    "reading": "おそい",
+    "pronunciationKo": "오소이",
+    "meaningKo": "늦다, 느리다",
+    "level": "N5"
+  },
+  {
+    "word": "茶色",
+    "reading": "ちゃいろ",
+    "pronunciationKo": "챠이로",
+    "meaningKo": "갈색",
+    "level": "N5"
+  },
+  {
+    "word": "着く",
+    "reading": "つく",
+    "pronunciationKo": "츠쿠",
+    "meaningKo": "도착하다",
+    "level": "N5"
+  },
+  {
+    "word": "着る",
+    "reading": "きる",
+    "pronunciationKo": "키루",
+    "meaningKo": "입다",
+    "level": "N5"
+  },
+  {
+    "word": "中",
+    "reading": "なか",
+    "pronunciationKo": "나카",
+    "meaningKo": "안, 가운데",
+    "level": "N5"
+  },
+  {
+    "word": "昼",
+    "reading": "ひる",
+    "pronunciationKo": "히루",
+    "meaningKo": "낮, 정오",
+    "level": "N5"
+  },
+  {
+    "word": "昼御飯",
+    "reading": "ひるごはん",
+    "pronunciationKo": "히루고한",
+    "meaningKo": "점심",
+    "level": "N5"
+  },
+  {
+    "word": "朝",
+    "reading": "あさ",
+    "pronunciationKo": "아사",
+    "meaningKo": "아침",
+    "level": "N5"
+  },
+  {
+    "word": "朝御飯",
+    "reading": "あさごはん",
+    "pronunciationKo": "아사고한",
+    "meaningKo": "아침밥",
+    "level": "N5"
+  },
+  {
+    "word": "町",
+    "reading": "まち",
+    "pronunciationKo": "마치",
+    "meaningKo": "마을, 도시",
+    "level": "N5"
+  },
+  {
+    "word": "長い",
+    "reading": "ながい",
+    "pronunciationKo": "나가이",
+    "meaningKo": "길다",
+    "level": "N5"
+  },
+  {
+    "word": "鳥",
+    "reading": "とり",
+    "pronunciationKo": "토리",
+    "meaningKo": "새",
+    "level": "N5"
+  },
+  {
+    "word": "痛い",
+    "reading": "いたい",
+    "pronunciationKo": "이타이",
+    "meaningKo": "아프다",
+    "level": "N5"
+  },
+  {
+    "word": "低い",
+    "reading": "ひくい",
+    "pronunciationKo": "히쿠이",
+    "meaningKo": "낮다",
+    "level": "N5"
+  },
+  {
+    "word": "庭",
+    "reading": "にわ",
+    "pronunciationKo": "니와",
+    "meaningKo": "정원",
+    "level": "N5"
+  },
+  {
+    "word": "弟",
+    "reading": "おとうと",
+    "pronunciationKo": "오토우토",
+    "meaningKo": "남동생",
+    "level": "N5"
+  },
+  {
+    "word": "締める",
+    "reading": "しめる",
+    "pronunciationKo": "시메루",
+    "meaningKo": "매다, 조이다",
+    "level": "N5"
+  },
+  {
+    "word": "天気",
+    "reading": "てんき",
+    "pronunciationKo": "텐키",
+    "meaningKo": "날씨",
+    "level": "N5"
+  },
+  {
+    "word": "店",
+    "reading": "みせ",
+    "pronunciationKo": "미세",
+    "meaningKo": "가게",
+    "level": "N5"
+  },
+  {
+    "word": "貼る",
+    "reading": "はる",
+    "pronunciationKo": "하루",
+    "meaningKo": "붙이다",
+    "level": "N5"
+  },
+  {
+    "word": "電気",
+    "reading": "でんき",
+    "pronunciationKo": "덴키",
+    "meaningKo": "전기, 전등",
+    "level": "N5"
+  },
+  {
+    "word": "電車",
+    "reading": "でんしゃ",
+    "pronunciationKo": "덴샤",
+    "meaningKo": "전철",
+    "level": "N5"
+  },
+  {
+    "word": "電話",
+    "reading": "でんわ",
+    "pronunciationKo": "덴와",
+    "meaningKo": "전화",
+    "level": "N5"
+  },
+  {
+    "word": "渡す",
+    "reading": "わたす",
+    "pronunciationKo": "와타스",
+    "meaningKo": "건네다",
+    "level": "N5"
+  },
+  {
+    "word": "渡る",
+    "reading": "わたる",
+    "pronunciationKo": "와타루",
+    "meaningKo": "건너다",
+    "level": "N5"
+  },
+  {
+    "word": "登る",
+    "reading": "のぼる",
+    "pronunciationKo": "노보루",
+    "meaningKo": "오르다",
+    "level": "N5"
+  },
+  {
+    "word": "土曜日",
+    "reading": "どようび",
+    "pronunciationKo": "도요우비",
+    "meaningKo": "토요일",
+    "level": "N5"
+  },
+  {
+    "word": "冬",
+    "reading": "ふゆ",
+    "pronunciationKo": "후유",
+    "meaningKo": "겨울",
+    "level": "N5"
+  },
+  {
+    "word": "東",
+    "reading": "ひがし",
+    "pronunciationKo": "히가시",
+    "meaningKo": "동쪽",
+    "level": "N5"
+  },
+  {
+    "word": "答える",
+    "reading": "こたえる",
+    "pronunciationKo": "코타에루",
+    "meaningKo": "대답하다",
+    "level": "N5"
+  },
+  {
+    "word": "頭",
+    "reading": "あたま",
+    "pronunciationKo": "아타마",
+    "meaningKo": "머리",
+    "level": "N5"
+  },
+  {
+    "word": "働く",
+    "reading": "はたらく",
+    "pronunciationKo": "하타라쿠",
+    "meaningKo": "일하다",
+    "level": "N5"
+  },
+  {
+    "word": "動物",
+    "reading": "どうぶつ",
+    "pronunciationKo": "도우부츠",
+    "meaningKo": "동물",
+    "level": "N5"
+  },
+  {
+    "word": "同じ",
+    "reading": "おなじ",
+    "pronunciationKo": "오나지",
+    "meaningKo": "같다",
+    "level": "N5"
+  },
+  {
+    "word": "道",
+    "reading": "みち",
+    "pronunciationKo": "미치",
+    "meaningKo": "길",
+    "level": "N5"
+  },
+  {
+    "word": "読む",
+    "reading": "よむ",
+    "pronunciationKo": "요무",
+    "meaningKo": "읽다",
+    "level": "N5"
+  },
+  {
+    "word": "豚肉",
+    "reading": "ぶたにく",
+    "pronunciationKo": "부타니쿠",
+    "meaningKo": "돼지고기",
+    "level": "N5"
+  },
+  {
+    "word": "曇り",
+    "reading": "くもり",
+    "pronunciationKo": "쿠모리",
+    "meaningKo": "흐린 날씨",
+    "level": "N5"
+  },
+  {
+    "word": "曇る",
+    "reading": "くもる",
+    "pronunciationKo": "쿠모루",
+    "meaningKo": "흐려지다, 김이 서리다",
+    "level": "N5"
+  },
+  {
+    "word": "南",
+    "reading": "みなみ",
+    "pronunciationKo": "미나미",
+    "meaningKo": "남쪽",
+    "level": "N5"
+  },
+  {
+    "word": "難しい",
+    "reading": "むずかしい",
+    "pronunciationKo": "무즈카시이",
+    "meaningKo": "어렵다",
+    "level": "N5"
+  },
+  {
+    "word": "二",
+    "reading": "に",
+    "pronunciationKo": "니",
+    "meaningKo": "둘, 이",
+    "level": "N5"
+  },
+  {
+    "word": "二つ",
+    "reading": "ふたつ",
+    "pronunciationKo": "후타츠",
+    "meaningKo": "두 개",
+    "level": "N5"
+  },
+  {
+    "word": "二十歳",
+    "reading": "はたち",
+    "pronunciationKo": "하타치",
+    "meaningKo": "스무 살",
+    "level": "N5"
+  },
+  {
+    "word": "二十日",
+    "reading": "はつか",
+    "pronunciationKo": "하츠카",
+    "meaningKo": "스무 날, 20일",
+    "level": "N5"
+  },
+  {
+    "word": "二人",
+    "reading": "ふたり",
+    "pronunciationKo": "후타리",
+    "meaningKo": "두 사람",
+    "level": "N5"
+  },
+  {
+    "word": "二日",
+    "reading": "ふつか",
+    "pronunciationKo": "후츠카",
+    "meaningKo": "이틀, 2일",
+    "level": "N5"
+  },
+  {
+    "word": "賑やか",
+    "reading": "にぎやか",
+    "pronunciationKo": "니기야카",
+    "meaningKo": "번화하다, 활기차다",
+    "level": "N5"
+  },
+  {
+    "word": "肉",
+    "reading": "にく",
+    "pronunciationKo": "니쿠",
+    "meaningKo": "고기",
+    "level": "N5"
+  },
+  {
+    "word": "日曜日",
+    "reading": "にちようび",
+    "pronunciationKo": "니치요우비",
+    "meaningKo": "일요일",
+    "level": "N5"
+  },
+  {
+    "word": "入る",
+    "reading": "はいる",
+    "pronunciationKo": "하이루",
+    "meaningKo": "들어가다, 들어 있다",
+    "level": "N5"
+  },
+  {
+    "word": "入れる",
+    "reading": "いれる",
+    "pronunciationKo": "이레루",
+    "meaningKo": "넣다",
+    "level": "N5"
+  },
+  {
+    "word": "入口",
+    "reading": "いりぐち",
+    "pronunciationKo": "이리구치",
+    "meaningKo": "입구",
+    "level": "N5"
+  },
+  {
+    "word": "猫",
+    "reading": "ねこ",
+    "pronunciationKo": "네코",
+    "meaningKo": "고양이",
+    "level": "N5"
+  },
+  {
+    "word": "熱い",
+    "reading": "あつい",
+    "pronunciationKo": "아츠이",
+    "meaningKo": "뜨겁다",
+    "level": "N5"
+  },
+  {
+    "word": "年",
+    "reading": "とし",
+    "pronunciationKo": "토시",
+    "meaningKo": "해, 나이",
+    "level": "N5"
+  },
+  {
+    "word": "背",
+    "reading": "せ",
+    "pronunciationKo": "세",
+    "meaningKo": "키",
+    "level": "N5"
+  },
+  {
+    "word": "背広",
+    "reading": "せびろ",
+    "pronunciationKo": "세비로",
+    "meaningKo": "정장",
+    "level": "N5"
+  },
+  {
+    "word": "買い物",
+    "reading": "かいもの",
+    "pronunciationKo": "카이모노",
+    "meaningKo": "쇼핑",
+    "level": "N5"
+  },
+  {
+    "word": "買う",
+    "reading": "かう",
+    "pronunciationKo": "카우",
+    "meaningKo": "사다",
+    "level": "N5"
+  },
+  {
+    "word": "売る",
+    "reading": "うる",
+    "pronunciationKo": "우루",
+    "meaningKo": "팔다",
+    "level": "N5"
+  },
+  {
+    "word": "お爺さん",
+    "reading": "おじいさん",
+    "pronunciationKo": "오지이산",
+    "meaningKo": "할아버지, 노인",
+    "level": "N5"
+  },
+  {
+    "word": "伯母さん",
+    "reading": "おばさん",
+    "pronunciationKo": "오바산",
+    "meaningKo": "아주머니, 이모·고모",
+    "level": "N5"
+  },
+  {
+    "word": "白",
+    "reading": "しろ",
+    "pronunciationKo": "시로",
+    "meaningKo": "흰색",
+    "level": "N5"
+  },
+  {
+    "word": "白い",
+    "reading": "しろい",
+    "pronunciationKo": "시로이",
+    "meaningKo": "하얗다",
+    "level": "N5"
+  },
+  {
+    "word": "薄い",
+    "reading": "うすい",
+    "pronunciationKo": "우스이",
+    "meaningKo": "얇다, 연하다",
+    "level": "N5"
+  },
+  {
+    "word": "箱",
+    "reading": "はこ",
+    "pronunciationKo": "하코",
+    "meaningKo": "상자",
+    "level": "N5"
+  },
+  {
+    "word": "八",
+    "reading": "はち",
+    "pronunciationKo": "하치",
+    "meaningKo": "여덟, 팔",
+    "level": "N5"
+  },
+  {
+    "word": "八つ",
+    "reading": "やっつ",
+    "pronunciationKo": "얏츠",
+    "meaningKo": "여덟 개",
+    "level": "N5"
+  },
+  {
+    "word": "八日",
+    "reading": "ようか",
+    "pronunciationKo": "요우카",
+    "meaningKo": "여드레, 8일",
+    "level": "N5"
+  },
+  {
+    "word": "八百屋",
+    "reading": "やおや",
+    "pronunciationKo": "야오야",
+    "meaningKo": "채소 가게",
+    "level": "N5"
+  },
+  {
+    "word": "半",
+    "reading": "はん",
+    "pronunciationKo": "한",
+    "meaningKo": "반",
+    "level": "N5"
+  },
+  {
+    "word": "半分",
+    "reading": "はんぶん",
+    "pronunciationKo": "함분",
+    "meaningKo": "절반",
+    "level": "N5"
+  },
+  {
+    "word": "煩い",
+    "reading": "うるさい",
+    "pronunciationKo": "우루사이",
+    "meaningKo": "시끄럽다, 귀찮다",
+    "level": "N5"
+  },
+  {
+    "word": "晩",
+    "reading": "ばん",
+    "pronunciationKo": "반",
+    "meaningKo": "저녁",
+    "level": "N5"
+  },
+  {
+    "word": "晩御飯",
+    "reading": "ばんごはん",
+    "pronunciationKo": "반고한",
+    "meaningKo": "저녁밥",
+    "level": "N5"
+  },
+  {
+    "word": "番号",
+    "reading": "ばんごう",
+    "pronunciationKo": "반고우",
+    "meaningKo": "번호",
+    "level": "N5"
+  },
+  {
+    "word": "疲れる",
+    "reading": "つかれる",
+    "pronunciationKo": "츠카레루",
+    "meaningKo": "피곤해지다, 지치다",
+    "level": "N5"
+  },
+  {
+    "word": "飛ぶ",
+    "reading": "とぶ",
+    "pronunciationKo": "토부",
+    "meaningKo": "날다, 뛰다",
+    "level": "N5"
+  },
+  {
+    "word": "飛行機",
+    "reading": "ひこうき",
+    "pronunciationKo": "히코우키",
+    "meaningKo": "비행기",
+    "level": "N5"
+  },
+  {
+    "word": "鼻",
+    "reading": "はな",
+    "pronunciationKo": "하나",
+    "meaningKo": "코",
+    "level": "N5"
+  },
+  {
+    "word": "百",
+    "reading": "ひゃく",
+    "pronunciationKo": "햐쿠",
+    "meaningKo": "백",
+    "level": "N5"
+  },
+  {
+    "word": "病院",
+    "reading": "びょういん",
+    "pronunciationKo": "뵤우인",
+    "meaningKo": "병원",
+    "level": "N5"
+  },
+  {
+    "word": "病気",
+    "reading": "びょうき",
+    "pronunciationKo": "뵤우키",
+    "meaningKo": "병",
+    "level": "N5"
+  },
+  {
+    "word": "部屋",
+    "reading": "へや",
+    "pronunciationKo": "헤야",
+    "meaningKo": "방",
+    "level": "N5"
+  },
+  {
+    "word": "封筒",
+    "reading": "ふうとう",
+    "pronunciationKo": "후우토우",
+    "meaningKo": "봉투",
+    "level": "N5"
+  },
+  {
+    "word": "風",
+    "reading": "かぜ",
+    "pronunciationKo": "카제",
+    "meaningKo": "바람",
+    "level": "N5"
+  },
+  {
+    "word": "風邪",
+    "reading": "かぜ",
+    "pronunciationKo": "카제",
+    "meaningKo": "감기",
+    "level": "N5"
+  },
+  {
+    "word": "服",
+    "reading": "ふく",
+    "pronunciationKo": "후쿠",
+    "meaningKo": "옷",
+    "level": "N5"
+  },
+  {
+    "word": "物",
+    "reading": "もの",
+    "pronunciationKo": "모노",
+    "meaningKo": "물건",
+    "level": "N5"
+  },
+  {
+    "word": "分かる",
+    "reading": "わかる",
+    "pronunciationKo": "와카루",
+    "meaningKo": "알다, 이해하다",
+    "level": "N5"
+  },
+  {
+    "word": "文章",
+    "reading": "ぶんしょう",
+    "pronunciationKo": "분쇼우",
+    "meaningKo": "문장, 글",
+    "level": "N5"
+  },
+  {
+    "word": "聞く",
+    "reading": "きく",
+    "pronunciationKo": "키쿠",
+    "meaningKo": "듣다, 묻다",
+    "level": "N5"
+  },
+  {
+    "word": "並ぶ",
+    "reading": "ならぶ",
+    "pronunciationKo": "나라부",
+    "meaningKo": "줄을 서다",
+    "level": "N5"
+  },
+  {
+    "word": "並べる",
+    "reading": "ならべる",
+    "pronunciationKo": "나라베루",
+    "meaningKo": "늘어놓다",
+    "level": "N5"
+  },
+  {
+    "word": "閉まる",
+    "reading": "しまる",
+    "pronunciationKo": "시마루",
+    "meaningKo": "닫히다",
+    "level": "N5"
+  },
+  {
+    "word": "閉める",
+    "reading": "しめる",
+    "pronunciationKo": "시메루",
+    "meaningKo": "닫다",
+    "level": "N5"
+  },
+  {
+    "word": "辺",
+    "reading": "へん",
+    "pronunciationKo": "헨",
+    "meaningKo": "근처, 부근",
+    "level": "N5"
+  },
+  {
+    "word": "返す",
+    "reading": "かえす",
+    "pronunciationKo": "카에스",
+    "meaningKo": "돌려주다",
+    "level": "N5"
+  },
+  {
+    "word": "便利",
+    "reading": "べんり",
+    "pronunciationKo": "벤리",
+    "meaningKo": "편리하다",
+    "level": "N5"
+  },
+  {
+    "word": "勉強",
+    "reading": "べんきょう",
+    "pronunciationKo": "벤쿄우",
+    "meaningKo": "공부",
+    "level": "N5"
+  },
+  {
+    "word": "歩く",
+    "reading": "あるく",
+    "pronunciationKo": "아루쿠",
+    "meaningKo": "걷다",
+    "level": "N5"
+  },
+  {
+    "word": "方",
+    "reading": "かた",
+    "pronunciationKo": "카타",
+    "meaningKo": "분, 방법",
+    "level": "N5"
+  },
+  {
+    "word": "帽子",
+    "reading": "ぼうし",
+    "pronunciationKo": "보우시",
+    "meaningKo": "모자",
+    "level": "N5"
+  },
+  {
+    "word": "忘れる",
+    "reading": "わすれる",
+    "pronunciationKo": "와스레루",
+    "meaningKo": "잊다",
+    "level": "N5"
+  },
+  {
+    "word": "忙しい",
+    "reading": "いそがしい",
+    "pronunciationKo": "이소가시이",
+    "meaningKo": "바쁘다",
+    "level": "N5"
+  },
+  {
+    "word": "北",
+    "reading": "きた",
+    "pronunciationKo": "키타",
+    "meaningKo": "북쪽",
+    "level": "N5"
+  },
+  {
+    "word": "本",
+    "reading": "ほん",
+    "pronunciationKo": "혼",
+    "meaningKo": "책",
+    "level": "N5"
+  },
+  {
+    "word": "本棚",
+    "reading": "ほんだな",
+    "pronunciationKo": "혼다나",
+    "meaningKo": "책장",
+    "level": "N5"
+  },
+  {
+    "word": "磨く",
+    "reading": "みがく",
+    "pronunciationKo": "미가쿠",
+    "meaningKo": "닦다",
+    "level": "N5"
+  },
+  {
+    "word": "妹",
+    "reading": "いもうと",
+    "pronunciationKo": "이모우토",
+    "meaningKo": "여동생",
+    "level": "N5"
+  },
+  {
+    "word": "毎月",
+    "reading": "まいつき",
+    "pronunciationKo": "마이츠키",
+    "meaningKo": "매월",
+    "level": "N5"
+  },
+  {
+    "word": "毎週",
+    "reading": "まいしゅう",
+    "pronunciationKo": "마이슈우",
+    "meaningKo": "매주",
+    "level": "N5"
+  },
+  {
+    "word": "毎朝",
+    "reading": "まいあさ",
+    "pronunciationKo": "마이아사",
+    "meaningKo": "매일 아침",
+    "level": "N5"
+  },
+  {
+    "word": "毎日",
+    "reading": "まいにち",
+    "pronunciationKo": "마이니치",
+    "meaningKo": "매일",
+    "level": "N5"
+  },
+  {
+    "word": "毎年",
+    "reading": "まいとし",
+    "pronunciationKo": "마이토시",
+    "meaningKo": "매년",
+    "level": "N5"
+  },
+  {
+    "word": "毎晩",
+    "reading": "まいばん",
+    "pronunciationKo": "마이반",
+    "meaningKo": "매일 밤",
+    "level": "N5"
+  },
+  {
+    "word": "万",
+    "reading": "まん",
+    "pronunciationKo": "만",
+    "meaningKo": "만",
+    "level": "N5"
+  },
+  {
+    "word": "万年筆",
+    "reading": "まんねんひつ",
+    "pronunciationKo": "만넨히츠",
+    "meaningKo": "만년필",
+    "level": "N5"
+  },
+  {
+    "word": "無くす",
+    "reading": "なくす",
+    "pronunciationKo": "나쿠스",
+    "meaningKo": "잃어버리다",
+    "level": "N5"
+  },
+  {
+    "word": "名前",
+    "reading": "なまえ",
+    "pronunciationKo": "나마에",
+    "meaningKo": "이름",
+    "level": "N5"
+  },
+  {
+    "word": "明るい",
+    "reading": "あかるい",
+    "pronunciationKo": "아카루이",
+    "meaningKo": "밝다",
+    "level": "N5"
+  },
+  {
+    "word": "明日",
+    "reading": "あした",
+    "pronunciationKo": "아시타",
+    "meaningKo": "내일",
+    "level": "N5"
+  },
+  {
+    "word": "鳴く",
+    "reading": "なく",
+    "pronunciationKo": "나쿠",
+    "meaningKo": "울다 (동물)",
+    "level": "N5"
+  },
+  {
+    "word": "木",
+    "reading": "き",
+    "pronunciationKo": "키",
+    "meaningKo": "나무, 목재",
+    "level": "N5"
+  },
+  {
+    "word": "木曜日",
+    "reading": "もくようび",
+    "pronunciationKo": "모쿠요우비",
+    "meaningKo": "목요일",
+    "level": "N5"
+  },
+  {
+    "word": "目",
+    "reading": "め",
+    "pronunciationKo": "메",
+    "meaningKo": "눈",
+    "level": "N5"
+  },
+  {
+    "word": "問題",
+    "reading": "もんだい",
+    "pronunciationKo": "몬다이",
+    "meaningKo": "문제",
+    "level": "N5"
+  },
+  {
+    "word": "門",
+    "reading": "もん",
+    "pronunciationKo": "몬",
+    "meaningKo": "문",
+    "level": "N5"
+  },
+  {
+    "word": "夜",
+    "reading": "よる",
+    "pronunciationKo": "요루",
+    "meaningKo": "밤",
+    "level": "N5"
+  },
+  {
+    "word": "野菜",
+    "reading": "やさい",
+    "pronunciationKo": "야사이",
+    "meaningKo": "채소",
+    "level": "N5"
+  },
+  {
+    "word": "薬",
+    "reading": "くすり",
+    "pronunciationKo": "쿠스리",
+    "meaningKo": "약",
+    "level": "N5"
+  },
+  {
+    "word": "友達",
+    "reading": "ともだち",
+    "pronunciationKo": "토모다치",
+    "meaningKo": "친구",
+    "level": "N5"
+  },
+  {
+    "word": "有名",
+    "reading": "ゆうめい",
+    "pronunciationKo": "유우메이",
+    "meaningKo": "유명하다",
+    "level": "N5"
+  },
+  {
+    "word": "遊ぶ",
+    "reading": "あそぶ",
+    "pronunciationKo": "아소부",
+    "meaningKo": "놀다, 놀러 가다",
+    "level": "N5"
+  },
+  {
+    "word": "郵便局",
+    "reading": "ゆうびんきょく",
+    "pronunciationKo": "유우빈쿄쿠",
+    "meaningKo": "우체국",
+    "level": "N5"
+  },
+  {
+    "word": "夕飯",
+    "reading": "ゆうはん",
+    "pronunciationKo": "유우한",
+    "meaningKo": "저녁밥",
+    "level": "N5"
+  },
+  {
+    "word": "夕方",
+    "reading": "ゆうがた",
+    "pronunciationKo": "유우가타",
+    "meaningKo": "저녁때",
+    "level": "N5"
+  },
+  {
+    "word": "洋服",
+    "reading": "ようふく",
+    "pronunciationKo": "요우후쿠",
+    "meaningKo": "서양식 옷, 옷",
+    "level": "N5"
+  },
+  {
+    "word": "葉書",
+    "reading": "はがき",
+    "pronunciationKo": "하가키",
+    "meaningKo": "엽서",
+    "level": "N5"
+  },
+  {
+    "word": "要る",
+    "reading": "いる",
+    "pronunciationKo": "이루",
+    "meaningKo": "필요하다",
+    "level": "N5"
+  },
+  {
+    "word": "欲しい",
+    "reading": "ほしい",
+    "pronunciationKo": "호시이",
+    "meaningKo": "원하다, 갖고 싶다",
+    "level": "N5"
+  },
+  {
+    "word": "来る",
+    "reading": "くる",
+    "pronunciationKo": "쿠루",
+    "meaningKo": "오다",
+    "level": "N5"
+  },
+  {
+    "word": "来月",
+    "reading": "らいげつ",
+    "pronunciationKo": "라이게츠",
+    "meaningKo": "다음 달",
+    "level": "N5"
+  },
+  {
+    "word": "来週",
+    "reading": "らいしゅう",
+    "pronunciationKo": "라이슈우",
+    "meaningKo": "다음 주",
+    "level": "N5"
+  },
+  {
+    "word": "来年",
+    "reading": "らいねん",
+    "pronunciationKo": "라이넨",
+    "meaningKo": "내년",
+    "level": "N5"
+  },
+  {
+    "word": "頼む",
+    "reading": "たのむ",
+    "pronunciationKo": "타노무",
+    "meaningKo": "부탁하다",
+    "level": "N5"
+  },
+  {
+    "word": "卵",
+    "reading": "たまご",
+    "pronunciationKo": "타마고",
+    "meaningKo": "달걀",
+    "level": "N5"
+  },
+  {
+    "word": "立つ",
+    "reading": "たつ",
+    "pronunciationKo": "타츠",
+    "meaningKo": "서다",
+    "level": "N5"
+  },
+  {
+    "word": "留学生",
+    "reading": "りゅうがくせい",
+    "pronunciationKo": "류우가쿠세이",
+    "meaningKo": "유학생",
+    "level": "N5"
+  },
+  {
+    "word": "旅行",
+    "reading": "りょこう",
+    "pronunciationKo": "료코우",
+    "meaningKo": "여행",
+    "level": "N5"
+  },
+  {
+    "word": "両親",
+    "reading": "りょうしん",
+    "pronunciationKo": "료우신",
+    "meaningKo": "부모님",
+    "level": "N5"
+  },
+  {
+    "word": "料理",
+    "reading": "りょうり",
+    "pronunciationKo": "료우리",
+    "meaningKo": "요리",
+    "level": "N5"
+  },
+  {
+    "word": "涼しい",
+    "reading": "すずしい",
+    "pronunciationKo": "스즈시이",
+    "meaningKo": "시원하다",
+    "level": "N5"
+  },
+  {
+    "word": "緑",
+    "reading": "みどり",
+    "pronunciationKo": "미도리",
+    "meaningKo": "초록색",
+    "level": "N5"
+  },
+  {
+    "word": "隣",
+    "reading": "となり",
+    "pronunciationKo": "토나리",
+    "meaningKo": "옆집, 이웃",
+    "level": "N5"
+  },
+  {
+    "word": "冷たい",
+    "reading": "つめたい",
+    "pronunciationKo": "츠메타이",
+    "meaningKo": "차갑다",
+    "level": "N5"
+  },
+  {
+    "word": "冷蔵庫",
+    "reading": "れいぞうこ",
+    "pronunciationKo": "레이조우코",
+    "meaningKo": "냉장고",
+    "level": "N5"
+  },
+  {
+    "word": "零",
+    "reading": "れい",
+    "pronunciationKo": "레이",
+    "meaningKo": "영, 제로",
+    "level": "N5"
+  },
+  {
+    "word": "練習",
+    "reading": "れんしゅう",
+    "pronunciationKo": "렌슈우",
+    "meaningKo": "연습",
+    "level": "N5"
+  },
+  {
+    "word": "廊下",
+    "reading": "ろうか",
+    "pronunciationKo": "로우카",
+    "meaningKo": "복도",
+    "level": "N5"
+  },
+  {
+    "word": "六",
+    "reading": "ろく",
+    "pronunciationKo": "로쿠",
+    "meaningKo": "여섯, 육",
+    "level": "N5"
+  },
+  {
+    "word": "六つ",
+    "reading": "むっつ",
+    "pronunciationKo": "뭇츠",
+    "meaningKo": "여섯 개",
+    "level": "N5"
+  },
+  {
+    "word": "六日",
+    "reading": "むいか",
+    "pronunciationKo": "무이카",
+    "meaningKo": "엿새, 6일",
+    "level": "N5"
+  },
+  {
+    "word": "話",
+    "reading": "はなし",
+    "pronunciationKo": "하나시",
+    "meaningKo": "이야기",
+    "level": "N5"
+  },
+  {
+    "word": "話す",
+    "reading": "はなす",
+    "pronunciationKo": "하나스",
+    "meaningKo": "말하다",
+    "level": "N5"
+  }
+]
