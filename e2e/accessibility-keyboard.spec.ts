@@ -44,7 +44,8 @@ test("keyboard user completes the core flow from home through results", async ({
   const chart = page.getByRole("link", { name: "글자표", exact: true });
   const practice = page.getByRole("link", { name: "연습", exact: true });
   const records = page.getByRole("link", { name: "기록", exact: true });
-  const navigationOrder = [brand, home, chart, practice, records];
+  const dailyWordSettings = page.getByRole("button", { name: "오늘의 단어 설정" });
+  const navigationOrder = [brand, home, chart, practice, records, dailyWordSettings];
   const explanationClose = page.getByRole("button", { name: "설명 닫기" });
   const chartStart = page.getByRole("link", { name: "글자표 보기" });
   const startPractice = page.getByRole("link", { name: "쓰기 연습 시작" });
@@ -124,7 +125,7 @@ test("chart detail traps focus, closes with Escape, and restores its trigger", a
 
   const dialog = page.getByRole("dialog", { name: "あ 상세" });
   const close = page.getByRole("button", { name: "상세 닫기" });
-  const practice = page.getByRole("link", { name: "이 문자 연습" });
+  const practice = page.getByRole("button", { name: "이 문자 연습" });
   await expect(dialog).toBeVisible();
   await expect(close).toBeFocused();
 

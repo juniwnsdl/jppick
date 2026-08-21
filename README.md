@@ -34,6 +34,10 @@ pnpm start
 
 브라우저 데이터 또는 사이트 데이터를 지우면 저장된 학습 진도와 중단 기록도 함께 삭제되며 복구할 수 없습니다. IndexedDB를 사용할 수 없는 환경에서는 현재 실행 중인 메모리에만 기록되어 새로고침 뒤 유지되지 않을 수 있습니다.
 
+## 오늘의 단어
+
+JLPT N1~N5 단어 8,334개는 [OpenJLPT](https://github.com/evanclan/OpenJLPT)에서 가져와 앱에 함께 포함되어 있어, 단어를 표시할 때 별도 API를 호출하지 않습니다. 기본 범위는 N1·N2·N3이며, 헤더 오른쪽의 설정 버튼에서 난이도를 고를 수 있습니다. 저장한 변경은 사용자의 로컬 날짜가 다음 날로 바뀔 때부터 적용되고, 오늘 보던 다섯 단어는 바뀌지 않습니다.
+
 ## 브라우저 지원
 
 릴리스 테스트는 데스크톱 Chromium, 320×568 모바일 Chromium, iPhone 13 크기의 WebKit에서 수행합니다. 현재 버전의 Chromium 계열 브라우저와 iPhone Safari/WebKit을 지원 대상으로 합니다. 자바스크립트, IndexedDB, Pointer Events, Canvas, ResizeObserver가 필요합니다.

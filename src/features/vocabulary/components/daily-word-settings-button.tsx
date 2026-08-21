@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
+import { createPortal } from "react-dom";
 
 import { loadSettings, saveSettings, type AppSettings } from "../../../lib/settings";
 import { scheduleDailyWordLevels } from "../daily-word-settings";
@@ -111,7 +112,7 @@ export function DailyWordSettingsButton() {
 
       {status ? <p role="status">{status}</p> : null}
 
-      {isOpen ? (
+      {isOpen ? createPortal(
         <div
           className="daily-word-settings-backdrop"
           data-testid="daily-word-settings-backdrop"
@@ -152,7 +153,8 @@ export function DailyWordSettingsButton() {
               <button disabled={draftLevels.length === 0} onClick={saveDraft} type="button">저장</button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body,
       ) : null}
     </div>
   );

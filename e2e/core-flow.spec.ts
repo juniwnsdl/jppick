@@ -486,3 +486,39 @@ test("touch drawing reaches the app while keeping the page position fixed", asyn
   await expect(page.getByRole("button", { name: "마지막 획 실행 취소" })).toBeEnabled();
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(initialScrollY);
 });
+
+test("daily words keep today's cards while next-day difficulty changes are saved", async ({ page }) => {
+  await page.goto("/");
+
+  const cards = page.locator(".daily-word-card");
+  await expect(cards).toHaveCount(5);
+  await expect(page.locator(".daily-word-level")).toHaveCount(5);
+  await expect(page.locator(".daily-words-grid")).toHaveCSS("display", "grid");
+  await expect.poll(() => page.evaluate(() => (
+    document.documentElement.scrollWidth <= document.documentElement.clientWidth
+  ))).toBe(true);
+  const todayWords = await cards.allTextContents();
+
+  const settingsButton = page.getByRole("button", { name: "오늘의 단어 설정" });
+  await expectMinimumTarget(page, "button", "오늘의 단어 설정");
+  await settingsButton.click();
+
+  const dialog = page.getByRole("dialog", { name: "오늘의 단어 난이도" });
+  await expect(dialog).toBeVisible();
+  await expect(dialog).toHaveCSS("opacity", "1");
+  const dialogBox = await dialog.boundingBox();
+  expect(dialogBox, "daily word settings dialog should be visible").not.toBeNull();
+  expect(dialogBox!.x).toBeGreaterThanOrEqual(0);
+  expect(dialogBox!.x + dialogBox!.width).toBeLessThanOrEqual((await page.viewportSize())!.width);
+  expect(dialogBox!.y).toBeGreaterThanOrEqual(0);
+  expect(dialogBox!.y + dialogBox!.height).toBeLessThanOrEqual((await page.viewportSize())!.height);
+  await page.getByLabel("N1").uncheck();
+  await page.getByLabel("N2").uncheck();
+  await page.getByLabel("N3").uncheck();
+  await page.getByLabel("N4").check();
+  await dialog.getByRole("button", { name: "저장" }).click();
+
+  await expect(page.getByRole("status")).toContainText("내일부터 N4 단어가 표시됩니다.");
+  await expect(cards).toHaveCount(5);
+  expect(await cards.allTextContents()).toEqual(todayWords);
+});
