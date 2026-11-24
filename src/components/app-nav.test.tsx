@@ -9,4 +9,5 @@ it("exposes the four core learning destinations", () => {
   expect(screen.getByRole("link", { name: "글자표" })).toHaveAttribute("href", "/chart");
   expect(screen.getByRole("link", { name: "연습" })).toHaveAttribute("href", "/practice");
   expect(screen.getByRole("link", { name: "기록" })).toHaveAttribute("href", "/records");
+  expect(screen.getByRole("button", { name: "오늘의 단어 설정" })).toBeVisible();
 });

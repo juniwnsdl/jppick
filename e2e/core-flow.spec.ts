@@ -127,15 +127,27 @@ test("mixed recall exercises both selected scripts in one session", async ({ pag
   expect(answers.some((glyph) => /^[\u30a0-\u30ff]+$/u.test(glyph)), "session should exercise katakana").toBe(true);
 });
 
-test("chart practice keeps the selected kana as the only practice target", async ({ page }) => {
+test("chart practices the selected kana inside its detail", async ({ page }) => {
   await page.goto("/chart");
   await page.getByRole("button", { name: "あ, a, 아" }).click();
-  await page.getByRole("link", { name: "이 문자 연습" }).click();
+  await page.getByRole("button", { name: "이 문자 연습" }).click();
 
-  const start = page.getByRole("link", { name: "연습 시작" });
-  await expect(start).toHaveAttribute("href", /kanaIds=hiragana-a/);
-  await start.click();
-  await expect(page.getByLabel("따라 쓸 문자")).toHaveText("あ");
+  await expect(page).toHaveURL(/\/chart$/);
+  await expect(page.getByRole("dialog", { name: "あ 상세" })).toBeVisible();
+  await expect(page.getByRole("img", { name: "쓰기 영역" })).toBeVisible();
+  await expect(page.getByTestId("trace-kana-guide")).toBeVisible();
+});
+
+test("chart detail moves to adjacent visible kana", async ({ page }) => {
+  await page.goto("/chart");
+  await page.getByRole("button", { name: "あ, a, 아" }).click();
+
+  await expect(page.getByRole("button", { name: "이전 문자" })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "다음 문자" })).toHaveText(">");
+  await page.getByRole("button", { name: "다음 문자" }).click();
+
+  await expect(page.getByRole("dialog", { name: "い 상세" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "이전 문자" })).toHaveText("<");
 });
 
 test("chart starts the entire visible set in catalog order", async ({ page }) => {
@@ -473,4 +485,39 @@ test("touch drawing reaches the app while keeping the page position fixed", asyn
   }
   await expect(page.getByRole("button", { name: "마지막 획 실행 취소" })).toBeEnabled();
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(initialScrollY);
+});
+
+test("daily words keep today's cards while next-day difficulty changes are saved", async ({ page }) => {
+  await page.goto("/");
+
+  const cards = page.locator(".daily-word-card");
+  await expect(cards).toHaveCount(6);
+  await expect(page.locator(".daily-word-level")).toHaveCount(6);
+  await expect(page.locator(".daily-words-grid")).toHaveCSS("display", "grid");
+  await expect.poll(() => page.evaluate(() => (
+    document.documentElement.scrollWidth <= document.documentElement.clientWidth
+  ))).toBe(true);
+  const todayWords = await cards.allTextContents();
+
+  const settingsButton = page.getByRole("button", { name: "오늘의 단어 설정" });
+  await expectMinimumTarget(page, "button", "오늘의 단어 설정");
+  await settingsButton.click();
+
+  const dialog = page.getByRole("dialog", { name: "오늘의 단어 난이도" });
+  await expect(dialog).toBeVisible();
+  await expect(dialog).toHaveCSS("opacity", "1");
+  const dialogBox = await dialog.boundingBox();
+  expect(dialogBox, "daily word settings dialog should be visible").not.toBeNull();
+  expect(dialogBox!.x).toBeGreaterThanOrEqual(0);
+  expect(dialogBox!.x + dialogBox!.width).toBeLessThanOrEqual((await page.viewportSize())!.width);
+  expect(dialogBox!.y).toBeGreaterThanOrEqual(0);
+  expect(dialogBox!.y + dialogBox!.height).toBeLessThanOrEqual((await page.viewportSize())!.height);
+  await page.getByLabel("N3").uncheck();
+  await page.getByLabel("N5").uncheck();
+  await page.getByLabel("N4").check();
+  await dialog.getByRole("button", { name: "저장" }).click();
+
+  await expect(page.getByRole("status")).toContainText("내일부터 N4 단어가 표시됩니다.");
+  await expect(cards).toHaveCount(6);
+  expect(await cards.allTextContents()).toEqual(todayWords);
 });

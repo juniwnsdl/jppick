@@ -1,15 +1,23 @@
+import {
+  DEFAULT_DAILY_WORD_SETTINGS,
+  normalizeDailyWordSettings,
+  type DailyWordLevelSettings,
+} from "../features/vocabulary/daily-word-settings";
+
 export interface AppSettings {
-  version: 1;
+  version: 3;
   guideLines: boolean;
   traceGuide: boolean;
   overlayOpacity: number;
+  dailyWords: DailyWordLevelSettings;
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
-  version: 1,
+  version: 3,
   guideLines: true,
   traceGuide: true,
   overlayOpacity: 0.55,
+  dailyWords: DEFAULT_DAILY_WORD_SETTINGS,
 };
 
 const SETTINGS_STORAGE_KEY = "kana-learning-settings";
@@ -27,19 +35,36 @@ function parseSettings(value: unknown): AppSettings {
     return { ...DEFAULT_SETTINGS };
   }
 
-  const stored = value as Partial<AppSettings>;
+  const stored = value as {
+    version?: unknown;
+    guideLines?: unknown;
+    traceGuide?: unknown;
+    overlayOpacity?: unknown;
+    dailyWords?: unknown;
+  };
 
-  if (stored.version !== 1) {
+  if (stored.version !== 1 && stored.version !== 2 && stored.version !== 3) {
     return { ...DEFAULT_SETTINGS };
   }
 
+  const normalizedDailyWords = stored.version === 1
+    ? normalizeDailyWordSettings(DEFAULT_DAILY_WORD_SETTINGS)
+    : normalizeDailyWordSettings(stored.dailyWords);
+  const usesPreviousDefault = stored.version === 2
+    && normalizedDailyWords.activeLevels.join("|") === "N1|N2|N3"
+    && normalizedDailyWords.pendingLevels === null
+    && normalizedDailyWords.effectiveDate === null;
+
   return {
-    version: 1,
+    version: 3,
     guideLines:
       typeof stored.guideLines === "boolean" ? stored.guideLines : DEFAULT_SETTINGS.guideLines,
     traceGuide:
       typeof stored.traceGuide === "boolean" ? stored.traceGuide : DEFAULT_SETTINGS.traceGuide,
     overlayOpacity: clampOpacity(stored.overlayOpacity),
+    dailyWords: usesPreviousDefault
+      ? normalizeDailyWordSettings(DEFAULT_DAILY_WORD_SETTINGS)
+      : normalizedDailyWords,
   };
 }
 

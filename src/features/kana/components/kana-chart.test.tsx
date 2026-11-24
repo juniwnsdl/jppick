@@ -21,7 +21,7 @@ it("starts the entire visible chart in catalog order", async () => {
   );
 });
 
-it("opens the selected katakana yoon unit with its practice target", async () => {
+it("opens the selected katakana yoon unit with inline practice", async () => {
   const user = userEvent.setup();
   render(<KanaChart />);
 
@@ -34,10 +34,44 @@ it("opens the selected katakana yoon unit with its practice target", async () =>
   expect(detail).toHaveTextContent("캬");
   expect(detail).toHaveTextContent("문자 종류가타카나");
   expect(detail).toHaveTextContent("분류요음");
-  expect(screen.getByRole("link", { name: "이 문자 연습" })).toHaveAttribute(
-    "href",
-    "/practice?kana=katakana-kya",
-  );
+  expect(screen.getByRole("button", { name: "이 문자 연습" })).toBeVisible();
+});
+
+it("replaces the stroke guide with a writing canvas without leaving the detail", async () => {
+  const user = userEvent.setup();
+  render(<KanaChart />);
+
+  await user.click(screen.getByRole("button", { name: "あ, a, 아" }));
+  await user.click(screen.getByRole("button", { name: "이 문자 연습" }));
+
+  expect(screen.getByRole("dialog", { name: "あ 상세" })).toBeVisible();
+  expect(screen.getByRole("img", { name: "쓰기 영역" })).toBeVisible();
+  expect(screen.getByTestId("trace-kana-guide")).toBeVisible();
+  expect(screen.queryByRole("img", { name: "あ 획순" })).not.toBeInTheDocument();
+
+  await user.click(screen.getByRole("button", { name: "획순 안내 보기" }));
+
+  expect(screen.getByRole("img", { name: "あ 획순" })).toBeVisible();
+  expect(screen.queryByRole("img", { name: "쓰기 영역" })).not.toBeInTheDocument();
+});
+
+it("moves through the visible chart with angle bracket buttons", async () => {
+  const user = userEvent.setup();
+  render(<KanaChart />);
+
+  await user.click(screen.getByRole("button", { name: "あ, a, 아" }));
+
+  expect(screen.getByRole("button", { name: "이전 문자" })).toBeDisabled();
+  expect(screen.getByRole("button", { name: "다음 문자" })).toHaveTextContent(">");
+
+  await user.click(screen.getByRole("button", { name: "다음 문자" }));
+
+  expect(screen.getByRole("dialog", { name: "い 상세" })).toBeVisible();
+  expect(screen.getByRole("button", { name: "이전 문자" })).toHaveTextContent("<");
+
+  await user.click(screen.getByRole("button", { name: "이전 문자" }));
+
+  expect(screen.getByRole("dialog", { name: "あ 상세" })).toBeVisible();
 });
 
 it("moves focus into the detail dialog when it opens", async () => {
@@ -55,10 +89,10 @@ it("keeps tab focus inside the detail dialog", async () => {
 
   await user.click(screen.getByRole("button", { name: "あ, a, 아" }));
   const closeButton = screen.getByRole("button", { name: "상세 닫기" });
-  const practiceLink = screen.getByRole("link", { name: "이 문자 연습" });
+  const practiceButton = screen.getByRole("button", { name: "이 문자 연습" });
 
   await user.tab({ shift: true });
-  expect(practiceLink).toHaveFocus();
+  expect(practiceButton).toHaveFocus();
   await user.tab();
   expect(closeButton).toHaveFocus();
 });

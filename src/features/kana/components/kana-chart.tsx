@@ -28,8 +28,10 @@ export function KanaChart() {
   const [script, setScript] = useState<KanaScript>("hiragana");
   const [group, setGroup] = useState<KanaGroup>("basic");
   const [selected, setSelected] = useState<KanaUnit | null>(null);
+  const cellRefs = useRef(new Map<string, HTMLButtonElement>());
   const selectedCellRef = useRef<HTMLButtonElement>(null);
   const units = filterKana({ script, group });
+  const selectedIndex = selected ? units.findIndex((unit) => unit.id === selected.id) : -1;
   const orderedPracticeHref = `/practice/run?mode=copy&scripts=${script}&groups=${group}&count=all&strategy=ordered`;
 
   function chooseScript(nextScript: KanaScript) {
@@ -38,6 +40,11 @@ export function KanaChart() {
     if (nextScript === "hiragana" && group === "extended") {
       setGroup("basic");
     }
+  }
+
+  function showDetail(unit: KanaUnit) {
+    selectedCellRef.current = cellRefs.current.get(unit.id) ?? null;
+    setSelected(unit);
   }
 
   return (
@@ -94,9 +101,13 @@ export function KanaChart() {
               <button
                 aria-label={`${unit.display}, ${unit.romaji}, ${unit.readingKo}`}
                 className="kana-cell"
-                onClick={(event) => {
-                  selectedCellRef.current = event.currentTarget;
-                  setSelected(unit);
+                onClick={() => showDetail(unit)}
+                ref={(element) => {
+                  if (element) {
+                    cellRefs.current.set(unit.id, element);
+                  } else {
+                    cellRefs.current.delete(unit.id);
+                  }
                 }}
                 type="button"
               >
@@ -113,6 +124,12 @@ export function KanaChart() {
 
       {selected ? (
         <KanaDetail
+          onNext={selectedIndex >= 0 && selectedIndex < units.length - 1
+            ? () => showDetail(units[selectedIndex + 1])
+            : undefined}
+          onPrevious={selectedIndex > 0
+            ? () => showDetail(units[selectedIndex - 1])
+            : undefined}
           unit={selected}
           onClose={() => {
             setSelected(null);

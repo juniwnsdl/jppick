@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { DailyWordSettingsButton } from "../features/vocabulary/components/daily-word-settings-button";
+
 const destinations = [
   { href: "/", label: "홈" },
   { href: "/chart", label: "글자표" },
@@ -34,6 +36,7 @@ export function AppNav() {
           </li>
         ))}
       </ul>
+      <DailyWordSettingsButton />
     </nav>
   );
 }

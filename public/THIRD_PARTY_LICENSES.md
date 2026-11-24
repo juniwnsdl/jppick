@@ -1008,3 +1008,10 @@ the library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.  But first, please read
 <https://www.gnu.org/licenses/why-not-lgpl.html>.
 <!-- END GNU GPL v3 -->
+
+## OpenJLPT vocabulary data
+
+- Source: [OpenJLPT](https://github.com/evanclan/OpenJLPT), resolved commit `c42fd9fa3777bfc1775446f7c418d549dfd6e4cf`.
+- License: [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
+- Upstream notice: [OpenJLPT NOTICE.md](https://github.com/evanclan/OpenJLPT/blob/c42fd9fa3777bfc1775446f7c418d549dfd6e4cf/NOTICE.md). OpenJLPT is a derived work; redistributed derivatives must credit OpenJLPT and its listed upstream sources, link the license, and remain CC BY-SA 4.0.
+- Upstream attribution: JMdict / EDICT vocabulary readings and glosses are from the Electronic Dictionary Research and Development Group (EDRDG), used in conformance with the [EDRDG licence](https://www.edrdg.org/edrdg/licence.html). N5–N1 vocabulary level assignments come from [Jonathan Waller's JLPT Resources](https://www.tanos.co.uk/jlpt/) (CC BY). Example sentences come from [Tatoeba](https://tatoeba.org) (CC BY 2.0 FR).
